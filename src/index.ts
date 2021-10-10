@@ -1,8 +1,6 @@
 import { createApp } from "vue";
 import router from "./router/";
-// import {store,key} from "./store";
-// import { store, key } from './stores/store';
-// Import the functions you need from the SDKs you need
+import { store, key } from "./store/store";
 
 import { initializeApp } from "firebase/app";
 // import { getAnalytics } from "firebase/analytics";
@@ -23,19 +21,9 @@ const firebaseConfig = {
 
 // Initialize Firebase
 initializeApp(firebaseConfig);
-// const analytics = getAnalytics(appF);
-// const app = createApp({})
-// createApp(App).use(router).mount("#app");
-
-// app.use(router)
-// app.use(store, key)
-
-// app.mount('#app')
 document.addEventListener("DOMContentLoaded", () => {
-  //   createApp(App).use(router).use(store, key).mount('#app');
-  // createApp().use(router).mount("#app");
   const app = createApp({});
-
   app.use(router);
+  app.use(store, key);
   app.mount("#app");
 });

@@ -1,9 +1,9 @@
 //value object
 
-import {createID} from "./id.value"
+import { createID } from "./id.value";
 
-describe('createID',()=>{
-  test('ID生成',()=>{
+describe("createID", () => {
+  test("ID生成", () => {
     expect(createID()).toBe(5);
-  })
-})
+  });
+});

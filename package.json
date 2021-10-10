@@ -7,7 +7,7 @@
     "build": "webpack --mode development",
     "watch": "webpack --mode development --watch",
     "format": "prettier --write src/**/*.{ts,vue}",
-    "test" : "jest"
+    "test": "jest"
   },
   "keywords": [],
   "author": "",
@@ -28,6 +28,7 @@
     "prettier": "^2.4.1",
     "vue": "^3.2.19",
     "vue-loader": "^16.8.1",
-    "vue-router": "^4.0.11"
+    "vue-router": "^4.0.11",
+    "vuex": "^4.0.2"
   }
 }
