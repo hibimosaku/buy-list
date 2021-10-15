@@ -1,8 +1,7 @@
 import { InjectionKey } from "vue";
 import { createStore, Store } from "vuex";
-import { ItemRepository } from "../model/item.repository";
-import { saveItemUc } from "../model/item.use-case";
 import category from "./modules/category-store";
+import item from "./modules/item-store";
 
 export interface State {}
 
@@ -19,5 +18,6 @@ export const store = createStore<State>({
 
   modules: {
     category,
+    item,
   },
 });

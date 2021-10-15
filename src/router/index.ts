@@ -1,12 +1,11 @@
 // import { createRouter, createWebHistory, RouteRecordRaw,createWebHashHistory } from "vue-router";
 import { createRouter, RouteRecordRaw, createWebHashHistory } from "vue-router";
 
-import test from "../view/test.vue";
 import top from "../view/top.vue";
 import category from "../view/category.vue";
 import item from "../view/item.vue";
 import buyList from "../view/buy-list.vue";
-import itemList from "../view/item-list.vue";
+import buyRequest from "../view/buy-request.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -16,14 +15,10 @@ const routes: Array<RouteRecordRaw> = [
   },
 
   {
-    path: "/test",
-    // name: "top",
-    component: test,
-  },
-  {
     path: "/category",
     // name: "top",
     component: category,
+    // redirect:'/item'
   },
   {
     path: "/item",
@@ -36,9 +31,9 @@ const routes: Array<RouteRecordRaw> = [
     component: buyList,
   },
   {
-    path: "/itemList",
+    path: "/buyRequest",
     // name: "top",
-    component: itemList,
+    component: buyRequest,
   },
 ];
 

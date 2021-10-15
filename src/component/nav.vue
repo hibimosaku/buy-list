@@ -10,10 +10,10 @@
       <router-link to="/category" class="nav-link">分類</router-link>
     </li>
     <li class="nav-item">
-      <router-link to="/itemList" class="nav-link">買い物リスト</router-link>
+      <router-link to="/buyList" class="nav-link">買い物リスト</router-link>
     </li>
     <li class="nav-item">
-      <router-link to="/buyList" class="nav-link">買い物リクエスト</router-link>
+      <router-link to="/buyRequest" class="nav-link">買い物リクエスト</router-link>
     </li>
 
     <li class="nav-item">

@@ -8,10 +8,9 @@
   >
     <input
       v-model="categorys[index].name"
-      v-on:change="changeCategory(index)"
+      v-on:change="changeCategory(index,categorys[index].name)"
     />
   </div>
-  {{ categorys }}
 </template>
 <script lang="ts">
 import { defineComponent, onMounted, ref } from "vue";
@@ -23,16 +22,22 @@ export default defineComponent({
   components: {
     navComponent,
   },
-  emits: ["item"],
   setup() {
+
     let store = useStore(key);
     let categorys = ref();
 
     onMounted(() => {
       categorys.value = store.getters.getCategorys;
+
     });
-    let changeCategory = (index: any) => {
-      store.commit("changeCategory", [categorys.value[index], index, "userID"]);
+    let changeCategory = (index: any,name:string) => {
+      store.commit("changeCategory", {
+        name,
+        id: index,
+        userId: "userID",
+      });
+      //getterいる？
     };
 
     return {

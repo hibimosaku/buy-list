@@ -2,7 +2,7 @@
 
 export interface BuyStatus {
   readonly _tag: "BuyStatus";
-  type: "buy" | "nobuy";
+  type: boolean; //trueなら買った、falseなら買わなかった
 }
 
 export function createItemStatus(status: BuyStatus["type"]): BuyStatus {

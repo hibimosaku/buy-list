@@ -14,12 +14,14 @@ const state = {
 
 const mutations = {
   startCategory(state: any, userId: string) {
-    getCategoryUc(userId).then((v) => {
-      state.categorys = v;
-    });
+    if(state.categorys==null){
+      getCategoryUc(userId).then((v) => {
+        state.categorys = v;
+      })  
+    }
   },
   changeCategory(state: any, data: any): void {
-    state.categorys = saveCategoryUc(data[0].name, data[1], data[2]);
+    state.categorys = saveCategoryUc(data.name, data.id, data.userId);
   },
 };
 

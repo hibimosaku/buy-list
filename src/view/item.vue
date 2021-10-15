@@ -4,86 +4,62 @@
     <label for="exampleFormControlInput1" class="form-label">品目名</label>
     <input type="text" class="form-control" v-model="itemName" />
   </div>
+
   <div class="mb-3">
     <label for="exampleFormControlInput1" class="form-label">価格</label>
-    <input type="text" class="form-control" v-model="itemPrice" />
+    <input type="number" class="form-control" v-model="itemPrice" />
   </div>
   <div class="mb-3">
     <label for="exampleFormControlInput1" class="form-label">分類名</label>
-    <select v-model="categoryId">
+    <select v-model="categoryId" >
       <option
         v-for="(category, index) in categorys"
         :key="category"
         :value="index"
-        :index="index"
       >
         {{ category.name }}
       </option>
     </select>
-    <!-- <input type="text" class="form-control" v-model="categoryId" /> -->
+
   </div>
   <button
     type="button"
     class="btn btn btn-primary btn-lg"
-    v-on:click="registerItem"
+    v-on:click="registerItem()"
   >
     新規登録
   </button>
-  <!-- <button type="button" class="btn btn btn-primary btn-lg" v-on:click="changeItem">変更</button> -->
-
-  <hr />
-  <!-- <div class="btn-group" role="group" aria-label="Basic mixed styles example">
-      <button type="button" class="btn btn-danger">変更</button>
-      <button type="button" class="btn btn-warning">削除</button>
-    </div> -->
-  <div v-if="active_all === true">
-    <div v-for="(val, index) in items" :key="val" :index="index">
-      <input v-model="val.name" v-on:change="changeItem(index, val)" />
-      <span
-        class="badge bg-danger"
-        style="cursor: hand; cursor: pointer"
-        v-on:click="deleteItem(index)"
-        >削除</span
-      >
-    </div>
-  </div>
-
-  <div v-for="(val, index) in items" :key="val" :index="index">
-    <div v-if="active_tab == val.category_id">
-      <div>
-        <input v-model="val.name" v-on:change="changeItem(index, val)" />
-        <span
-          class="badge bg-danger"
-          style="cursor: hand; cursor: pointer"
-          v-on:click="deleteItem(index)"
-          >削除</span
-        >
+  <br>
+  <br>
+      <div class="row">
+          <div class="col-6">品目名</div>
+          <div class="col-4">価格</div>
+          <div class="col-2">削除</div>
+      </div>
+<hr style="margin:2">
+    <div v-if="active_all === true">
+    <div v-for="(val,index) in itemList" :key="val">
+      <div v-if="val">
+        <div class="input-group mb-3">
+          <input  v-model="val.item.name" v-on:change="changeItem(val,index)" type="text" class="form-control col-6" placeholder="品目名" aria-label="品目名" aria-describedby="button-addon2">
+          <input  v-model="val.item.price" v-on:change="changeItem(val,index)" type="number" class="form-control col-4" placeholder="価格" aria-label="価格" aria-describedby="button-addon2">
+          <button v-on:click="deleteItem(val.item.id,index)" class="btn btn-outline-secondary col-2" type="button" id="button-addon2">削除</button>
+        </div>
       </div>
     </div>
   </div>
 
-  <!-- <div v-if="active_tab == 1">
-      <div v-for="(item, index) in item1" :key="item" :index="index">
-        <input
-          v-model="item[1].name"
-          v-on:change="changeItem(item[0], item[1])"
-        />
+  <div v-for="(val,index) in itemList" :key="val" :index="index">
+    <div v-if="val">
+      <div class="input-group mb-3" v-if="active_tab == val.categoryId">
+        <input  v-model="val.item.name" v-on:change="changeItem(val,index)" type="text" class="form-control col-6" placeholder="品目名" aria-label="品目名" aria-describedby="button-addon2">
+        <input  v-model="val.item.price" v-on:change="changeItem(val,index)" type="number" class="form-control col-4" placeholder="価格" aria-label="価格" aria-describedby="button-addon2">
+        <button v-on:click="deleteItem(val.item.id,index)" class="btn btn-outline-secondary col-2" type="button" id="button-addon2">削除</button>
       </div>
     </div>
-    <div v-if="active_tab == 2">
-      <div v-for="(item, index) in item2" :key="item" :index="index">
-        <input
-          v-model="item[1].name"
-          v-on:change="changeItem(item[0], item[1])"
-        />
-      </div>
-    </div> -->
+  </div>
 
-  <!-- </div> -->
-  <!-- </div> -->
 
-  <hr />
-  <!-- {{ items }} -->
   <div class="btn-group-sm" role="group" aria-label="Basic example">
     <button type="button" class="btn btn-success btn-sm" v-on:click="activeAll">
       ALL
@@ -104,8 +80,6 @@
 <script lang="ts">
 import { defineComponent, onMounted, ref } from "vue";
 import navComponent from "../component/nav.vue";
-import { ItemRepository } from "../model/item.repository";
-import { saveItemUc, startItem } from "../model/item.use-case";
 import { store } from "../store/store";
 
 export default defineComponent({
@@ -113,49 +87,47 @@ export default defineComponent({
     navComponent,
   },
   setup() {
-    // let store = useStore(key);
-    let itemName = ref();
-    let itemPrice = ref();
-    let categoryId = ref();
-    let items = ref();
-    let item1 = ref();
-    let item2 = ref();
-    let active_tab = ref();
-    let active_all = ref();
-
-    let categorys = ref();
+    let itemName = ref<string | null>();
+    let itemPrice = ref<number | null>();
+    let categoryId = ref<string | null>();
+    let itemList = ref<string | null>();
+    let active_tab = ref<string | null>();
+    let active_all = ref<boolean | null>();
+    let categorys = ref<Array<string> | null>();
 
     onMounted(() => {
       categorys.value = store.getters.getCategorys;
+      itemList.value = store.getters.getItems;
     });
     active_all.value = true;
-    // 　  items.value=store.getters.getItems
-
-    // items.value =
-    startItem().then((v) => {
-      items.value = v;
-    });
-
-    //以下のコードなら、データ取得可能。本当は123行目でしたい
-    // ItemRepository.getItem("userID").then(value=>{
-    //   items.value=value
-    // })
 
     let registerItem = () => {
-      saveItemUc(categoryId.value, itemName.value, itemPrice.value);
-      items.value = store.getters.getItems;
+      if(itemName.value==null || itemPrice.value==null || categoryId==null){
+        alert("すべて入力してください")
+        return
+      }
+      store.dispatch("registerItem", {
+        categoryId: categoryId.value,
+        name: itemName.value,
+        price: itemPrice.value,
+        userId: "userID",
+      })
       alert("新規登録完了");
+      itemName.value=null
+      itemPrice.value=null
+      categoryId.value=null
     };
 
-    let changeItem = (index: string, val: any) => {
-      store.dispatch("changeItem", [
-        categoryId.value,
-        val.name,
-        val.price,
+    let changeItem = (val: any,index:any) => {
+      store.dispatch("changeItem", {
+        categoryId: val.categoryId,
+        name: val.item.name,
+        price: val.item.price,
+        itemId: val.item.id,
+        userId: "userID",
         index,
-      ]);
-      items.value = store.getters.getItems;
-      alert("変更完了");
+      });
+      // itemList.value = store.getters.getItems;
     };
 
     let activeCategory = (id: any) => {
@@ -166,30 +138,16 @@ export default defineComponent({
       active_all.value = true;
       active_tab.value = null;
     };
-    // let updateItem =(a:any,b:any)=>{
-    //   console.log(items.value,a,b)
-    //   // console.log(items.value[a].name,b)
-    //   // console.log(a,b)
-    //   // saveItemUc()
-    // }
 
-    // let updateItem = ()=>{
-    //   saveItemUc(itemName.value,itemPrice.value,id)
-    //   alert('登録完了')
-    // }
-
-    // let get = ()=>{
-    //   ItemRepository.getItem("userID").then(value=>{
-    //     items.value=value
-    //   })
-    // }
-    let deleteItem = async (index: string) => {
-      await store.dispatch("deleteItem", ["userID", index]);
-      items.value = store.getters.getItems;
+    let deleteItem = (id:string,index: string) => {
+      store.dispatch("deleteItem", {userId:"userID", itemId:id,index:index});
       alert("削除しました");
+      itemList.value = store.getters.getItems;
+
+
     };
     return {
-      items,
+      itemList,
       itemName,
       itemPrice,
       categorys,
@@ -197,8 +155,6 @@ export default defineComponent({
       active_tab,
       activeCategory,
       changeItem,
-      item1,
-      item2,
       categoryId,
       deleteItem,
       active_all,
