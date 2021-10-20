@@ -1,7 +1,7 @@
 import { InjectionKey } from "vue";
 import { createStore, Store } from "vuex";
 import category from "./modules/category-store";
-import item from "./modules/item-store";
+import itemList from "./modules/item-list-store";
 
 export interface State {}
 
@@ -18,6 +18,6 @@ export const store = createStore<State>({
 
   modules: {
     category,
-    item,
+    itemList,
   },
 });

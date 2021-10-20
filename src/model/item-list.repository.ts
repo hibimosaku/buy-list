@@ -8,19 +8,31 @@ import {
   deleteDoc,
 } from "firebase/firestore";
 import { Category } from "./category.model";
-import { ItemList } from "./item-list.model";
-// import { ItemList } from "./item-list.model";
+import { ItemList, SingleItemList } from "./item-list.model";
+import { ItemStatus } from "./item-status.value";
 import { Item } from "./item.model";
-
-// let itemRepository: ItemList = [];
 
 function createItem(category_id: Category["id"], item: Item, userId: string) {
   setDoc(doc(getFirestore(), "users/", userId, "items", String(item.id)), {
     category_id: String(category_id),
     name: item.name,
     price: item.price,
-    itemStatus: "no",
+    itemStatus: false,
     buyStatus: false,
+    buyDay: null,
+  });
+}
+
+async function updateItemList(data: ItemList, userId: string) {
+  data.forEach((val: SingleItemList) => {
+    setDoc(doc(getFirestore(), "users/", userId, "items", val.item.id), {
+      category_id: String(val.categoryId),
+      name: val.item.name,
+      price: val.item.price,
+      itemStatus: val.itemStatus,
+      buyStatus: val.buyStatus,
+      buyDay: val.buyDay,
+    });
   });
 }
 function updateItem(category_id: Category["id"], item: Item, userId: string) {
@@ -28,8 +40,19 @@ function updateItem(category_id: Category["id"], item: Item, userId: string) {
     name: item.name,
     price: item.price,
   });
-  // return getItemList(userId)
 }
+//品目ステータスの変更
+function updateItemStatus(item: Item, status: ItemStatus, userId: string) {
+  updateDoc(doc(getFirestore(), "users/", userId, "items", item.id), {
+    itemStatus: status.type,
+  });
+}
+//買い物ステータスの変更
+// function updateBuyStatus(item: Item, status:BuyStatus,userId: string){
+//   updateDoc(doc(getFirestore(), "users/", userId, "items", item.id), {
+//     buyStatus: status.type,
+//   });
+// }
 
 async function getItemList(userId: string) {
   const querySnapshot = await getDocs(
@@ -48,23 +71,22 @@ async function getItemList(userId: string) {
       categoryId: doc.data().category_id,
       itemStatus: doc.data().itemStatus,
       buyStatus: doc.data().buyStatus,
+      buyDay: doc.data().buyDay,
     });
   });
   return itemRepository;
 }
 
-async function deleteItem(userId: string, itemId: string) {
-  await deleteDoc(
-    doc(getFirestore(), "users", userId, "items", String(itemId))
-  );
+function deleteItem(userId: string, itemId: string) {
+  deleteDoc(doc(getFirestore(), "users", userId, "items", String(itemId)));
 }
-// function deleteItem(){
-
-// }
 
 export const ItemListRepository = {
   createItem,
+  updateItemList,
   updateItem,
   getItemList,
   deleteItem,
+  updateItemStatus,
+  // updateBuyStatus
 };

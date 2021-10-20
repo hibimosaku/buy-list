@@ -2,10 +2,10 @@
 
 export interface ItemStatus {
   readonly _tag: "ItemStatus";
-  type: Date | "no" | "want";
+  type: boolean; //ない：false、ほしい:true
 }
 
-export function createItemStatus(status: ItemStatus["type"]): ItemStatus {
+export function createItemStatus(status: boolean): ItemStatus {
   return {
     _tag: "ItemStatus",
     type: status,

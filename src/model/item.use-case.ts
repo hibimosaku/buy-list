@@ -1,4 +1,4 @@
-//entity
+//品目のユースケース
 
 import { changeItem, createItem } from "./item.model";
 import { ItemListRepository } from "./item-list.repository";
@@ -11,8 +11,8 @@ function createItemUc(
   userId: string
 ) {
   const item = createItem(name, price);
-  ItemListRepository.createItem(category_id, item, userId)
-  return item
+  ItemListRepository.createItem(category_id, item, userId);
+  return item;
 }
 
 function updateItemUc(
@@ -22,13 +22,13 @@ function updateItemUc(
   itemId: string,
   userId: string
 ) {
-  const item = changeItem(itemId, name, price)
+  const item = changeItem(itemId, name, price);
   ItemListRepository.updateItem(itemId, item, userId);
-  return item
+  return item;
 }
 
-function deleteItemListUc(userId: string, itemId: string){
-  ItemListRepository.deleteItem(userId, itemId)
+function deleteItemUc(userId: string, itemId: string) {
+  ItemListRepository.deleteItem(userId, itemId);
 }
 
 function getItemListUc(userId: string) {
@@ -42,5 +42,5 @@ export const ItemListUc = {
   getItemListUc,
   createItemUc,
   updateItemUc,
-  deleteItemListUc
+  deleteItemUc,
 };

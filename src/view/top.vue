@@ -3,7 +3,7 @@
   ここで対象ユーザの全データを取得。最終的に、買い物リストがログイン後の最初の画面になる予定
 </template>
 <script lang="ts">
-import navComponent from "../component/nav.vue";
+import navComponent from "./component/nav.vue";
 import { defineComponent, ref } from "vue";
 // import { initializeApp } from "firebase/app";
 import { AuthRepository } from "../model/auth.repository";
@@ -27,7 +27,6 @@ export default defineComponent({
 
     let categoryName = ref();
     let categorys = ref();
-
 
     let itemName = ref();
     let itemPrice = ref();

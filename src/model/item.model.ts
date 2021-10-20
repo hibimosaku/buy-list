@@ -15,7 +15,7 @@ const MIN_PRICE = 0;
 const MAX_PRICE = 9999;
 
 export function createItem(name: string, price: number): Item {
-  if (name.length <= MIN_NAME || name.length >= MAX_NAME)
+  if (name.length <= MIN_NAME || name.length > MAX_NAME)
     throw new Error(`name should be ${MIN_NAME} to ${MAX_NAME}`);
   if (price <= MIN_PRICE || price >= MAX_PRICE)
     throw new Error(`price should be ${MIN_PRICE} to ${MAX_PRICE}`);
@@ -28,10 +28,9 @@ export function createItem(name: string, price: number): Item {
     price,
   };
 }
-
+//nameとprice別々
 export function changeItem(id: string, name: string, price: number): Item {
-  console.log(name);
-  if (name.length <= MIN_NAME || name.length >= MAX_NAME)
+  if (name.length <= MIN_NAME || name.length > MAX_NAME)
     throw new Error(`name should be ${MIN_NAME} to ${MAX_NAME}`);
   if (price <= MIN_PRICE || price >= MAX_PRICE)
     throw new Error(`price should be ${MIN_PRICE} to ${MAX_PRICE}`);

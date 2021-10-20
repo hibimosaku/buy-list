@@ -13,21 +13,29 @@ const state = {
 };
 
 const mutations = {
-  startCategory(state: any, userId: string) {
-    if(state.categorys==null){
-      getCategoryUc(userId).then((v) => {
-        state.categorys = v;
-      })  
-    }
-  },
-  changeCategory(state: any, data: any): void {
+  // startCategory(state: any, userId: string) {
+  //   if (state.categorys == null) {
+  //     getCategoryUc(userId).then((v) => {
+  //       state.categorys = v;
+  //     });
+  //   }
+  // },
+  changeCategory(
+    state: any,
+    data: { name: string; id: string; userId: string }
+  ): void {
     state.categorys = saveCategoryUc(data.name, data.id, data.userId);
   },
 };
 
 const actions = {
   startCategory(context: any, userId: string): void {
-    context.commit("startCategory", userId);
+    // context.commit("startCategory", userId);
+    if (state.categorys == null) {
+      getCategoryUc(userId).then((v) => {
+        state.categorys = v;
+      });
+    }
   },
 };
 

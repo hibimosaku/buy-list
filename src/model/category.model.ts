@@ -6,12 +6,12 @@ export interface Category {
   name: string;
 }
 
-// const MIN_NAME = 1;
-// const MAX_NAME = 5;
+const MIN_NAME = 1;
+const MAX_NAME = 5;
 
 export function createCategory(id: string, name: string): Category {
-  // if (name.length <= MIN_NAME || name.length >= MAX_NAME)
-  // throw new Error(`name should be ${MIN_NAME} to ${MAX_NAME}`);
+  if (name.length < MIN_NAME || name.length > MAX_NAME)
+    throw new Error(`name should be ${MIN_NAME} to ${MAX_NAME}`);
   return {
     _tag: "Category",
     id,
