@@ -25,9 +25,17 @@ export default defineComponent({
   setup() {
     let store = useStore(key);
     let categorys = ref<Category>();
+    let aaa=ref()
 
     onMounted(() => {
-      categorys.value = store.getters.getCategorys;
+categorys.value = {...store.getters.getCategorys};
+localStorage.setItem('set',JSON.stringify(categorys.value))
+
+// categorys.value=JSON.parse(localStorage.getItem('set'))
+
+
+
+
     });
     let changeCategory = (index: string, name: string) => {
       store.commit("changeCategory", {
@@ -40,6 +48,7 @@ export default defineComponent({
     return {
       categorys,
       changeCategory,
+      aaa
     };
   },
 });

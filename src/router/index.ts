@@ -13,7 +13,6 @@ const routes: Array<RouteRecordRaw> = [
     // name: "top",
     component: top,
   },
-
   {
     path: "/category",
     // name: "top",

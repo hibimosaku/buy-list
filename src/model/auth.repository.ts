@@ -21,12 +21,13 @@ function signUp() {
       // ..
     });
 }
-function signIn() {
-  signInWithEmailAndPassword(getAuth(), "n.kubo@gmail.com", "111111")
+function signIn(mail:string,pw:string) {
+  signInWithEmailAndPassword(getAuth(), mail, pw)
     .then((userCredential) => {
       // Signed in
       const user = userCredential.user;
-      console.log(user.uid);
+      console.log('成功',user.uid);
+      alert('成功')
       // ...
     })
     .catch((error) => {

@@ -4,7 +4,7 @@
       <button
         type="button"
         class="col btn btn-outline-primary btn"
-        v-on:click="propsMethodCategoryAll"
+        @click="propsMethodCategoryAll"
       >
         ALL
       </button>
@@ -13,7 +13,7 @@
         class="btn btn-outline-primary col"
         v-for="n in 4"
         :key="n"
-        v-on:click="propsMethodCategory(n - 1)"
+        @click="propsMethodCategory(n - 1)"
       >
         {{ propsStore[n - 1].name }}
       </button>
@@ -24,7 +24,7 @@
         class="col btn btn-outline-primary"
         v-for="n in 5"
         :key="n"
-        v-on:click="propsMethodCategory(n + 3)"
+        @click="propsMethodCategory(n + 3)"
       >
         {{ propsStore[n + 3].name }}
       </button>

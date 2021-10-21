@@ -1,5 +1,5 @@
 <template>
-  <ul class="nav justify-content-center small">
+  <ul class="nav justify-content-center small border" style="margin-bottom:20px">
     <li class="nav-item">
       <a class="nav-link active" aria-current="page" href="#">TOP</a>
     </li>

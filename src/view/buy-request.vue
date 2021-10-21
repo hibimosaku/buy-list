@@ -19,7 +19,7 @@
               'btn btn-primary': val.buyStatus == true,
               'btn btn-light': val.buyStatus != true,
             }"
-            v-on:click="changeBuyStatusBuy(index)"
+            @click="changeBuyStatusBuy(index)"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -46,7 +46,7 @@
               'btn btn-primary': val.buyStatus == false,
               'btn btn-light': val.buyStatus != false,
             }"
-            v-on:click="changeBuyStatusNo(index)"
+            @click="changeBuyStatusNo(index)"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -76,7 +76,7 @@
               'btn btn-primary': val.buyStatus == true,
               'btn btn-light': val.buyStatus != true,
             }"
-            v-on:click="changeBuyStatusBuy(index)"
+            @click="changeBuyStatusBuy(index)"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -103,7 +103,7 @@
               'btn btn-primary': val.buyStatus == false,
               'btn btn-light': val.buyStatus != false,
             }"
-            v-on:click="changeBuyStatusNo(index)"
+            @click="changeBuyStatusNo(index)"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -134,7 +134,7 @@
               'btn btn-primary': Test[index].buyStatus == true,
               'btn btn-light': Test[index].buyStatus != true,
             }"
-            v-on:click="changeBuyStatusBuyTest(index)"
+            @click="changeBuyStatusBuyTest(index)"
           >
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-cart-check" viewBox="0 0 16 16">
               <path d="M11.354 6.354a.5.5 0 0 0-.708-.708L8 8.293 6.854 7.146a.5.5 0 1 0-.708.708l1.5 1.5a.5.5 0 0 0 .708 0l3-3z"/>
@@ -150,7 +150,7 @@
               'btn btn-primary': Test[index].buyStatus == false,
               'btn btn-light': Test[index].buyStatus != false,
             }"
-            v-on:click="changeBuyStatusNoTest(index)"
+            @click="changeBuyStatusNoTest(index)"
 
           >
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-cart-x-fill" viewBox="0 0 16 16">
@@ -167,7 +167,7 @@
   <button
     class="btn btn-success btn-block"
     type="button"
-    v-on:click="buyFinish"
+    @click="buyFinish"
   >
     購入完了
   </button>
