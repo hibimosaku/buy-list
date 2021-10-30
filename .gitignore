@@ -1,1 +1,4 @@
 node_modules
+
+# Project Specific Ignores
+.firebase

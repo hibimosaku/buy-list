@@ -17,26 +17,24 @@ export interface SingleItemList {
 
 export type ItemList = Array<SingleItemList>;
 
-export function createItemList(list: ItemList): ItemList {
+function createItemList(list: ItemList): ItemList {
   return list;
 }
 
 //buyStatus→tureの変更
-export function changeBuyStatusTrue(data: SingleItemList) {
+function changeBuyStatusTrue(data: SingleItemList) {
   let today = new Date();
   let year = today.getFullYear();
   let month = today.getMonth() + 1;
   let day = today.getDate();
-
   data.buyStatus = null;
   data.itemStatus = null;
   data.buyDay = String(year) + String(month) + String(day);
-
   return data;
 }
 
 //無効化
-export function purifyitemList(list: ItemList): ItemList {
+function purifyitemList(list: ItemList): ItemList {
   let result: ItemList = [];
   list.forEach((val, key) => {
     result.push({
@@ -50,3 +48,23 @@ export function purifyitemList(list: ItemList): ItemList {
   });
   return result;
 }
+
+//並び替え:品目ステータス
+function itemStatusWantOrder(list: ItemList): void {
+  list.sort((a, b) => {
+    if (a.itemStatus === b.itemStatus) {
+      return 1;
+    } else if (!a.itemStatus) {
+      return 0;
+    } else {
+      return -1;
+    }
+  });
+}
+
+export const ItemList = {
+  purifyitemList,
+  changeBuyStatusTrue,
+  createItemList,
+  itemStatusWantOrder,
+};

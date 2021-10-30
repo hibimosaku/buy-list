@@ -17,8 +17,8 @@ function createItem(category_id: Category["id"], item: Item, userId: string) {
     category_id: String(category_id),
     name: item.name,
     price: item.price,
-    itemStatus: false,
-    buyStatus: false,
+    itemStatus: null,
+    buyStatus: null,
     buyDay: null,
   });
 }
@@ -35,12 +35,24 @@ async function updateItemList(data: ItemList, userId: string) {
     });
   });
 }
-function updateItem(category_id: Category["id"], item: Item, userId: string) {
+function updateItem(item: Item, userId: string) {
   updateDoc(doc(getFirestore(), "users/", userId, "items", item.id), {
     name: item.name,
     price: item.price,
   });
 }
+function updateItemName(item: Item, userId: string) {
+  updateDoc(doc(getFirestore(), "users/", userId, "items", item.id), {
+    name: item.name,
+  });
+}
+
+function updateItemPrice(item: Item, userId: string) {
+  updateDoc(doc(getFirestore(), "users/", userId, "items", item.id), {
+    price: item.price,
+  });
+}
+
 //品目ステータスの変更
 function updateItemStatus(item: Item, status: ItemStatus, userId: string) {
   updateDoc(doc(getFirestore(), "users/", userId, "items", item.id), {
@@ -54,7 +66,7 @@ function updateItemStatus(item: Item, status: ItemStatus, userId: string) {
 //   });
 // }
 
-async function getItemList(userId: string) {
+async function fetchItemList(userId: string) {
   const querySnapshot = await getDocs(
     collection(getFirestore(), "users", userId, "items")
   );
@@ -85,8 +97,10 @@ export const ItemListRepository = {
   createItem,
   updateItemList,
   updateItem,
-  getItemList,
+  fetchItemList,
   deleteItem,
   updateItemStatus,
+  updateItemName,
+  updateItemPrice,
   // updateBuyStatus
 };

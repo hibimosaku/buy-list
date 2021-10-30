@@ -1,16 +1,13 @@
 import { InjectionKey } from "vue";
-import { Store } from "vuex";
+import { Commit, Store } from "vuex";
+
 import { BuyList } from "../../model/buy-list.use-case";
 import { RequestList } from "../../model/buy-request.use-case";
-import {
-  changeBuyStatusTrue,
-  ItemList,
-  SingleItemList,
-} from "../../model/item-list.model";
+import { ItemList, SingleItemList } from "../../model/item-list.model";
 import { ItemListUc } from "../../model/item.use-case";
 
 interface State {
-  itemList: null | ItemList;
+  itemList: ItemList;
 }
 
 export const key: InjectionKey<Store<State>> = Symbol();
@@ -42,57 +39,56 @@ const mutations = {
       };
     }
   },
-  changeItem(
-    state: any,
+  changeItemName(
+    state: State,
     data: {
-      categoryId: string;
-      name: string;
-      price: number;
-      itemId: string;
-      userId: string;
-      index: any;
+      val: SingleItemList;
+      uid: string;
+      index: number;
     }
   ): void {
-    let result = ItemListUc.updateItemUc(
-      data.categoryId,
-      data.name,
-      data.price,
-      data.itemId,
-      data.userId
-    );
-    state.itemList.forEach((_val: any, key: string) => {
-      if (key === data.index) {
-        state.itemList[data.index] = {
-          _tag: "ItemList",
-          item: result,
-          categoryId: state.itemList[data.index].categoryId,
-          itemStatus: state.itemList[data.index].itemStatus,
-          buyStatus: state.itemList[data.index].buyStatus,
-          buyDay: state.itemList[data.index].buyDay,
-        };
+    ItemListUc.updateItemNameUc(data.val, data.uid);
+    state.itemList.forEach((v) => {
+      if (v.item.id == data.val.item.id) {
+        v.item.name = data.val.item.name;
       }
     });
   },
+
+  changeItemPrice(
+    state: State,
+    data: {
+      val: SingleItemList;
+      uid: string;
+      index: number;
+    }
+  ): void {
+    ItemListUc.updateItemPriceUc(data.val, data.uid);
+    state.itemList.forEach((v) => {
+      if (v.item.id == data.val.item.id) {
+        v.item.price = data.val.item.price;
+      }
+    });
+  },
+
   deleteItem(
-    state: any,
-    data: { userId: string; itemId: string; index: string }
+    state: State,
+    data: { userId: string; itemId: string; index: number }
   ): void {
     ItemListUc.deleteItemUc(data.userId, data.itemId);
     delete state.itemList[data.index];
   },
-  startItems(state: any, userId: string) {
-    ItemListUc.getItemListUc(userId).then((val) => {
-      state.itemList = val;
-    });
+  setItems(state: State, items: ItemList) {
+    state.itemList = items;
   },
 
   //品目ステータス
   changeItemStatus(
-    state: any,
+    state: State,
     data: {
       val: SingleItemList;
       status: boolean;
-      index: string;
+      index: number;
       userId: string;
     }
   ) {
@@ -106,14 +102,25 @@ const mutations = {
       buyDay: state.itemList[data.index].buyDay,
     };
   },
+  //買い物
+  changeBuyStatus(
+    state: State,
+    data: { status: boolean; index: string; val: SingleItemList }
+  ) {
+    state.itemList.forEach((v) => {
+      if (v.item.id === data.val.item.id) {
+        v.buyStatus = data.status;
+      }
+    });
+  },
 
-  submitBuyStatus(stete: State, data: { val: ItemList; userId: string }) {
-    let result: any = [];
+  buyFin(stete: State, data: { val: ItemList; userId: string }) {
+    let result: ItemList = [];
     data.val.forEach((val: SingleItemList) => {
       state.itemList.forEach((v: SingleItemList) => {
         if (val.buyStatus == true && val.item.id === v.item.id) {
-          v = changeBuyStatusTrue(val);
-          result.push();
+          v = ItemList.changeBuyStatusTrue(val);
+          result.push(v);
         }
       });
     });
@@ -122,72 +129,21 @@ const mutations = {
 };
 
 const actions = {
-  startItems(context: any, userId: string) {
-    context.commit("startItems", userId);
-  },
-  registerItem(
-    context: any,
-    data: { categoryId: string; name: string; price: number; userId: string }
-  ) {
-    context.commit("registerItem", data);
-  },
-
-  changeItem(
-    context: any,
-    data: {
-      categoryId: string;
-      name: string;
-      price: number;
-      itemId: string;
-      userId: string;
-      index: any;
-    }
-  ) {
-    context.commit("changeItem", data);
-  },
-  deleteItem(
-    context: any,
-    data: { userId: string; itemId: string; index: string }
-  ) {
-    context.commit("deleteItem", data);
-  },
-  changeItemStatus(
-    context: any,
-    data: {
-      val: SingleItemList;
-      status: boolean;
-      index: string;
-      userId: string;
-    }
-  ) {
-    context.commit("changeItemStatus", data);
-  },
-  changeBuyStatus(
-    context: any,
-    data: {
-      val: SingleItemList;
-      status: boolean;
-      index: string;
-      userId: string;
-    }
-  ) {
-    context.commit("changeBuyStatus", data);
+  loadItems(context: { commit: Commit }, userId: string) {
+    return ItemListUc.loadItemListUc(userId).then((val) => {
+      context.commit("setItems", val);
+    });
   },
 };
-
 const getters = {
-  getItems: (state: any, userId: string) => {
+  getItems: (state: State, userId: string) => {
     return state.itemList;
   },
-  getBuyStatusItems: (state: any, userId: string) => {
-    // if(state.itemList!==null){
+  getBuyStatusItems: (state: State, userId: string) => {
     let result = state.itemList.filter((val: SingleItemList) => {
       return val.itemStatus == true;
     });
     return result; //returnは、stateにしないとリアクティブにならない.component側でcomputed
-    // }else{
-    //   return null //エラーにする？エラーではないと思っています。
-    // }
   },
 };
 

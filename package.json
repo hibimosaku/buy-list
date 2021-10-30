@@ -25,6 +25,7 @@
     "webpack-cli": "^4.8.0"
   },
   "dependencies": {
+    "@popperjs/core": "^2.10.2",
     "firebase": "^9.0.1",
     "firebase-admin": "^9.11.1",
     "prettier": "^2.4.1",

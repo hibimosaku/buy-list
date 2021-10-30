@@ -1,38 +1,42 @@
 import { InjectionKey } from "vue";
 import { Store } from "vuex";
+import { Category } from "../../model/category.model";
 import { getCategoryUc, saveCategoryUc } from "../../model/category.use-case";
 
 interface State {
-  categorys: null | [];
+  categorys: Array<Category>;
 }
 
 export const key: InjectionKey<Store<State>> = Symbol();
 
 const state = {
-  categorys: null,
+  categorys: [],
 };
 
 const mutations = {
   changeCategory(
-    state: any,
+    state: State,
     data: { name: string; id: string; userId: string }
   ): void {
-    state.categorys = saveCategoryUc(data.name, data.id, data.userId);
+    saveCategoryUc(data.name, data.id, data.userId);
+    state.categorys[Number(data.id)] = {
+      _tag: "Category",
+      id: data.id,
+      name: data.name,
+    };
   },
 };
 
 const actions = {
-  startCategory(context: any, userId: string): void {
-    if (state.categorys == null) {
-      getCategoryUc(userId).then((v) => {
-        state.categorys = v;
-      });
-    }
+  loadCategory(context: { state: State }, userId: string): void {
+    getCategoryUc(userId).then((v) => {
+      context.state.categorys = v;
+    });
   },
 };
 
 const getters = {
-  getCategorys: (state: any) => {
+  getCategorys: (state: State) => {
     return state.categorys;
   },
 };

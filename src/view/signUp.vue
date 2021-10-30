@@ -1,6 +1,6 @@
 <template>
   <navComponent></navComponent>
-  ログイン
+  登録
   <form>
     <div class="mb-3">
       <label for="exampleInputEmail1" class="form-label">メールアドレス</label>
@@ -21,7 +21,7 @@
         v-model="pw"
       />
     </div>
-    <button type="submit" class="btn btn-primary" @click="login">
+    <button type="submit" class="btn btn-primary" @click="register">
       ログイン
     </button>
   </form>
@@ -38,28 +38,31 @@ export default defineComponent({
     navComponent,
   },
   setup() {
+    // let store = useStore(key);
     let mail = ref<string>();
     let pw = ref<string>();
 
+    // const auth = getAuth();
     const router = useRouter();
 
-    const login = () => {
+    const register = () => {
       if (mail.value == undefined || pw.value == undefined) {
         alert("メールアドレスorパスワードが入力されていません");
         return;
       }
-      AuthUseCase.loginUc(mail.value as string, pw.value as string)
-        .then(() => {
-          router.push("/buyList");
+      AuthUseCase.signUpUc(mail.value as string, pw.value as string)
+        .then((val) => {
+          alert("登録完了");
+          router.push("/");
         })
-        .catch(() => {
-          alert("メールアドレス、パスワードが間違っています。");
+        .catch((error) => {
+          alert("メールアドレスorパスワードが間違っています。");
           return;
         });
     };
 
     return {
-      login,
+      register,
       mail,
       pw,
     };

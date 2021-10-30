@@ -14,7 +14,7 @@ export function saveCategoryUc(
 }
 
 export function getCategoryUc(userId: string) {
-  let result = CategoryRepository.getCategory(userId).then((value: any) => {
+  let result = CategoryRepository.getCategory(userId).then((value) => {
     return value;
   });
   return result;

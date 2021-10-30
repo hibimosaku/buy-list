@@ -28,7 +28,7 @@ export function createItem(name: string, price: number): Item {
     price,
   };
 }
-//nameとprice別々
+//nameとprice別々→【課題】ほぼ同じコードになる。
 export function changeItem(id: string, name: string, price: number): Item {
   if (name.length <= MIN_NAME || name.length > MAX_NAME)
     throw new Error(`name should be ${MIN_NAME} to ${MAX_NAME}`);
@@ -42,3 +42,15 @@ export function changeItem(id: string, name: string, price: number): Item {
     price,
   };
 }
+
+// export function changeItemName(id: string, name: string, price: number): Item {
+//   if (name.length <= MIN_NAME || name.length > MAX_NAME)
+//     throw new Error(`name should be ${MIN_NAME} to ${MAX_NAME}`);
+
+//   return {
+//     _tag: "Item",
+//     id,
+//     name,
+//     price,
+//   };
+// }

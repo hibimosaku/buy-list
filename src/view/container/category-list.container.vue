@@ -3,19 +3,25 @@
     <div class="row btn-group-sm" role="group" aria-label="Basic example">
       <button
         type="button"
-        class="col btn btn-outline-primary btn"
-        @click="propsMethodCategoryAll"
+        :class="{
+          'col btn btn-outline-primary active': activeCategory == 'all',
+          'col btn btn-outline-primary': activeCategory != 'all',
+        }"
+        @click="onActiveCategory('all')"
       >
         ALL
       </button>
       <button
         type="button"
-        class="btn btn-outline-primary col"
         v-for="n in 4"
         :key="n"
-        @click="propsMethodCategory(n - 1)"
+        :class="{
+          'col btn btn-outline-primary active': activeCategory == n - 1,
+          'col btn btn-outline-primary': activeCategory != n - 1,
+        }"
+        @click="onActiveCategory(n - 1)"
       >
-        {{ propsStore[n - 1].name }}
+        {{ categorys[n - 1].name }}
       </button>
     </div>
     <div class="row btn-group-sm" role="group" aria-label="Basic example">
@@ -24,30 +30,27 @@
         class="col btn btn-outline-primary"
         v-for="n in 5"
         :key="n"
-        @click="propsMethodCategory(n + 3)"
+        @click="onActiveCategory(n + 3)"
       >
-        {{ propsStore[n + 3].name }}
+        {{ categorys[n + 3].name }}
       </button>
     </div>
   </div>
 </template>
 
-<script>
+<script lang="ts">
 export default {
   props: {
-    propsStore: Array,
+    categorys: Array,
+    activeCategory: String,
   },
-  emits: ["propsActiveCategory", "propsActiveCategoryAll"],
-  setup(props, { emit }) {
-    let propsMethodCategoryAll = () => {
-      emit("propsActiveCategoryAll");
-    };
-    let propsMethodCategory = (index) => {
-      emit("propsActiveCategory", index);
+  emits: ["activeCategory", "activeAll"],
+  setup(_props: any, { emit }: any) {
+    let onActiveCategory = (index: number) => {
+      emit("onActiveCategory", index);
     };
     return {
-      propsMethodCategoryAll,
-      propsMethodCategory,
+      onActiveCategory,
     };
   },
 };
