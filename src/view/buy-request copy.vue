@@ -98,9 +98,6 @@ export default defineComponent({
       uid = await store.getters.getUid;
       categorys.value = await store.getters.getCategorys;
       buyListRq.value = store.getters.getBuyStatusItems;
-      
-      console.log('buyR',categorys.value,buyListRq.value)
-
     });
 
     const filterbuyListRq=computed(():ItemList | null =>{

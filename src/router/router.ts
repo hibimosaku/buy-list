@@ -6,8 +6,9 @@ import item from "../view/item.vue";
 import buyList from "../view/buy-list.vue";
 import buyRequest from "../view/buy-request.vue";
 import signUp from "../view/signUp.vue";
+import test from "../view/test.vue";
 
-import { initializeApp } from "firebase/app";
+// import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 
 import { onAuthStateChanged } from "@firebase/auth";
@@ -15,19 +16,19 @@ import { load } from "../view/func/load.func";
 import { store } from "../store/store";
 import { Category } from "../model/category.model";
 
-//↓【課題】本当はおきたくない。webのsorceで丸見え
-const firebaseConfig = {
-  apiKey: "AIzaSyA3ZoDiyxNZBWFgntlnBEcrFkfAgOo2RIE",
-  authDomain: "buy-list-cf.firebaseapp.com",
-  projectId: "buy-list-cf",
-  storageBucket: "buy-list-cf.appspot.com",
-  messagingSenderId: "1087310780588",
-  appId: "1:1087310780588:web:1c8d10b9943ea3d7296709",
-  measurementId: "G-0K9W3P389E",
-};
-initializeApp(firebaseConfig);
+//↓【課題→解決】本当はおきたくない。webのsorceで丸見え
+// const firebaseConfig = {
+//   apiKey: "AIzaSyA3ZoDiyxNZBWFgntlnBEcrFkfAgOo2RIE",
+//   authDomain: "buy-list-cf.firebaseapp.com",
+//   projectId: "buy-list-cf",
+//   storageBucket: "buy-list-cf.appspot.com",
+//   messagingSenderId: "1087310780588",
+//   appId: "1:1087310780588:web:1c8d10b9943ea3d7296709",
+//   measurementId: "G-0K9W3P389E",
+// };
+// initializeApp(firebaseConfig);
 
-const auth = getAuth();
+let auth:any = null
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -73,6 +74,10 @@ const routes: Array<RouteRecordRaw> = [
     component: buyRequest,
     meta: { requiresAuth: true },
   },
+  {
+    path:"/test",
+    component:test
+  }
 ];
 
 const router = createRouter({
@@ -84,20 +89,24 @@ const router = createRouter({
 
 // 認証状態をチェック
 router.beforeEach((to, from, next) => {
+  if(!auth) auth=getAuth()  
   const requiresAuth = to.matched.some((record) => record.meta.requiresAuth);
   const itemList = store.getters.getItems;
   const categorys: Array<Category> = store.getters.getCategorys;
-
+//auth→getauthに変える
   if (requiresAuth) {
     onAuthStateChanged(auth, async (user) => {
       //【課題】リポジトリにもっていく？
       if (user && itemList && categorys.length == 9) {
+        console.log('0',user.uid,itemList,categorys.length)
         next();
       } else if (user) {
+        console.log('1',user.uid)
         await load(user.uid);
         await store.commit("registerAuth", user.uid);
         next();
       } else {
+        console.log('2')
         router.push("./");
       }
     });

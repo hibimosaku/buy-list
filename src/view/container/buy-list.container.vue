@@ -57,21 +57,22 @@
       </svg>
     </button>
   </td>
-  <td>2</td>
+  <td>{{val.itemNum}}</td>
 </template>
 
-<script>
+<script lang="ts">
+import { SingleItemList } from '../../model/item-list.model';
+
 export default {
   props: {
     val: {},
     index: Number,
   },
   emits: ["changeItemStatus"],
-  setup(_props, { emit }) {
-    let changeItemStatus = (status, val, index) => {
+  setup(_props:any, { emit }:any) {
+    let changeItemStatus = (status:boolean, val:SingleItemList, index:number) => {
       emit("changeItemStatus", status, val, index);
     };
-
     return { changeItemStatus };
   },
 };

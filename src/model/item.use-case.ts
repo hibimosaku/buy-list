@@ -2,7 +2,7 @@
 
 import { changeItem, createItem } from "./item.model";
 import { ItemListRepository } from "./item-list.repository";
-import { SingleItemList } from "./item-list.model";
+import { ItemList, SingleItemList } from "./item-list.model";
 
 //品目
 function createItemUc(
@@ -13,12 +13,6 @@ function createItemUc(
 ) {
   const item = createItem(name, price);
   ItemListRepository.createItem(category_id, item, userId);
-  return item;
-}
-
-function updateItemUc(val: SingleItemList, uid: string) {
-  const item = changeItem(val.item.id, val.item.name, val.item.price);
-  ItemListRepository.updateItem(item, uid);
   return item;
 }
 
@@ -45,11 +39,17 @@ function loadItemListUc(userId: string) {
   return result;
 }
 
+function updateItemList(list:ItemList,uid:string,){
+  ItemListRepository.updateItemList(list,uid)
+}
+
+
+
 export const ItemListUc = {
   loadItemListUc,
   createItemUc,
-  updateItemUc,
   deleteItemUc,
   updateItemNameUc,
   updateItemPriceUc,
+  updateItemList
 };

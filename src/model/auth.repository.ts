@@ -15,22 +15,17 @@ import {
 async function signUp(mail: string, pw: string) {
   createUserWithEmailAndPassword(getAuth(), mail, pw)
     //ログイン時、DBにドキュメント作成
-    //【課題】for文で、何回もDB送信している。
+    //【課題→解決】for文で、何回もDB送信している。
     .then((userCredential) => {
-      for (let i = 0; i < 9; i++) {
         setDoc(
           doc(
             getFirestore(),
             "users/",
             userCredential.user.uid,
             "categorys/",
-            String(i)
           ),
-          {
-            name: "",
-          }
+          [... new Array(10)].map(_ => ({ name: '' })),
         );
-      }
     });
 }
 
@@ -45,7 +40,7 @@ async function signIn(mail: string, pw: string) {
 }
 
 async function signOutR() {
-  await signOut;
+  await signOut(getAuth());
 }
 
 export const AuthRepository = {

@@ -63,9 +63,18 @@
       <div class="col-2"></div>
     </div>
   </div>
-
+      <!-- @dragstart="dragstart(val, $event)" -->
   <div v-if="activeCategory === 'all'">
-    <div v-for="(val, index) in itemList" :key="val">
+    <div v-for="(val, index) in fruitsDisp"
+      :key="index"
+      draggable="true"
+      @dragstart="dragstart(val, $event)"
+      @dragenter="dragenter(val)"
+      @dragover.stop.prevent="dragover"
+      @dragend.stop.prevent="dragend"
+
+
+    >
       <div v-if="val">
         <div class="input-group mb-3">
           <itemContainer
@@ -93,7 +102,6 @@
       </div>
     </div>
   </div>
-
   <categoryContainer
     v-if="categorys"
     :categorys="categorys"
@@ -103,14 +111,14 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, ref } from "vue";
+import { defineComponent, onMounted, ref,computed } from "vue";
 import { store } from "../store/store";
 
 import navComponent from "./component/nav.vue";
 import categoryContainer from "./container/category-list.container.vue";
 import itemContainer from "./container/item.container.vue";
 
-import { SingleItemList } from "../model/item-list.model";
+import { ItemList, SingleItemList } from "../model/item-list.model";
 
 export default defineComponent({
   components: {
@@ -123,10 +131,9 @@ export default defineComponent({
     let itemName = ref<string | null>();
     let itemPrice = ref<number | null>();
     let categoryId = ref<string | null>();
-    let itemList = ref<string | null>();
+    let itemList = ref<ItemList>();
     let categorys = ref<Array<string> | null>();
     let activeCategory = ref();
-
     let uid: string;
 
     onMounted(() => {
@@ -134,6 +141,40 @@ export default defineComponent({
       itemList.value = store.getters.getItems; //computed
       categorys.value = store.getters.getCategorys;
     });
+
+    let fruitsDisp=computed(():any =>{
+      if(itemList.value){
+        let result:ItemList = itemList.value.sort((a:SingleItemList, b:SingleItemList) => a.item.id - b.item.id); 
+        store.commit('sortItemList',{list:result,uid:uid})
+        itemList.value = store.getters.getItems; //computed
+        return result
+      }
+    })
+
+    let draggingItem:any= ref()
+    draggingItem.value=null
+
+    let dragstart=(item:any, e:any)=> {
+      draggingItem.value = item; // ドラッグ中の要素を保持
+      e.dataTransfer.effectAllowed = 'move'; // 移動モードに設定
+      e.target.style.opacity = 0.5; // ドラッグ中要素のスタイルを変更
+    }
+    let dragenter=(item:any)=> {
+      // ドラッグ中の要素とドラッグ先の要素の表示順を入れ替える
+      [item.item.id, draggingItem.value.item.id] = [draggingItem.value.item.id, item.item.id];
+
+    }
+    let dragover=(e:any)=>{
+      e.dataTransfer.dropEffect = 'move'; // 移動モードに設定
+
+    }
+    let dragend=(e:any)=>{
+      e.target.style.opacity = 1; // ドラッグ中要素のスタイルを変更（元に戻す）
+
+      draggingItem.value = null; // ドラッグ中の要素をクリア
+    }
+
+
     activeCategory.value = "all";
 
     let registerItem = () => {
@@ -199,6 +240,15 @@ export default defineComponent({
       activeCategory,
       onActiveCategory,
       changeItemPrice,
+
+
+      fruitsDisp,
+      draggingItem,
+      dragstart,
+      dragenter,
+      dragover,
+      dragend
+
     };
   },
 });

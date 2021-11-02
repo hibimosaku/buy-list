@@ -1,24 +1,37 @@
-疑問 10/31
+11/7
+## router
+
+## 課題
+  ・全部DB、storeが同じ作業
+  ・ifに対してのelseが書けてない
+
+## 未着手
+　・Lineへの送信
+  ・個数追加を検討
+  ・vuex使わない場合でなにができるできないを知る。firebaseを状態管理で使う
+
+疑問→解決 10/31
 ## firestoreルール
 　・色々書いたが、ログイン時エラー
+　　→再帰ワイルドカードを書かなかったのが原因。
 
 ## 課題と書いた部分
+全てのモノは実行されてimportされる
 
 
 ## ddd
   ・UIからの流れ
   　
-  　現状：UI→store→usecase
-        　UI→usecase（store利用しない場合）
-        →ルールがない。
+  　現状：UI→store（状態管理）→usecase コマンド（相手の要求と対応が一体化,restApi）、クエリ（サーバ、要求がいつ変えてくるか分からない）が分離　functions利用
+         　UI→usecase（store利用しない場合）　コマンド、クエリが分離していない場合
+
+        →ルールがない。→storeを使う使わないのルールがあるからOK
 　　案：1.UI→必ずusecase→store
-       2.UI→必ずstore通す
+       2.UI→必ずstore通す　eventがすべて見えるgooglechrom
+
+storeの役割・状態管理、meesageパス
 
 
-## 未着手
-　・Lineへの送信
-  ・個数追加を検討
-  ・
 
 
 

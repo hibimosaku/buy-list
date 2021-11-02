@@ -35,12 +35,6 @@ async function updateItemList(data: ItemList, userId: string) {
     });
   });
 }
-function updateItem(item: Item, userId: string) {
-  updateDoc(doc(getFirestore(), "users/", userId, "items", item.id), {
-    name: item.name,
-    price: item.price,
-  });
-}
 function updateItemName(item: Item, userId: string) {
   updateDoc(doc(getFirestore(), "users/", userId, "items", item.id), {
     name: item.name,
@@ -60,11 +54,11 @@ function updateItemStatus(item: Item, status: ItemStatus, userId: string) {
   });
 }
 //買い物ステータスの変更
-// function updateBuyStatus(item: Item, status:BuyStatus,userId: string){
-//   updateDoc(doc(getFirestore(), "users/", userId, "items", item.id), {
-//     buyStatus: status.type,
-//   });
-// }
+function updateBuyStatus(status:boolean,data:SingleItemList,userId: string){
+  updateDoc(doc(getFirestore(), "users/", userId, "items", data.item.id), {
+    buyStatus: status,
+  });
+}
 
 async function fetchItemList(userId: string) {
   const querySnapshot = await getDocs(
@@ -96,11 +90,10 @@ function deleteItem(userId: string, itemId: string) {
 export const ItemListRepository = {
   createItem,
   updateItemList,
-  updateItem,
   fetchItemList,
   deleteItem,
   updateItemStatus,
   updateItemName,
   updateItemPrice,
-  // updateBuyStatus
+  updateBuyStatus
 };

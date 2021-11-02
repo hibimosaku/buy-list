@@ -9,6 +9,7 @@ import { Item } from "./item.model";
 export interface SingleItemList {
   readonly _tag: "ItemList";
   item: Item;
+  // itemNum:number
   categoryId: Category["id"];
   itemStatus: ItemStatus["type"] | null;
   buyStatus: BuyStatus["type"] | null;

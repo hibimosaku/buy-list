@@ -3,10 +3,9 @@
   <!-- <button type="button" class="btn btn-info" @click="priceOrderBig">
     金額順(大）
   </button> -->
-  <button type="button" class="btn btn-info" @click="wantOrder">
+  <button type="button" class="btn btn-success btn-sm" @click="wantOrder">
     ほしい順
   </button>
-
   <table class="table small">
     <thead>
       <tr>
@@ -98,19 +97,6 @@ export default defineComponent({
       }
     };
 
-    // const priceOrderBig = () => {
-    //   if (itemList.value) {
-    //     itemList.value.sort((first, second) => {
-    //       if (first.item.price > second.item.price) {
-    //         return -1;
-    //       } else if (first.item.price < second.item.price) {
-    //         return 1;
-    //       } else {
-    //         return 0;
-    //       }
-    //     });
-    //   }
-    // };
     let onActiveCategory = (id: string) => {
       activeCategory.value = id;
     };

@@ -71,6 +71,15 @@ const mutations = {
     });
   },
 
+  sortItemList(state:State,data:{list:ItemList,uid:string}){
+    state.itemList=data.list
+    ItemListUc.updateItemList(data.list,data.uid)    
+
+
+
+  },
+
+
   deleteItem(
     state: State,
     data: { userId: string; itemId: string; index: number }
@@ -105,13 +114,29 @@ const mutations = {
   //買い物
   changeBuyStatus(
     state: State,
-    data: { status: boolean; index: string; val: SingleItemList }
+    data: { status: boolean; index: string; val: SingleItemList,uid:string }
   ) {
     state.itemList.forEach((v) => {
       if (v.item.id === data.val.item.id) {
+
         v.buyStatus = data.status;
+        RequestList.changeBuyStatusUc(data.status,data.val,data.uid)
       }
     });
+  },
+
+  resetBuyStatus(state:State,data:{id:string}){
+    state.itemList.forEach((v1)=>{
+        if(data.id=='all'){
+          if(v1.itemStatus==true){
+            v1.buyStatus=null
+          }
+        }else{
+          if(data.id==v1.categoryId && v1.itemStatus==true){
+            v1.buyStatus=null
+          }
+        }        
+    })
   },
 
   buyFin(stete: State, data: { val: ItemList; userId: string }) {
@@ -124,7 +149,7 @@ const mutations = {
         }
       });
     });
-    RequestList.changeBuyStatusUc(result, data.userId);
+    RequestList.finBuyStatusUc(result, data.userId);
   },
 };
 

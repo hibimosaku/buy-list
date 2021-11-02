@@ -55,7 +55,7 @@
 <script>
 export default {
   props: {
-    val: {},
+    val:{},
     index: Number,
   },
   emits: ["changeBuyStatus"],
