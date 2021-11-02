@@ -33,7 +33,7 @@ export function changeName(item: Item, name: string): Item {
   if (name.length <= MIN_NAME || name.length > MAX_NAME)
     throw new Error(`name should be ${MIN_NAME} to ${MAX_NAME}`);
   return {
-    ...item,//【勉強】スプレッド構文(複製)。置換パターン
+    ...item, //【勉強】スプレッド構文(複製)。置換パターン
     name,
   };
 }

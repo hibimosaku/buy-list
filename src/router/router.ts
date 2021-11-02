@@ -28,7 +28,7 @@ import { Category } from "../model/category.model";
 // };
 // initializeApp(firebaseConfig);
 
-let auth:any = null
+let auth: any = null;
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -75,9 +75,9 @@ const routes: Array<RouteRecordRaw> = [
     meta: { requiresAuth: true },
   },
   {
-    path:"/test",
-    component:test
-  }
+    path: "/test",
+    component: test,
+  },
 ];
 
 const router = createRouter({
@@ -89,24 +89,21 @@ const router = createRouter({
 
 // 認証状態をチェック
 router.beforeEach((to, from, next) => {
-  if(!auth) auth=getAuth()  
+  if (!auth) auth = getAuth();
   const requiresAuth = to.matched.some((record) => record.meta.requiresAuth);
   const itemList = store.getters.getItems;
   const categorys: Array<Category> = store.getters.getCategorys;
-//auth→getauthに変える
+  //auth→getauthに変える
   if (requiresAuth) {
     onAuthStateChanged(auth, async (user) => {
       //【課題】リポジトリにもっていく？
       if (user && itemList && categorys.length == 9) {
-        console.log('0',user.uid,itemList,categorys.length)
         next();
       } else if (user) {
-        console.log('1',user.uid)
         await load(user.uid);
         await store.commit("registerAuth", user.uid);
         next();
       } else {
-        console.log('2')
         router.push("./");
       }
     });

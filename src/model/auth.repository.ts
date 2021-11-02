@@ -17,15 +17,10 @@ async function signUp(mail: string, pw: string) {
     //ログイン時、DBにドキュメント作成
     //【課題→解決】for文で、何回もDB送信している。
     .then((userCredential) => {
-        setDoc(
-          doc(
-            getFirestore(),
-            "users/",
-            userCredential.user.uid,
-            "categorys/",
-          ),
-          [... new Array(10)].map(_ => ({ name: '' })),
-        );
+      setDoc(
+        doc(getFirestore(), "users/", userCredential.user.uid, "categorys/"),
+        [...new Array(10)].map((_) => ({ name: "" }))
+      );
     });
 }
 

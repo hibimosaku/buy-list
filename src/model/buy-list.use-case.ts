@@ -6,21 +6,21 @@ import { createItemStatus } from "./item-status.value";
 import { changeItem } from "./item.model";
 
 //itemStatusの切り替え
-function changeItemStatusUc(data: {
-  val: SingleItemList;
-  status: boolean;
-  index: number;
-  userId: string;
-}) {
-  const item = changeItem(
-    data.val.item.id,
-    data.val.item.name,
-    data.val.item.price
-  );
-  const itemStatus = createItemStatus(data.status);
-  ItemListRepository.updateItemStatus(item, itemStatus, data.userId);
+function changeItemStatusUc(
+  val: SingleItemList,
+  status: boolean,
+  userId: string
+) {
+  const item = changeItem(val.item.id, val.item.name, val.item.price);
+  const itemStatus = createItemStatus(status);
+  ItemListRepository.updateItemStatus(item, itemStatus, userId);
+}
+
+function changeItemNumUc(itemNum: number, list: SingleItemList, uid: string) {
+  ItemListRepository.updateItemNum(itemNum, list, uid);
 }
 
 export const BuyList = {
   changeItemStatusUc,
+  changeItemNumUc,
 };

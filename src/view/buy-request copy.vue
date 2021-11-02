@@ -2,29 +2,76 @@
   <navComponent></navComponent>
 
   <div class="dropdown">
-    <button class="btn btn-info btn-sm dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-funnel" viewBox="0 0 16 16">
-        <path d="M1.5 1.5A.5.5 0 0 1 2 1h12a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-.128.334L10 8.692V13.5a.5.5 0 0 1-.342.474l-3 1A.5.5 0 0 1 6 14.5V8.692L1.628 3.834A.5.5 0 0 1 1.5 3.5v-2zm1 .5v1.308l4.372 4.858A.5.5 0 0 1 7 8.5v5.306l2-.666V8.5a.5.5 0 0 1 .128-.334L13.5 3.308V2h-11z"/>
+    <button
+      class="btn btn-info btn-sm dropdown-toggle"
+      type="button"
+      id="dropdownMenuButton"
+      data-bs-toggle="dropdown"
+      aria-expanded="false"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="16"
+        height="16"
+        fill="currentColor"
+        class="bi bi-funnel"
+        viewBox="0 0 16 16"
+      >
+        <path
+          d="M1.5 1.5A.5.5 0 0 1 2 1h12a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-.128.334L10 8.692V13.5a.5.5 0 0 1-.342.474l-3 1A.5.5 0 0 1 6 14.5V8.692L1.628 3.834A.5.5 0 0 1 1.5 3.5v-2zm1 .5v1.308l4.372 4.858A.5.5 0 0 1 7 8.5v5.306l2-.666V8.5a.5.5 0 0 1 .128-.334L13.5 3.308V2h-11z"
+        />
       </svg>
     </button>
     <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-      <li><a class="dropdown-item small" @click="filterStatus='all'">すべて</a></li>
-      <li><a class="dropdown-item small" @click="filterStatus='buy'">買うのみ</a></li>
-      <li><a class="dropdown-item small" @click="filterStatus='no'">ないのみ</a></li>
+      <li>
+        <a class="dropdown-item small" @click="filterStatus = 'all'">すべて</a>
+      </li>
+      <li>
+        <a class="dropdown-item small" @click="filterStatus = 'buy'"
+          >買うのみ</a
+        >
+      </li>
+      <li>
+        <a class="dropdown-item small" @click="filterStatus = 'no'">ないのみ</a>
+      </li>
     </ul>
-    <span style="font-size:10px;">{{filterStatus=='buy' ? '買うの絞り込み':filterStatus=='no' ? 'ないのみ':null}}</span>
-
+    <span style="font-size: 10px">{{
+      filterStatus == "buy"
+        ? "買うの絞り込み"
+        : filterStatus == "no"
+        ? "ないのみ"
+        : null
+    }}</span>
   </div>
   <div class="dropdown">
-    <button class="btn btn-info btn-sm dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+    <button
+      class="btn btn-info btn-sm dropdown-toggle"
+      type="button"
+      id="dropdownMenuButton"
+      data-bs-toggle="dropdown"
+      aria-expanded="false"
+    >
       リセット
     </button>
     <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-      <li><a class="dropdown-item small" @click="resetBuyStatus(activeCategory)">すべて</a></li>
-      <li><a class="dropdown-item small" @click="resetBuyStatus(activeCategory)">選択の分類のみ</a></li>
+      <li>
+        <a class="dropdown-item small" @click="resetBuyStatus(activeCategory)"
+          >すべて</a
+        >
+      </li>
+      <li>
+        <a class="dropdown-item small" @click="resetBuyStatus(activeCategory)"
+          >選択の分類のみ</a
+        >
+      </li>
     </ul>
-    <span style="font-size:10px;">{{filterStatus=='buy' ? '買うの絞り込み':filterStatus=='no' ? 'ないのみ':null}}</span>
-
+    <span style="font-size: 10px">{{
+      filterStatus == "buy"
+        ? "買うの絞り込み"
+        : filterStatus == "no"
+        ? "ないのみ"
+        : null
+    }}</span>
   </div>
   <table class="table small">
     <thead>
@@ -89,8 +136,8 @@ export default defineComponent({
     let categorys = ref<Array<string> | null>();
     let uid: string;
     let activeCategory = ref();
-    let filterStatus=ref<string>('all' || 'buy'|| 'no')
-    filterStatus.value='all'
+    let filterStatus = ref<string>("all" || "buy" || "no");
+    filterStatus.value = "all";
 
     activeCategory.value = "all";
 
@@ -100,33 +147,32 @@ export default defineComponent({
       buyListRq.value = store.getters.getBuyStatusItems;
     });
 
-    const filterbuyListRq=computed(():ItemList | null =>{
-      let result:ItemList
-      if(buyListRq.value){
-        result= buyListRq.value.filter((v:any)=>{
-          if(filterStatus.value=='all') return v!=null
-          if(filterStatus.value=='no') return v.buyStatus==false
-          if(filterStatus.value=='buy') return v.buyStatus==true
-          return null
-        })
-        return result
-      }else{
-        return null
+    const filterbuyListRq = computed((): ItemList | null => {
+      let result: ItemList;
+      if (buyListRq.value) {
+        result = buyListRq.value.filter((v: any) => {
+          if (filterStatus.value == "all") return v != null;
+          if (filterStatus.value == "no") return v.buyStatus == false;
+          if (filterStatus.value == "buy") return v.buyStatus == true;
+          return null;
+        });
+        return result;
+      } else {
+        return null;
       }
-    })
-
+    });
 
     let changeBuyStatus = (
       status: boolean,
       index: number,
-      val: SingleItemList,
+      val: SingleItemList
     ) => {
       if (buyListRq.value) {
         buyListRq.value[index].buyStatus = status;
         store.commit("changeBuyStatus", {
           status,
           val,
-          uid
+          uid,
         });
       }
     };
@@ -143,15 +189,12 @@ export default defineComponent({
       buyListRq.value = store.getters.getBuyStatusItems;
     };
 
-    let resetBuyStatus=(categoryId:string)=>{
-      store.commit("resetBuyStatus",{
-        id:categoryId,
-      })
+    let resetBuyStatus = (categoryId: string) => {
+      store.commit("resetBuyStatus", {
+        id: categoryId,
+      });
       buyListRq.value = store.getters.getBuyStatusItems;
-
-    }
-
-
+    };
 
     return {
       buyListRq,
@@ -162,7 +205,7 @@ export default defineComponent({
       changeBuyStatus,
       filterStatus,
       filterbuyListRq,
-      resetBuyStatus
+      resetBuyStatus,
     };
   },
 });

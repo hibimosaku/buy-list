@@ -32,6 +32,7 @@ const mutations = {
       state.itemList[state.itemList.length] = {
         _tag: "ItemList",
         item: result,
+        itemNum: 1, //デフォルト値
         categoryId: data.categoryId,
         itemStatus: null,
         buyStatus: null,
@@ -71,14 +72,23 @@ const mutations = {
     });
   },
 
-  sortItemList(state:State,data:{list:ItemList,uid:string}){
-    state.itemList=data.list
-    ItemListUc.updateItemList(data.list,data.uid)    
+  changeItemNum(
+    state: State,
+    data: { itemNum: number; val: SingleItemList; index: number; uid: string }
+  ) {
+    state.itemList.forEach((v) => {
+      if (v.item.id == data.val.item.id) {
+        v.itemNum = data.itemNum;
+      }
+    });
 
-
-
+    BuyList.changeItemNumUc(data.itemNum, data.val, data.uid);
   },
 
+  sortItemList(state: State, data: { list: ItemList; uid: string }) {
+    state.itemList = data.list;
+    ItemListUc.updateItemList(data.list, data.uid);
+  },
 
   deleteItem(
     state: State,
@@ -101,10 +111,11 @@ const mutations = {
       userId: string;
     }
   ) {
-    BuyList.changeItemStatusUc(data);
+    BuyList.changeItemStatusUc(data.val, data.status, data.userId);
     state.itemList[data.index] = {
       _tag: "ItemList",
       item: state.itemList[data.index].item,
+      itemNum: state.itemList[data.index].itemNum,
       categoryId: state.itemList[data.index].categoryId,
       itemStatus: data.status,
       buyStatus: state.itemList[data.index].buyStatus,
@@ -114,29 +125,28 @@ const mutations = {
   //買い物
   changeBuyStatus(
     state: State,
-    data: { status: boolean; index: string; val: SingleItemList,uid:string }
+    data: { status: boolean; index: string; val: SingleItemList; uid: string }
   ) {
     state.itemList.forEach((v) => {
       if (v.item.id === data.val.item.id) {
-
         v.buyStatus = data.status;
-        RequestList.changeBuyStatusUc(data.status,data.val,data.uid)
+        RequestList.changeBuyStatusUc(data.status, data.val, data.uid);
       }
     });
   },
-
-  resetBuyStatus(state:State,data:{id:string}){
-    state.itemList.forEach((v1)=>{
-        if(data.id=='all'){
-          if(v1.itemStatus==true){
-            v1.buyStatus=null
-          }
-        }else{
-          if(data.id==v1.categoryId && v1.itemStatus==true){
-            v1.buyStatus=null
-          }
-        }        
-    })
+  //状態のnull化
+  resetBuyStatus(state: State, data: { id: string }) {
+    state.itemList.forEach((v1) => {
+      if (data.id == "all") {
+        if (v1.itemStatus == true) {
+          v1.buyStatus = null;
+        }
+      } else {
+        if (data.id == v1.categoryId && v1.itemStatus == true) {
+          v1.buyStatus = null;
+        }
+      }
+    });
   },
 
   buyFin(stete: State, data: { val: ItemList; userId: string }) {

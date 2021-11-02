@@ -57,23 +57,47 @@
       </svg>
     </button>
   </td>
-  <td>{{val.itemNum}}</td>
+  <td>
+    <select
+      class="form-control form-control-sm"
+      style="appearance: none; font-size:6px width:30px"
+      type="number"
+      @change="changeItemNum(val.itemNum, val, index)"
+      v-model="val.itemNum"
+      :disabled="val.itemStatus == false ? true : false"
+    >
+      <option style="font-size: 5px" v-for="itemNum in 9" :key="itemNum">
+        {{ itemNum }}
+      </option>
+    </select>
+  </td>
 </template>
 
 <script lang="ts">
-import { SingleItemList } from '../../model/item-list.model';
+import { SingleItemList } from "../../model/item-list.model";
 
 export default {
   props: {
     val: {},
     index: Number,
   },
-  emits: ["changeItemStatus"],
-  setup(_props:any, { emit }:any) {
-    let changeItemStatus = (status:boolean, val:SingleItemList, index:number) => {
+  emits: ["changeItemStatus", "changeItemNum"],
+  setup(_props: any, { emit }: any) {
+    let changeItemStatus = (
+      status: boolean,
+      val: SingleItemList,
+      index: number
+    ) => {
       emit("changeItemStatus", status, val, index);
     };
-    return { changeItemStatus };
+    let changeItemNum = (
+      itemNum: number,
+      val: SingleItemList,
+      index: number
+    ) => {
+      emit("changeItemNum", itemNum, val, index);
+    };
+    return { changeItemStatus, changeItemNum };
   },
 };
 </script>

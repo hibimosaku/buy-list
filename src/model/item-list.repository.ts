@@ -17,6 +17,7 @@ function createItem(category_id: Category["id"], item: Item, userId: string) {
     category_id: String(category_id),
     name: item.name,
     price: item.price,
+    itemNum: 1,
     itemStatus: null,
     buyStatus: null,
     buyDay: null,
@@ -29,6 +30,7 @@ async function updateItemList(data: ItemList, userId: string) {
       category_id: String(val.categoryId),
       name: val.item.name,
       price: val.item.price,
+      itemNum: val.itemNum,
       itemStatus: val.itemStatus,
       buyStatus: val.buyStatus,
       buyDay: val.buyDay,
@@ -47,6 +49,12 @@ function updateItemPrice(item: Item, userId: string) {
   });
 }
 
+function updateItemNum(itemNum: number, list: SingleItemList, uid: string) {
+  updateDoc(doc(getFirestore(), "users/", uid, "items", list.item.id), {
+    itemNum,
+  });
+}
+
 //品目ステータスの変更
 function updateItemStatus(item: Item, status: ItemStatus, userId: string) {
   updateDoc(doc(getFirestore(), "users/", userId, "items", item.id), {
@@ -54,7 +62,11 @@ function updateItemStatus(item: Item, status: ItemStatus, userId: string) {
   });
 }
 //買い物ステータスの変更
-function updateBuyStatus(status:boolean,data:SingleItemList,userId: string){
+function updateBuyStatus(
+  status: boolean,
+  data: SingleItemList,
+  userId: string
+) {
   updateDoc(doc(getFirestore(), "users/", userId, "items", data.item.id), {
     buyStatus: status,
   });
@@ -74,6 +86,7 @@ async function fetchItemList(userId: string) {
         name: doc.data().name,
         price: doc.data().price,
       },
+      itemNum: doc.data().itemNum,
       categoryId: doc.data().category_id,
       itemStatus: doc.data().itemStatus,
       buyStatus: doc.data().buyStatus,
@@ -95,5 +108,6 @@ export const ItemListRepository = {
   updateItemStatus,
   updateItemName,
   updateItemPrice,
-  updateBuyStatus
+  updateBuyStatus,
+  updateItemNum,
 };

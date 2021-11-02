@@ -39,11 +39,9 @@ function loadItemListUc(userId: string) {
   return result;
 }
 
-function updateItemList(list:ItemList,uid:string,){
-  ItemListRepository.updateItemList(list,uid)
+function updateItemList(list: ItemList, uid: string) {
+  ItemListRepository.updateItemList(list, uid);
 }
-
-
 
 export const ItemListUc = {
   loadItemListUc,
@@ -51,5 +49,5 @@ export const ItemListUc = {
   deleteItemUc,
   updateItemNameUc,
   updateItemPriceUc,
-  updateItemList
+  updateItemList,
 };

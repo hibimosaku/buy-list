@@ -23,6 +23,7 @@
           :val="val"
           :index="index"
           @changeItemStatus="changeItemStatus"
+          @changeItemNum="changeItemNum"
         ></buyListContainer>
       </tr>
     </tbody>
@@ -33,6 +34,7 @@
           :val="val"
           :index="index"
           @changeItemStatus="changeItemStatus"
+          @changeItemNum="changeItemNum"
         ></buyListContainer>
       </tr>
     </tbody>
@@ -89,6 +91,15 @@ export default defineComponent({
       itemList.value = store.getters.getItems;
     };
 
+    let changeItemNum = (
+      itemNum: number,
+      val: SingleItemList,
+      index: number
+    ) => {
+      store.commit("changeItemNum", { itemNum, val, index, uid });
+      itemList.value = store.getters.getItems;
+    };
+
     const wantOrder = () => {
       if (itemList.value) {
         ItemList.itemStatusWantOrder(itemList.value);
@@ -109,6 +120,7 @@ export default defineComponent({
       activeCategory,
       onActiveCategory,
       changeItemStatus,
+      changeItemNum,
     };
   },
 });

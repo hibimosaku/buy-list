@@ -9,7 +9,7 @@ import { Item } from "./item.model";
 export interface SingleItemList {
   readonly _tag: "ItemList";
   item: Item;
-  // itemNum:number
+  itemNum: number | null;
   categoryId: Category["id"];
   itemStatus: ItemStatus["type"] | null;
   buyStatus: BuyStatus["type"] | null;
@@ -41,6 +41,7 @@ function purifyitemList(list: ItemList): ItemList {
     result.push({
       _tag: "ItemList",
       item: val.item,
+      itemNum: val.itemNum,
       categoryId: val.categoryId,
       itemStatus: val.itemStatus,
       buyStatus: val.buyStatus,

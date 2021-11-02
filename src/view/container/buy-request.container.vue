@@ -1,6 +1,7 @@
 <template>
   <td>{{ val.item.name }}</td>
   <td>{{ val.item.price }}</td>
+  <td>{{ val.itemNum }}</td>
   <td>
     <button
       type="button"
@@ -55,7 +56,7 @@
 <script>
 export default {
   props: {
-    val:{},
+    val: {},
     index: Number,
   },
   emits: ["changeBuyStatus"],

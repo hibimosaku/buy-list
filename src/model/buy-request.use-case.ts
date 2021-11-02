@@ -7,12 +7,11 @@ function finBuyStatusUc(data: ItemList, userId: string) {
   ItemListRepository.updateItemList(data, userId);
 }
 
-function changeBuyStatusUc(status:boolean,data: SingleItemList, uid: string) {
-  ItemListRepository.updateBuyStatus(status,data, uid);
+function changeBuyStatusUc(status: boolean, data: SingleItemList, uid: string) {
+  ItemListRepository.updateBuyStatus(status, data, uid);
 }
-
 
 export const RequestList = {
   finBuyStatusUc,
-  changeBuyStatusUc
+  changeBuyStatusUc,
 };
