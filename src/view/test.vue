@@ -1,15 +1,17 @@
 <template>
   aaa
+  <!-- @touchmove.stop.prevent="touchmove" -->
 
   <table>
     <tr
       v-for="fruit in fruitsDisp"
       :key="fruit"
       draggable="true"
-      @dragstart="dragstart(fruit, $event)"
-      @dragenter="dragenter(fruit)"
-      @dragover.stop.prevent="dragover"
-      @dragend.stop.prevent="dragend"
+      @touchstart="dragstart(fruit, $event)"
+      @touchend="dragenter(fruit, $event)"
+      @touchmove="aaa(fruit, $event)"
+      @touchmove.stop.prevent="touchmove"
+      @tounchend.stop.prevent="tounchend"
     >
       <td>{{ fruit.name }}</td>
       <td>{{ fruit.price }}</td>
@@ -46,22 +48,40 @@ export default defineComponent({
 
     let dragstart = (item: any, e: any) => {
       draggingItem.value = item; // ドラッグ中の要素を保持
-      e.dataTransfer.effectAllowed = "move"; // 移動モードに設定
+      e.draggable = true;
+      e.returnValue = true;
+      console.log("0", e.draggable, e);
+      // e.dataTransfer.effectAllowed = "move"; // 移動モードに設定
       e.target.style.opacity = 0.5; // ドラッグ中要素のスタイルを変更
     };
-    let dragenter = (item: any) => {
+    let dragenter = (item: any, e: any) => {
       // ドラッグ中の要素とドラッグ先の要素の表示順を入れ替える
       [item.order, draggingItem.value.order] = [
         draggingItem.value.order,
         item.order,
       ];
+      e.changedTouches[0].identifier = 1;
+      console.log(
+        "1",
+        item,
+        draggingItem.value,
+        e.changedTouches[0].identifier
+      );
     };
     let dragover = (e: any) => {
-      e.dataTransfer.dropEffect = "move"; // 移動モードに設定
+      e.draggable = true;
+
+      console.log("2");
+      // e.dataTransfer.dropEffect = "move"; // 移動モードに設定
     };
     let dragend = (e: any) => {
       e.target.style.opacity = 1; // ドラッグ中要素のスタイルを変更（元に戻す）
       draggingItem.value = null; // ドラッグ中の要素をクリア
+      console.log("3");
+    };
+
+    let aaa = (item: any, e: any) => {
+      console.log(item, e);
     };
 
     return {
@@ -74,6 +94,7 @@ export default defineComponent({
       dragenter,
       dragover,
       dragend,
+      aaa,
     };
   },
 });

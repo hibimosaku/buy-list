@@ -64,13 +64,18 @@
     </div>
   </div>
   <!-- @dragstart="dragstart(val, $event)" -->
+  <!-- @dragstart="dragstart(val, $event)"
+      @dragenter="dragenter(val)"
+      @dragover.stop.prevent="dragover"
+      @dragend.stop.prevent="dragend" -->
+
   <div v-if="activeCategory === 'all'">
     <div
       v-for="(val, index) in itemListDisplay"
       :key="index"
       draggable="true"
       @dragstart="dragstart(val, $event)"
-      @dragenter="dragenter(val)"
+      @dragenter="dragenter(val, $event)"
       @dragover.stop.prevent="dragover"
       @dragend.stop.prevent="dragend"
     >
@@ -154,6 +159,12 @@ export default defineComponent({
       }
     });
 
+    // draggable="true"
+    // @dragstart="dragstart(val, $event)"
+    // @dragenter="dragenter(val)"
+    // @dragover.stop.prevent="dragover"
+    // @dragend.stop.prevent="dragend"
+
     let draggingItem: any = ref();
     draggingItem.value = null;
 
@@ -161,13 +172,15 @@ export default defineComponent({
       draggingItem.value = item; // ドラッグ中の要素を保持
       e.dataTransfer.effectAllowed = "move"; // 移動モードに設定
       e.target.style.opacity = 0.5; // ドラッグ中要素のスタイルを変更
+      console.log(e);
     };
-    let dragenter = (item: any) => {
+    let dragenter = (item: any, e: any) => {
       // ドラッグ中の要素とドラッグ先の要素の表示順を入れ替える
       [item.item.id, draggingItem.value.item.id] = [
         draggingItem.value.item.id,
         item.item.id,
       ];
+      console.log(e);
     };
     let dragover = (e: any) => {
       e.dataTransfer.dropEffect = "move"; // 移動モードに設定
