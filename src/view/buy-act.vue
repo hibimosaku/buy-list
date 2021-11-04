@@ -74,21 +74,21 @@
     </thead>
     <tbody v-if="activeCategory === 'all'">
       <tr v-for="(val, index) in filterbuyListRq" :key="val" :index="index">
-        <buyRequestContainer
+        <buyActContainer
           :val="val"
           :index="index"
-          @changeBuyRequest="changeBuyRequest"
-        ></buyRequestContainer>
+          @changeBuyResult="changeBuyResult"
+        ></buyActContainer>
       </tr>
     </tbody>
 
     <tbody v-for="(val, index) in filterbuyListRq" :key="val" :index="index">
       <tr v-if="activeCategory == val.categoryId">
-        <buyRequestContainer
+        <buyActContainer
           :val="val"
           :index="index"
-          @changeBuyRequest="changeBuyRequest"
-        ></buyRequestContainer>
+          @changeBuyResult="changeBuyResult"
+        ></buyActContainer>
       </tr>
     </tbody>
   </table>
@@ -109,7 +109,7 @@ import { computed, defineComponent, onMounted, ref } from "vue";
 
 import navComponent from "./component/nav.vue";
 import categoryContainer from "./container/category-list.container.vue";
-import buyRequestContainer from "./container/buy-request.container.vue";
+import buyActContainer from "./container/buy-act.container.vue";
 
 import { store } from "../store/store";
 import { BuyInfoList, BuyInfo } from "../model/buy-info.model";
@@ -118,7 +118,7 @@ export default defineComponent({
   components: {
     navComponent,
     categoryContainer,
-    buyRequestContainer,
+    buyActContainer,
   },
   setup() {
     let buyListRq = ref<BuyInfoList>();
@@ -142,8 +142,8 @@ export default defineComponent({
       if (buyListRq.value) {
         result = buyListRq.value.filter((v: any) => {
           if (filterStatus.value == "all") return v != null;
-          if (filterStatus.value == "no") return v.buyResult == false;
-          if (filterStatus.value == "buy") return v.buyResult == true;
+          if (filterStatus.value == "no") return v.BuyResult == false;
+          if (filterStatus.value == "buy") return v.BuyResult == true;
           return null;
         });
         return result;
@@ -152,10 +152,10 @@ export default defineComponent({
       }
     });
 
-    let changeBuyRequest = (status: boolean, index: number, val: BuyInfo) => {
+    let changeBuyResult = (status: boolean, index: number, val: BuyInfo) => {
       if (buyListRq.value) {
-        buyListRq.value[index].buyRequest = status;
-        store.commit("changeBuyRequest", {
+        buyListRq.value[index].buyResult = status;
+        store.commit("changeBuyResult", {
           status,
           val,
           uid,
@@ -188,7 +188,7 @@ export default defineComponent({
       buyFin,
       activeCategory,
       onActiveCategory,
-      changeBuyRequest,
+      changeBuyResult,
       filterStatus,
       filterbuyListRq,
       resetBuyStatus,

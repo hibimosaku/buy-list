@@ -50,7 +50,7 @@ export default defineComponent({
       }
       AuthUseCase.loginUc(mail.value as string, pw.value as string)
         .then(() => {
-          router.push("/buyList");
+          router.push("/BuyInfoUseCase");
         })
         .catch(() => {
           alert("メールアドレス、パスワードが間違っています。");

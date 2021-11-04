@@ -1,8 +1,5 @@
 <template>
   <navComponent></navComponent>
-  <!-- <button type="button" class="btn btn-info" @click="priceOrderBig">
-    金額順(大）
-  </button> -->
   <button type="button" class="btn btn-success btn-sm" @click="wantOrder">
     ほしい順
   </button>
@@ -18,22 +15,22 @@
       </tr>
     </thead>
     <tbody v-if="activeCategory === 'all'">
-      <tr v-for="(val, index) in itemList" :key="val" :index="index">
+      <tr v-for="(val, index) in BuyInfoList" :key="val" :index="index">
         <buyListContainer
           :val="val"
           :index="index"
-          @changeItemStatus="changeItemStatus"
+          @changeBuyRequest="changeBuyRequest"
           @changeItemNum="changeItemNum"
         ></buyListContainer>
       </tr>
     </tbody>
 
-    <tbody v-for="(val, index) in itemList" :key="val" :index="index">
+    <tbody v-for="(val, index) in BuyInfoList" :key="val" :index="index">
       <tr v-if="activeCategory == val.categoryId">
         <buyListContainer
           :val="val"
           :index="index"
-          @changeItemStatus="changeItemStatus"
+          @changeBuyRequest="changeBuyRequest"
           @changeItemNum="changeItemNum"
         ></buyListContainer>
       </tr>
@@ -55,7 +52,7 @@ import navComponent from "./component/nav.vue";
 import categoryContainer from "./container/category-list.container.vue";
 import buyListContainer from "./container/buy-list.container.vue";
 
-import { ItemList, SingleItemList } from "../model/item-list.model";
+import { BuyInfoList, BuyInfo } from "../model/buy-info.model";
 
 export default defineComponent({
   components: {
@@ -64,7 +61,7 @@ export default defineComponent({
     buyListContainer,
   },
   setup() {
-    let itemList = ref<ItemList>();
+    let BuyInfoList = ref<BuyInfoList>();
     let categorys = ref<Array<string> | null>();
     let uid: string;
     let activeCategory = ref();
@@ -73,36 +70,28 @@ export default defineComponent({
 
     onMounted(async () => {
       uid = await store.getters.getUid;
-      itemList.value = store.getters.getItems;
+      BuyInfoList.value = store.getters.getItems;
       categorys.value = store.getters.getCategorys;
+      console.log(categorys);
     });
 
-    let changeItemStatus = (
-      status: boolean,
-      val: SingleItemList,
-      index: number
-    ) => {
-      store.commit("changeItemStatus", {
-        val,
+    let changeBuyRequest = (status: boolean, itemId: string) => {
+      store.commit("changeBuyRequest", {
+        itemId,
         status,
-        index,
-        userId: uid,
+        uid,
       });
-      itemList.value = store.getters.getItems;
+      BuyInfoList.value = store.getters.getItems;
     };
 
-    let changeItemNum = (
-      itemNum: number,
-      val: SingleItemList,
-      index: number
-    ) => {
+    let changeItemNum = (itemNum: number, val: BuyInfo, index: number) => {
       store.commit("changeItemNum", { itemNum, val, index, uid });
-      itemList.value = store.getters.getItems;
+      BuyInfoList.value = store.getters.getItems;
     };
 
     const wantOrder = () => {
-      if (itemList.value) {
-        ItemList.itemStatusWantOrder(itemList.value);
+      if (BuyInfoList.value) {
+        BuyInfo.buyRequestWantOrder(BuyInfoList.value);
       } else {
         alert("データが登録さてれいません");
       }
@@ -113,13 +102,13 @@ export default defineComponent({
     };
 
     return {
-      itemList,
+      BuyInfoList,
       categorys,
       wantOrder,
       // priceOrderBig,
       activeCategory,
       onActiveCategory,
-      changeItemStatus,
+      changeBuyRequest,
       changeItemNum,
     };
   },

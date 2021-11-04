@@ -1,7 +1,7 @@
 <template>
   <input
     v-model="val.item.name"
-    @change="changeItemName(val, index)"
+    @change="changeItemName(val.item.id, val.item.name, index)"
     type="text"
     class="form-control col-6"
     placeholder="品目名"
@@ -10,7 +10,7 @@
   />
   <input
     v-model="val.item.price"
-    @change="changeItemPrice(val, index)"
+    @change="changeItemPrice(val.item.id, val.item.price, index)"
     type="number"
     class="form-control col-4"
     placeholder="価格"
@@ -53,8 +53,8 @@ export default {
     let deleteItem = (id, index) => {
       emit("deleteItem", id, index);
     };
-    let changeItemName = (val, index) => {
-      emit("changeItemName", val, index);
+    let changeItemName = (name, index) => {
+      emit("changeItemName", name, index);
     };
     let changeItemPrice = (val, index) => {
       emit("changeItemPrice", val, index);

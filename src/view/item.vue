@@ -12,6 +12,7 @@
       class="form-control"
       aria-describedby="basic-addon1"
       v-model="itemName"
+      style="font-size:14px transform: scale(0.8);"
     />
   </div>
 
@@ -27,6 +28,7 @@
       class="form-control"
       aria-describedby="basic-addon1"
       v-model="itemPrice"
+      style="font-size:14px transform: scale(0.8);"
     />
   </div>
 
@@ -42,6 +44,7 @@
         v-for="(category, index) in categorys"
         :key="category"
         :value="index"
+        style="font-size:14px transform: scale(0.8);"
       >
         {{ category.name }}
       </option>
@@ -93,7 +96,7 @@
     </div>
   </div>
 
-  <div v-for="(val, index) in itemList" :key="val" :index="index">
+  <div v-for="(val, index) in BuyInfoList" :key="val" :index="index">
     <div v-if="val">
       <div class="input-group mb-3" v-if="activeCategory == val.categoryId">
         <itemContainer
@@ -123,7 +126,7 @@ import navComponent from "./component/nav.vue";
 import categoryContainer from "./container/category-list.container.vue";
 import itemContainer from "./container/item.container.vue";
 
-import { ItemList, SingleItemList } from "../model/item-list.model";
+import { BuyInfoList, BuyInfo } from "../model/buy-info.model";
 
 export default defineComponent({
   components: {
@@ -136,25 +139,24 @@ export default defineComponent({
     let itemName = ref<string | null>();
     let itemPrice = ref<number | null>();
     let categoryId = ref<string | null>();
-    let itemList = ref<ItemList>();
+    let BuyInfoList = ref<BuyInfoList>();
     let categorys = ref<Array<string> | null>();
     let activeCategory = ref();
     let uid: string;
 
     onMounted(() => {
       uid = store.getters.getUid;
-      itemList.value = store.getters.getItems; //computed
+      BuyInfoList.value = store.getters.getItems; //computed
       categorys.value = store.getters.getCategorys;
     });
 
     let itemListDisplay = computed((): any => {
-      if (itemList.value) {
-        let result: ItemList = itemList.value.sort(
-          (a: SingleItemList, b: SingleItemList) =>
-            Number(a.item.id) - Number(b.item.id)
+      if (BuyInfoList.value) {
+        let result: BuyInfoList = BuyInfoList.value.sort(
+          (a: BuyInfo, b: BuyInfo) => Number(a.item.id) - Number(b.item.id)
         );
         store.commit("sortItemList", { list: result, uid: uid });
-        itemList.value = store.getters.getItems; //computed
+        BuyInfoList.value = store.getters.getItems; //computed
         return result;
       }
     });
@@ -214,17 +216,19 @@ export default defineComponent({
       categoryId.value = null;
     };
 
-    let changeItemName = (val: SingleItemList, index: number) => {
+    let changeItemName = (itemId: string, name: string, index: number) => {
       store.commit("changeItemName", {
-        val,
+        itemId,
+        name,
         uid,
         index,
       });
     };
 
-    let changeItemPrice = (val: SingleItemList, index: number) => {
+    let changeItemPrice = (itemId: string, price: number, index: number) => {
       store.commit("changeItemPrice", {
-        val,
+        itemId,
+        price,
         uid,
         index,
       });
@@ -236,7 +240,7 @@ export default defineComponent({
 
     let deleteItem = (id: string, index: number) => {
       store.commit("deleteItem", {
-        userId: "userID",
+        userId: uid,
         itemId: id,
         index: index,
       });
@@ -244,7 +248,7 @@ export default defineComponent({
     };
 
     return {
-      itemList,
+      BuyInfoList,
       itemName,
       itemPrice,
       categorys,

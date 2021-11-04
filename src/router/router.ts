@@ -4,7 +4,7 @@ import top from "../view/top.vue";
 import category from "../view/category.vue";
 import item from "../view/item.vue";
 import buyList from "../view/buy-list.vue";
-import buyRequest from "../view/buy-request.vue";
+import buyAct from "../view/buy-act.vue";
 import signUp from "../view/signUp.vue";
 import test from "../view/test.vue";
 
@@ -69,9 +69,9 @@ const routes: Array<RouteRecordRaw> = [
     meta: { requiresAuth: true },
   },
   {
-    path: "/buyRequest",
-    name: "buyRequest",
-    component: buyRequest,
+    path: "/buyAct",
+    name: "buyAct",
+    component: buyAct,
     meta: { requiresAuth: true },
   },
   {
@@ -91,13 +91,13 @@ const router = createRouter({
 router.beforeEach((to, from, next) => {
   if (!auth) auth = getAuth();
   const requiresAuth = to.matched.some((record) => record.meta.requiresAuth);
-  const itemList = store.getters.getItems;
+  const BuyInfoList = store.getters.getItems;
   const categorys: Array<Category> = store.getters.getCategorys;
   //auth→getauthに変える
   if (requiresAuth) {
     onAuthStateChanged(auth, async (user) => {
       //【課題】リポジトリにもっていく？
-      if (user && itemList && categorys.length == 9) {
+      if (user && BuyInfoList && categorys.length == 9) {
         next();
       } else if (user) {
         await load(user.uid);

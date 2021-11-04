@@ -1,17 +1,17 @@
 //value object
 
-export interface BuyStatus {
-  readonly _tag: "BuyStatus";
+export interface BuyResult {
+  readonly _tag: "BuyResult";
   type: boolean; //trueなら買った、falseなら買わなかった
   day: string;
 }
 
 export function createBuyStatus(
-  status: BuyStatus["type"],
+  status: BuyResult["type"],
   day: string
-): BuyStatus {
+): BuyResult {
   return {
-    _tag: "BuyStatus",
+    _tag: "BuyResult",
     type: status,
     day,
   };

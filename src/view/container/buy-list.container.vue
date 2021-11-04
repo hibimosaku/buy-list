@@ -10,10 +10,10 @@
     <button
       type="button"
       v-bind:class="{
-        'btn btn-primary btn-sm': val.itemStatus == false,
-        'btn btn-light btn-sm': val.itemStatus != false,
+        'btn btn-primary btn-sm': val.buyRequest == false,
+        'btn btn-light btn-sm': val.buyRequest != false,
       }"
-      @click="changeItemStatus(false, val, index)"
+      @click="changeBuyRequest(false, val.item.id)"
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -38,10 +38,10 @@
     <button
       type="button"
       v-bind:class="{
-        'btn btn-primary btn-sm': val.itemStatus == true,
-        'btn btn-light btn-sm': val.itemStatus != true,
+        'btn btn-primary btn-sm': val.buyRequest == true,
+        'btn btn-light btn-sm': val.buyRequest != true,
       }"
-      @click="changeItemStatus(true, val, index)"
+      @click="changeBuyRequest(true, val.item.id)"
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -64,7 +64,7 @@
       type="number"
       @change="changeItemNum(val.itemNum, val, index)"
       v-model="val.itemNum"
-      :disabled="val.itemStatus == false ? true : false"
+      :disabled="val.buyRequest == false ? true : false"
     >
       <option style="font-size: 5px" v-for="itemNum in 9" :key="itemNum">
         {{ itemNum }}
@@ -74,30 +74,22 @@
 </template>
 
 <script lang="ts">
-import { SingleItemList } from "../../model/item-list.model";
+import { BuyInfo } from "../../model/buy-info.model";
 
 export default {
   props: {
     val: {},
     index: Number,
   },
-  emits: ["changeItemStatus", "changeItemNum"],
+  emits: ["changeBuyRequest", "changeItemNum"],
   setup(_props: any, { emit }: any) {
-    let changeItemStatus = (
-      status: boolean,
-      val: SingleItemList,
-      index: number
-    ) => {
-      emit("changeItemStatus", status, val, index);
+    let changeBuyRequest = (status: boolean, itemId: string) => {
+      emit("changeBuyRequest", status, itemId);
     };
-    let changeItemNum = (
-      itemNum: number,
-      val: SingleItemList,
-      index: number
-    ) => {
+    let changeItemNum = (itemNum: number, val: BuyInfo, index: number) => {
       emit("changeItemNum", itemNum, val, index);
     };
-    return { changeItemStatus, changeItemNum };
+    return { changeBuyRequest, changeItemNum };
   },
 };
 </script>

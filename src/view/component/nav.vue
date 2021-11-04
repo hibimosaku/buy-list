@@ -48,7 +48,7 @@
       <router-link to="/buyList" class="nav-link">一覧</router-link>
     </li>
     <li class="nav-item">
-      <router-link to="/buyRequest" class="nav-link">買物</router-link>
+      <router-link to="/buyAct" class="nav-link">買物</router-link>
     </li>
   </ul>
 </template>
