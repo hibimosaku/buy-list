@@ -1,43 +1,15 @@
 <template>
   <navComponent></navComponent>
   <div class="row g-3 small">
-    <div class="col-9">
-      <div class="form-check form-check-inline">
-        <input
-          class="form-check-input"
-          type="radio"
-          name="flexRadioDefault"
-          id="flexRadioDefault1"
-          @click="filterStatus = 'all'"
-          checked
-        />
-        <label class="form-check-label" for="flexRadioDefault1"> すべて </label>
-      </div>
-      <div class="form-check form-check-inline">
-        <input
-          class="form-check-input"
-          type="radio"
-          name="flexRadioDefault"
-          id="flexRadioDefault2"
-          @click="filterStatus = 'buy'"
-        />
-        <label class="form-check-label" for="flexRadioDefault2">
-          買うのみ
-        </label>
-      </div>
-      <div class="form-check form-check-inline">
-        <input
-          class="form-check-input"
-          type="radio"
-          name="flexRadioDefault"
-          id="flexRadioDefault2"
-          @click="filterStatus = 'no'"
-        />
-        <label class="form-check-label" for="flexRadioDefault2">
-          ないのみ
-        </label>
-      </div>
-    </div>
+    <filterBuyInfoListContainer
+      :filterType="filterType"
+      @changefilName="changefilName"
+    >
+      <template #all>すべて</template>
+      <template #no>買うのみ</template>
+      <template #want>ないのみ</template>
+    </filterBuyInfoListContainer>
+
     <div class="dropdown col-3">
       <button
         class="btn btn-info btn-sm dropdown-toggle col-md-6"
@@ -50,12 +22,16 @@
       </button>
       <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
         <li>
-          <a class="dropdown-item small" @click="resetBuyStatus(activeCategory)"
+          <a
+            class="dropdown-item small"
+            @click="resetBuyStatusUi(activeCategory)"
             >すべて</a
           >
         </li>
         <li>
-          <a class="dropdown-item small" @click="resetBuyStatus(activeCategory)"
+          <a
+            class="dropdown-item small"
+            @click="resetBuyStatusUi(activeCategory)"
             >選択の分類のみ</a
           >
         </li>
@@ -77,7 +53,7 @@
         <buyActContainer
           :val="val"
           :index="index"
-          @changeBuyResult="changeBuyResult"
+          @changeBuyResultUi="changeBuyResultUi"
         ></buyActContainer>
       </tr>
     </tbody>
@@ -87,12 +63,12 @@
         <buyActContainer
           :val="val"
           :index="index"
-          @changeBuyResult="changeBuyResult"
+          @changeBuyResultUi="changeBuyResultUi"
         ></buyActContainer>
       </tr>
     </tbody>
   </table>
-  <button class="btn btn-success btn-block" type="button" @click="buyFin">
+  <button class="btn btn-success btn-block" type="button" @click="buyFinUi">
     購入完了
   </button>
 
@@ -110,40 +86,48 @@ import { computed, defineComponent, onMounted, ref } from "vue";
 import navComponent from "./component/nav.vue";
 import categoryContainer from "./container/category-list.container.vue";
 import buyActContainer from "./container/buy-act.container.vue";
+import filterBuyInfoListContainer from "./container/filter-buyInfoList.container.vue";
 
 import { store } from "../store/store";
-import { BuyInfoList, BuyInfo } from "../model/buy-info.model";
+import { BuyInfo, BuyInfoList } from "../model/buy-info.model";
 
 export default defineComponent({
   components: {
     navComponent,
     categoryContainer,
     buyActContainer,
+    filterBuyInfoListContainer,
   },
   setup() {
-    let buyListRq = ref<BuyInfoList>();
-
+    let buyInfoList = ref<BuyInfoList>();
     let categorys = ref<Array<string> | null>();
     let uid: string;
     let activeCategory = ref();
     let filterStatus = ref<string>("all" || "buy" || "no");
-    filterStatus.value = "all";
 
+    let filterType = ref<Array<string>>();
+    filterType.value = ["all", "buy", "no"];
+
+    let changefilName = (name: string) => {
+      filterStatus.value = name;
+    };
+
+    filterStatus.value = "all";
     activeCategory.value = "all";
 
     onMounted(async () => {
       uid = await store.getters.getUid;
       categorys.value = await store.getters.getCategorys;
-      buyListRq.value = store.getters.getBuyStatusItems;
+      buyInfoList.value = store.getters.getBuyStatusItems;
     });
 
     const filterbuyListRq = computed((): BuyInfoList | null => {
       let result: BuyInfoList;
-      if (buyListRq.value) {
-        result = buyListRq.value.filter((v: any) => {
+      if (buyInfoList.value) {
+        result = buyInfoList.value.filter((v: BuyInfo) => {
           if (filterStatus.value == "all") return v != null;
-          if (filterStatus.value == "no") return v.BuyResult == false;
-          if (filterStatus.value == "buy") return v.BuyResult == true;
+          if (filterStatus.value == "no") return v.buyResult == false;
+          if (filterStatus.value == "buy") return v.buyResult == true;
           return null;
         });
         return result;
@@ -152,14 +136,15 @@ export default defineComponent({
       }
     });
 
-    let changeBuyResult = (status: boolean, index: number, val: BuyInfo) => {
-      if (buyListRq.value) {
-        buyListRq.value[index].buyResult = status;
-        store.commit("changeBuyResult", {
-          status,
-          val,
+    let changeBuyResultUi = (buyResult: boolean, buyInfoId: string) => {
+      if (buyInfoList.value) {
+        // buyInfoList.value[index].buyResult = buyResult;
+        store.commit("changeBuyResultStore", {
+          buyResult,
+          buyInfoId,
           uid,
         });
+        buyInfoList.value = store.getters.getBuyStatusItems;
       }
     };
 
@@ -167,31 +152,33 @@ export default defineComponent({
       activeCategory.value = id;
     };
 
-    let buyFin = () => {
-      store.commit("buyFin", {
-        val: buyListRq.value,
-        userId: uid,
+    let buyFinUi = () => {
+      store.commit("buyFinStore", {
+        buyInfoList: buyInfoList.value,
+        uid: uid,
       });
-      buyListRq.value = store.getters.getBuyStatusItems;
+      buyInfoList.value = store.getters.getBuyStatusItems;
     };
 
-    let resetBuyStatus = (categoryId: string) => {
-      store.commit("resetBuyStatus", {
+    let resetBuyStatusUi = (categoryId: string) => {
+      store.commit("resetBuyStatusStore", {
         id: categoryId,
       });
-      buyListRq.value = store.getters.getBuyStatusItems;
+      buyInfoList.value = store.getters.getBuyStatusItems;
     };
 
     return {
-      buyListRq,
+      buyInfoList,
       categorys,
-      buyFin,
+      buyFinUi,
       activeCategory,
       onActiveCategory,
-      changeBuyResult,
+      changeBuyResultUi,
       filterStatus,
       filterbuyListRq,
-      resetBuyStatus,
+      resetBuyStatusUi,
+      changefilName,
+      filterType,
     };
   },
 });

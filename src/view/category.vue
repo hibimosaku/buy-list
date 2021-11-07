@@ -10,7 +10,7 @@
     <input
       class="form-control"
       v-model="categorys[index].name"
-      @change="changeCategory(index, categorys[index].name)"
+      @change="changeCategoryUi(index, categorys[index].name)"
     />
   </div>
 </template>
@@ -36,17 +36,17 @@ export default defineComponent({
       categorys.value = store.getters.getCategorys;
     });
 
-    let changeCategory = (index: number, name: string) => {
-      store.commit("changeCategory", {
+    let changeCategoryUi = (index: number, name: string) => {
+      store.commit("changeCategoryStore", {
         name,
         id: index,
-        userId: String(uid),
+        uid: String(uid),
       });
     };
 
     return {
       categorys,
-      changeCategory,
+      changeCategoryUi,
     };
   },
 });

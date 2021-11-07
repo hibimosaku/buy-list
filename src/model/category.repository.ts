@@ -7,19 +7,24 @@ import {
 } from "firebase/firestore";
 import { Category } from "./category.model";
 
-// let categoryRepository: Array<Category> = [];
+//【課題】エラー対応の仕方？最終的にはエラーをUIで表示がよいですよね？
+//いろんなファイルを利用、非同期もあり、やり方不明
 
-function newSaveCategory(category: Category, userId: string) {
-  setDoc(
-    doc(getFirestore(), "users/", userId, "categorys", String(category.id)),
-    {
-      name: category.name,
-    }
-  );
+function updateCategory(category: Category, uid: string) {
+  setDoc(doc(getFirestore(), "users/", uid, "categorys", String(category.id)), {
+    name: category.name,
+  });
+  // setDoc(doc(getFirestore(), "users/", uid, "categorys", String(category.id)), {
+  //   name: category.name,
+  // }).then((v)=>{
+  //   return state error
+  // }).catch((error)=>{
+  //   throw new Error('error')
+  // })
 }
-async function getCategory(userId: string): Promise<any> {
+async function getCategory(uid: string): Promise<any> {
   const querySnapshot = await getDocs(
-    collection(getFirestore(), "users", userId, "categorys")
+    collection(getFirestore(), "users", uid, "categorys")
   );
   let categoryRepository: Array<Category> = [];
   querySnapshot.forEach((doc) => {
@@ -33,8 +38,6 @@ async function getCategory(userId: string): Promise<any> {
 }
 
 export const CategoryRepository = {
-  newSaveCategory,
-  // findCategory,
+  updateCategory,
   getCategory,
-  // categoryRepository,
 };

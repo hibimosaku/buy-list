@@ -7,30 +7,26 @@ import {
   setDoc,
   deleteDoc,
 } from "firebase/firestore";
-import { Category } from "./category.model";
 import { BuyInfoList, BuyInfo } from "./buy-info.model";
-import { BuyRequest } from "./buy-request.value";
-import { Item } from "./item.model";
 
-function createBuyInfo(
-  category_id: Category["id"],
-  item: Item,
-  userId: string
-) {
-  setDoc(doc(getFirestore(), "users/", userId, "items", String(item.id)), {
-    category_id: String(category_id),
-    name: item.name,
-    price: item.price,
-    itemNum: 1,
-    buyRequest: null,
-    buyResult: null,
-    buyDay: null,
-  });
+function createBuyInfoRep(buyInfo: BuyInfo, uid: string) {
+  setDoc(
+    doc(getFirestore(), "users/", uid, "items", String(buyInfo.buyInfoId)),
+    {
+      category_id: String(buyInfo.categoryId),
+      name: buyInfo.item.name,
+      price: buyInfo.item.price,
+      itemNum: buyInfo.itemNum,
+      buyRequest: buyInfo.buyRequest,
+      buyResult: buyInfo.buyResult,
+      buyDay: buyInfo.buyDay,
+    }
+  );
 }
 
-async function updateItemList(data: BuyInfoList, userId: string) {
+function updateItemListRep(data: BuyInfoList, uid: string) {
   data.forEach((val: BuyInfo) => {
-    setDoc(doc(getFirestore(), "users/", userId, "items", val.item.id), {
+    setDoc(doc(getFirestore(), "users/", uid, "items", String(val.buyInfoId)), {
       category_id: String(val.categoryId),
       name: val.item.name,
       price: val.item.price,
@@ -41,51 +37,53 @@ async function updateItemList(data: BuyInfoList, userId: string) {
     });
   });
 }
-function updateItemName(item: Item, userId: string) {
-  updateDoc(doc(getFirestore(), "users/", userId, "items", item.id), {
-    name: item.name,
+function updateItemNameRep(buyInfo: BuyInfo, uid: string) {
+  updateDoc(doc(getFirestore(), "users/", uid, "items", buyInfo.buyInfoId), {
+    name: buyInfo.item.name,
   });
 }
 
-function updateItemPrice(item: Item, userId: string) {
-  updateDoc(doc(getFirestore(), "users/", userId, "items", item.id), {
-    price: item.price,
+function updateItemPriceRep(buyInfo: BuyInfo, uid: string) {
+  updateDoc(doc(getFirestore(), "users/", uid, "items", buyInfo.buyInfoId), {
+    price: buyInfo.item.price,
   });
 }
 
-function updateItemNum(itemNum: number, list: BuyInfo, uid: string) {
-  updateDoc(doc(getFirestore(), "users/", uid, "items", list.item.id), {
-    itemNum,
+function updateItemNumRep(buyInfo: BuyInfo, uid: string) {
+  updateDoc(doc(getFirestore(), "users/", uid, "items", buyInfo.buyInfoId), {
+    itemNum: buyInfo.itemNum,
   });
 }
 
 //品目ステータスの変更
-function updatebuyRequest(itemId: string, status: BuyRequest, userId: string) {
-  updateDoc(doc(getFirestore(), "users/", userId, "items", itemId), {
-    buyRequest: status.type,
+function updatebuyRequestRep(buyInfo: BuyInfo, uid: string) {
+  updateDoc(doc(getFirestore(), "users/", uid, "items", buyInfo.buyInfoId), {
+    buyRequest: buyInfo.buyRequest,
   });
 }
 //買い物ステータスの変更
-function updateBuyStatus(status: boolean, data: BuyInfo, userId: string) {
-  updateDoc(doc(getFirestore(), "users/", userId, "items", data.item.id), {
-    buyResult: status,
+function updateBuyResultRep(buyInfo: BuyInfo, uid: string) {
+  console.log(buyInfo);
+  updateDoc(doc(getFirestore(), "users/", uid, "items", buyInfo.buyInfoId), {
+    buyResult: buyInfo.buyResult,
   });
 }
 
-async function fetchItemList(userId: string) {
+async function fetchItemListRep(uid: string) {
   const querySnapshot = await getDocs(
-    collection(getFirestore(), "users", userId, "items")
+    collection(getFirestore(), "users", uid, "items")
   );
   let itemRepository: BuyInfoList = [];
   querySnapshot.forEach((doc) => {
     itemRepository.push({
       _tag: "BuyInfo",
+      buyInfoId: doc.id,
       item: {
         _tag: "Item",
-        id: doc.id,
         name: doc.data().name,
         price: doc.data().price,
       },
+
       itemNum: doc.data().itemNum,
       categoryId: doc.data().category_id,
       buyRequest: doc.data().buyRequest,
@@ -96,18 +94,18 @@ async function fetchItemList(userId: string) {
   return itemRepository;
 }
 
-function deleteItem(userId: string, itemId: string) {
-  deleteDoc(doc(getFirestore(), "users", userId, "items", String(itemId)));
+function deleteItemRep(uid: string, buyInfoId: string) {
+  deleteDoc(doc(getFirestore(), "users", uid, "items", String(buyInfoId)));
 }
 
 export const BuyInfoRepository = {
-  createBuyInfo,
-  updateItemList,
-  fetchItemList,
-  deleteItem,
-  updatebuyRequest,
-  updateItemName,
-  updateItemPrice,
-  updateBuyStatus,
-  updateItemNum,
+  createBuyInfoRep,
+  updateItemListRep,
+  fetchItemListRep,
+  deleteItemRep,
+  updatebuyRequestRep,
+  updateItemNameRep,
+  updateItemPriceRep,
+  updateBuyResultRep,
+  updateItemNumRep,
 };

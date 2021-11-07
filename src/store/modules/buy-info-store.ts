@@ -3,7 +3,7 @@ import { Commit, Store } from "vuex";
 
 import { BuyInfoUseCase } from "../../model/buy-info.use-case";
 import { BuyInfoList, BuyInfo } from "../../model/buy-info.model";
-import { ItemListUc } from "../../model/item.use-case";
+import { itemUc } from "../../model/item.use-case";
 
 interface State {
   BuyInfoList: BuyInfoList;
@@ -17,107 +17,106 @@ const state = {
 
 const mutations = {
   //品目
-  registerItem(
+  createItemStore(
     state: State,
-    data: { categoryId: string; name: string; price: number; userId: string }
+    data: { categoryId: string; name: string; price: number; uid: string }
   ) {
-    let result = ItemListUc.createItemUc(
+    const result = itemUc.createItemUc(
       data.categoryId,
       data.name,
       data.price,
-      data.userId
+      data.uid
     );
     if (state.BuyInfoList) {
-      state.BuyInfoList[state.BuyInfoList.length] = {
-        _tag: "BuyInfo",
-        item: result,
-        itemNum: 1, //デフォルト値
-        categoryId: data.categoryId,
-        buyRequest: null,
-        buyResult: null,
-        buyDay: null,
-      };
+      state.BuyInfoList[state.BuyInfoList.length] = result;
     }
   },
-  changeItemName(
+  changeItemNameStore(
     state: State,
     data: {
-      itemId: string;
+      buyInfoId: string;
       name: string;
       uid: string;
-      index: number;
+      // index: number;
     }
   ): void {
     state.BuyInfoList.forEach((v) => {
-      if (v.item.id == data.itemId) {
+      if (v.buyInfoId == data.buyInfoId) {
         v.item.name = data.name;
-        ItemListUc.updateItemNameUc(v.item, data.name, data.uid);
+        itemUc.changeItemNameUc(v, data.name, data.uid);
       }
     });
   },
 
-  changeItemPrice(
+  changeItemPriceStore(
     state: State,
     data: {
-      itemId: string;
+      buyInfoId: string;
       price: number;
       uid: string;
       index: number;
     }
   ): void {
     state.BuyInfoList.forEach((v) => {
-      if (v.item.id == data.itemId) {
+      if (v.buyInfoId == data.buyInfoId) {
         v.item.price = data.price;
-        ItemListUc.updateItemPriceUc(v.item, data.price, data.uid);
+        itemUc.changeItemPriceUc(v, data.price, data.uid);
       }
     });
   },
 
-  changeItemNum(
+  changeItemNumStore(
     state: State,
-    data: { itemNum: number; val: BuyInfo; index: number; uid: string }
+    data: { itemNum: number; buyInfoId: string; uid: string }
   ) {
     state.BuyInfoList.forEach((v) => {
-      if (v.item.id == data.val.item.id) {
+      if (v.buyInfoId == data.buyInfoId) {
         v.itemNum = data.itemNum;
+        BuyInfoUseCase.changeItemNumUc(data.itemNum, v, data.uid);
+      } else {
+        //【課題】何もしない処理なので、なにもいれなくてよいですよね？エラー処理ではないため、いれなくてよい？
       }
     });
-
-    BuyInfoUseCase.changeItemNumUc(data.itemNum, data.val, data.uid);
   },
 
   sortItemList(state: State, data: { list: BuyInfoList; uid: string }) {
     state.BuyInfoList = data.list;
-    ItemListUc.updateItemList(data.list, data.uid);
+    itemUc.updateItemList(data.list, data.uid);
   },
 
-  deleteItem(
+  deleteItemStore(
     state: State,
-    data: { userId: string; itemId: string; index: number }
+    data: { uid: string; buyInfoId: string }
   ): void {
-    ItemListUc.deleteItemUc(data.userId, data.itemId);
-    delete state.BuyInfoList[data.index];
+    itemUc.deleteItemUc(data.uid, data.buyInfoId);
+    state.BuyInfoList.forEach((v, key) => {
+      if (v.buyInfoId == data.buyInfoId) {
+        console.log(state.BuyInfoList[key]);
+        delete state.BuyInfoList[key];
+      }
+    });
   },
   setItems(state: State, items: BuyInfoList) {
     state.BuyInfoList = items;
   },
 
   //買物要求の変更
-  changeBuyRequest(
+  changeBuyRequestStore(
     state: State,
     data: {
-      itemId: string;
-      status: boolean;
+      buyInfoId: string;
+      request: boolean;
       uid: string;
     }
   ) {
     state.BuyInfoList.forEach((v) => {
-      //【課題】121行目とどちらがよいか？
-      if (v.item.id == data.itemId) {
-        v.buyRequest = data.status;
-        BuyInfoUseCase.changeBuyRequestUc(data.itemId, data.status, data.uid);
+      if (v.buyInfoId == data.buyInfoId) {
+        v.buyRequest = data.request;
+        BuyInfoUseCase.changeBuyRequestUc(v, data.request, data.uid);
       }
     });
+    //【課題】上と下どちらがよいか？私は上派。上のほうがループしている分無駄？下のindexは信じてよい？
+    //処理速度。正規化パターン
     // state.BuyInfoList[data.index] = {
     //   _tag: "BuyInfo",
     //   item: state.BuyInfoList[data.index].item,
@@ -127,25 +126,35 @@ const mutations = {
     //   buyResult: state.BuyInfoList[data.index].buyResult,
     //   buyDay: state.BuyInfoList[data.index].buyDay,
     // };
+
+    // {
+    //   values: {
+    //     'AshuUUGDJBu2': <Entity>,
+    //     'AshuUUGDJBu3': <Entity>,
+    //     'AshuUUGDJBu4': <Entity>,
+    //     'AshuUUGDJBu5': <Entity>,
+    //   },
+    //   entries: [ 'AshuUUGDJBu4', 'AshuUUGDJBu3', 'AshuUUGDJBu2', 'AshuUUGDJBu5' ],
+    // };
   },
   //買い物結果
-  changeBuyResult(
+  changeBuyResultStore(
     state: State,
-    data: { status: boolean; index: string; val: BuyInfo; uid: string }
+    data: { buyResult: boolean; buyInfoId: string; uid: string }
   ) {
     state.BuyInfoList.forEach((v) => {
-      if (v.item.id === data.val.item.id) {
-        v.buyResult = data.status;
-        BuyInfoUseCase.changeBuyStatusUc(data.status, data.val, data.uid);
+      if (v.buyInfoId === data.buyInfoId) {
+        BuyInfoUseCase.changeBuyResultUc(data.buyResult, v, data.uid);
+        v.buyResult = data.buyResult;
       }
     });
   },
   //状態のnull化
-  resetBuyStatus(state: State, data: { id: string }) {
+  resetBuyStatusStore(state: State, data: { id: string }) {
     state.BuyInfoList.forEach((v1) => {
       if (data.id == "all") {
         if (v1.buyRequest == true) {
-          v1.buyResult = null;
+          v1.buyResult = null; //値のためOK
         }
       } else {
         if (data.id == v1.categoryId && v1.buyRequest == true) {
@@ -155,32 +164,28 @@ const mutations = {
     });
   },
 
-  buyFin(stete: State, data: { val: BuyInfoList; userId: string }) {
-    let result: BuyInfoList = [];
-    data.val.forEach((val: BuyInfo) => {
-      state.BuyInfoList.forEach((v: BuyInfo) => {
-        if (val.buyResult == true && val.item.id === v.item.id) {
-          v = BuyInfo.changeBuyStatusTrue(val);
-          result.push(v);
-        }
-      });
+  buyFinStore(state: State, data: { buyInfoList: BuyInfoList; uid: string }) {
+    state.BuyInfoList.forEach((v: BuyInfo, key) => {
+      if (v.buyResult == true) {
+        state.BuyInfoList[key] = BuyInfo.changeBuyFin(v); //【課題】上とは違うのがいや→参照「key」成功する。配列、オブジェクト
+      }
     });
-    BuyInfoUseCase.finBuyStatusUc(result, data.userId);
+    BuyInfoUseCase.finBuyStatusUc(state.BuyInfoList, data.uid); //【課題】modelのメソッド使っているが。。
   },
 };
 
 const actions = {
-  loadItems(context: { commit: Commit }, userId: string) {
-    return ItemListUc.loadItemListUc(userId).then((val) => {
+  loadItems(context: { commit: Commit }, uid: string) {
+    return itemUc.loadItemListUc(uid).then((val) => {
       context.commit("setItems", val);
     });
   },
 };
 const getters = {
-  getItems: (state: State, userId: string) => {
+  getItems: (state: State, uid: string) => {
     return state.BuyInfoList;
   },
-  getBuyStatusItems: (state: State, userId: string) => {
+  getBuyStatusItems: (state: State, uid: string) => {
     let result = state.BuyInfoList.filter((val: BuyInfo) => {
       return val.buyRequest == true;
     });

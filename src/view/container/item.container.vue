@@ -1,7 +1,7 @@
 <template>
   <input
     v-model="val.item.name"
-    @change="changeItemName(val.item.id, val.item.name, index)"
+    @change="changeItemNameUi(val.buyInfoId, val.item.name)"
     type="text"
     class="form-control col-6"
     placeholder="品目名"
@@ -10,7 +10,7 @@
   />
   <input
     v-model="val.item.price"
-    @change="changeItemPrice(val.item.id, val.item.price, index)"
+    @change="changeItemPriceUi(val.buyInfoId, val.item.price)"
     type="number"
     class="form-control col-4"
     placeholder="価格"
@@ -18,7 +18,7 @@
     aria-describedby="button-addon2"
   />
   <button
-    @click="deleteItem(val.item.id, index)"
+    @click="deleteItemUi(val.buyInfoId)"
     class="btn btn-outline-secondary col-2"
     type="button"
     id="button-addon2"
@@ -48,19 +48,19 @@ export default {
     val: {},
     index: Number,
   },
-  emits: ["deleteItem", "changeItemName", "changeItemPrice"],
+  emits: ["deleteItemUi", "changeItemNameUi", "changeItemPriceUi"],
   setup(_props, { emit }) {
-    let deleteItem = (id, index) => {
-      emit("deleteItem", id, index);
+    let deleteItemUi = (id) => {
+      emit("deleteItemUi", id);
     };
-    let changeItemName = (name, index) => {
-      emit("changeItemName", name, index);
+    let changeItemNameUi = (id, name) => {
+      emit("changeItemNameUi", id, name);
     };
-    let changeItemPrice = (val, index) => {
-      emit("changeItemPrice", val, index);
+    let changeItemPriceUi = (id, price) => {
+      emit("changeItemPriceUi", id, price);
     };
 
-    return { deleteItem, changeItemName, changeItemPrice };
+    return { deleteItemUi, changeItemNameUi, changeItemPriceUi };
   },
 };
 </script>

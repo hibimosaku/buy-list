@@ -63,7 +63,7 @@ export default {
     let signOut = async () => {
       const auth = await getAuth();
       const user = await auth.currentUser;
-      //【課題】ログアウトしてもuid消えない
+      //【課題→解決】ログアウトしてもuid消えない
       if (user) console.log("before", user.uid);
 
       await AuthUseCase.signOUtUc;

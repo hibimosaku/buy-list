@@ -13,7 +13,7 @@
         'btn btn-primary btn-sm': val.buyRequest == false,
         'btn btn-light btn-sm': val.buyRequest != false,
       }"
-      @click="changeBuyRequest(false, val.item.id)"
+      @click="changeBuyRequestUi(false, val.buyInfoId)"
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -41,7 +41,7 @@
         'btn btn-primary btn-sm': val.buyRequest == true,
         'btn btn-light btn-sm': val.buyRequest != true,
       }"
-      @click="changeBuyRequest(true, val.item.id)"
+      @click="changeBuyRequestUi(true, val.buyInfoId)"
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -62,9 +62,11 @@
       class="form-control form-control-sm"
       style="appearance: none; font-size:6px width:30px"
       type="number"
-      @change="changeItemNum(val.itemNum, val, index)"
+      @change="changeItemNumUi(val.itemNum, val, index)"
       v-model="val.itemNum"
-      :disabled="val.buyRequest == false ? true : false"
+      :disabled="
+        val.buyRequest == false || val.buyRequest == null ? true : false
+      "
     >
       <option style="font-size: 5px" v-for="itemNum in 9" :key="itemNum">
         {{ itemNum }}
@@ -74,22 +76,20 @@
 </template>
 
 <script lang="ts">
-import { BuyInfo } from "../../model/buy-info.model";
-
 export default {
   props: {
     val: {},
     index: Number,
   },
-  emits: ["changeBuyRequest", "changeItemNum"],
+  emits: ["changeBuyRequestUi", "changeItemNumUi"],
   setup(_props: any, { emit }: any) {
-    let changeBuyRequest = (status: boolean, itemId: string) => {
-      emit("changeBuyRequest", status, itemId);
+    let changeBuyRequestUi = (request: boolean, buyInfoId: string) => {
+      emit("changeBuyRequestUi", request, buyInfoId);
     };
-    let changeItemNum = (itemNum: number, val: BuyInfo, index: number) => {
-      emit("changeItemNum", itemNum, val, index);
+    let changeItemNumUi = (itemNum: number, buyInfoId: string) => {
+      emit("changeItemNumUi", itemNum, buyInfoId);
     };
-    return { changeBuyRequest, changeItemNum };
+    return { changeBuyRequestUi, changeItemNumUi };
   },
 };
 </script>

@@ -6,10 +6,10 @@
     <button
       type="button"
       v-bind:class="{
-        'btn btn-primary': val.BuyResult == true,
-        'btn btn-light': val.BuyResult != true,
+        'btn btn-primary': val.buyResult == true,
+        'btn btn-light': val.buyResult != true,
       }"
-      @click="changeBuyResult(true, index, val)"
+      @click="changeBuyResultUi(true, val.buyInfoId)"
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -33,10 +33,10 @@
     <button
       type="button"
       v-bind:class="{
-        'btn btn-primary': val.BuyResult == false,
-        'btn btn-light': val.BuyResult != false,
+        'btn btn-primary': val.buyResult == false,
+        'btn btn-light': val.buyResult != false,
       }"
-      @click="changeBuyResult(false, index, val)"
+      @click="changeBuyResultUi(false, val.buyInfoId)"
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -59,13 +59,13 @@ export default {
     val: {},
     index: Number,
   },
-  emits: ["changeBuyResult"],
+  emits: ["changeBuyResultUi"],
   setup(_props, { emit }) {
-    let changeBuyResult = (status, index, val) => {
-      emit("changeBuyResult", status, index, val);
+    let changeBuyResultUi = (buyResult, buyInfoId) => {
+      emit("changeBuyResultUi", buyResult, buyInfoId);
     };
 
-    return { changeBuyResult };
+    return { changeBuyResultUi };
   },
 };
 </script>

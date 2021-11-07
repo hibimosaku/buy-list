@@ -2,12 +2,12 @@
 
 export interface BuyRequest {
   readonly _tag: "BuyRequest";
-  type: boolean; //ない：false、ほしい:true
+  type: boolean; //ない：false、ほしい:true 在庫はないと認識
 }
 
-export function createBuyRequest(status: boolean): BuyRequest {
+export function createBuyRequest(request: boolean): BuyRequest {
   return {
     _tag: "BuyRequest",
-    type: status,
+    type: request,
   };
 }

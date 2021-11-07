@@ -1,45 +1,63 @@
 //集約 DBと一致×。order,注文、操作、dataベース都合でつけない。
 
-import { BuyResult } from "./buy-result.value";
+import { BuyResult, createBuyResult } from "./buy-result.value";
 import { Category } from "./category.model";
-import { BuyRequest } from "./buy-request.value";
+import { BuyRequest, createBuyRequest } from "./buy-request.value";
 import { Item } from "./item.model";
+import { createID, ID } from "./id.value";
 
 //itemWith
 export interface BuyInfo {
   readonly _tag: "BuyInfo";
+  buyInfoId: ID["raw"];
   item: Item;
   itemNum: number | null;
   categoryId: Category["id"];
-  buyRequest: BuyRequest["type"] | null;
+  // 在庫
+  buyRequest: BuyRequest["type"] | null; //
   buyResult: BuyResult["type"] | null;
   buyDay: string | null;
 }
 
 export type BuyInfoList = Array<BuyInfo>;
 
-const NUMMIN = 1;
-const NUMMAX = 9;
+const MINNUM = 0;
+const MINMAX = 9;
 
+//【課題】以下関数のreturnはBuyInfoにしている。
+//DB、Storeで使う形に合わせると、return絞れるが、依存はよくないですよね？→ドメインの都合でOK
 function createBuyInfo(
-  item: Item,
-  itemNum: number,
-  categoryId: Category["id"],
-  buyRequest: BuyRequest["type"],
-  buyResult: BuyResult["type"],
-  buyDay: string
+  name: string,
+  price: number,
+  categoryId: Category["id"]
 ): BuyInfo {
-  if (itemNum < NUMMIN || itemNum < NUMMAX)
-    throw new Error(`itemNum should be ${NUMMIN} to ${NUMMAX}`);
-
+  const item = Item.createItem(name, price);
+  const id = createID();
   return {
     _tag: "BuyInfo",
+    buyInfoId: id,
     item,
-    itemNum,
+    itemNum: 1,
     categoryId,
-    buyRequest,
-    buyResult,
-    buyDay,
+    buyRequest: null,
+    buyResult: null,
+    buyDay: null,
+  };
+}
+
+function changeItemNameUc(buyInfo: BuyInfo, name: string): BuyInfo {
+  const item = Item.changeItemName(buyInfo.item, name);
+  return {
+    ...buyInfo,
+    item,
+  };
+}
+
+function changeItemPriceUc(buyInfo: BuyInfo, price: number): BuyInfo {
+  const item = Item.changeItemPrice(buyInfo.item, price);
+  return {
+    ...buyInfo,
+    item,
   };
 }
 
@@ -47,24 +65,79 @@ function createBuyInfoList(list: BuyInfoList): BuyInfoList {
   return list;
 }
 
-//buyStatus→tureの変更【課題】下のようなreturnをidとstatusのみはだめ？DBは、idと変更項目があればupdateできる
-function changeBuyStatusTrue(data: BuyInfo) {
-  let today = new Date();
-  let year = today.getFullYear();
-  let month = today.getMonth() + 1;
-  let day = today.getDate();
-  data.buyResult = null;
-  data.buyRequest = null;
-  data.buyDay = String(year) + String(month) + String(day);
-  return data;
+function changeBuyRequest(buyInfo: BuyInfo, request: boolean): BuyInfo {
+  const buyRequest = createBuyRequest(request);
+
+  return {
+    ...buyInfo,
+    buyRequest: buyRequest.type,
+  };
+}
+
+function changeItemNum(buyInfo: BuyInfo, num: number): BuyInfo {
+  if (num < MINNUM || num > MINMAX)
+    throw new Error(`num should be ${MINNUM} to ${MINMAX}`);
+  return {
+    ...buyInfo,
+    itemNum: num,
+  };
+}
+
+function changeBuyResult(buyInfo: BuyInfo, result: boolean): BuyInfo | null {
+  if (buyInfo.buyDay) {
+    const buyResult = createBuyResult(result, buyInfo.buyDay);
+    return {
+      ...buyInfo,
+      buyResult: buyResult.type,
+    };
+  } else {
+    const buyResult = createBuyResult(result, null);
+    return {
+      ...buyInfo,
+      buyResult: buyResult.type,
+    };
+  }
+  return null;
+}
+
+function changeBuyFin(buyInfo: BuyInfo): BuyInfo {
+  const today = new Date();
+  const year = today.getFullYear();
+  const month = today.getMonth() + 1;
+  const day = today.getDate();
+  const buyDay = String(year) + String(month) + String(day);
+
+  if (buyInfo.buyResult == true) {
+    return {
+      ...buyInfo,
+      buyRequest: null,
+      buyResult: null,
+      buyDay: buyDay,
+    };
+  } else {
+    return buyInfo;
+  }
+
+  // let changeBuyInfoList:BuyInfoList=buyInfoList.map((v)=>{
+  //   if(v.buyResult == true && v.buyInfoId === v.buyInfoId){
+  //     return {
+  //       ...v,
+  //       buyRequest:null,
+  //       buyResult:null,
+  //       buyDay:buyDay
+  //     }
+  //   }else{
+  //     return v
+  //   }
 }
 
 //無効化
 function purifyitemList(list: BuyInfoList): BuyInfoList {
   let result: BuyInfoList = [];
-  list.forEach((val, key) => {
+  list.forEach((val) => {
     result.push({
       _tag: "BuyInfo",
+      buyInfoId: val.buyInfoId,
       item: val.item,
       itemNum: val.itemNum,
       categoryId: val.categoryId,
@@ -76,23 +149,14 @@ function purifyitemList(list: BuyInfoList): BuyInfoList {
   return result;
 }
 
-//並び替え:品目ステータス
-function buyRequestWantOrder(list: BuyInfoList): void {
-  list.sort((a, b) => {
-    if (a.buyRequest === b.buyRequest) {
-      return 1;
-    } else if (!a.buyRequest) {
-      return 0;
-    } else {
-      return -1;
-    }
-  });
-}
-
 export const BuyInfo = {
   createBuyInfo,
+  changeItemNameUc,
+  changeItemPriceUc,
+  changeBuyRequest,
+  changeBuyResult,
+  changeItemNum,
   purifyitemList,
-  changeBuyStatusTrue,
+  changeBuyFin,
   createBuyInfoList,
-  buyRequestWantOrder,
 };

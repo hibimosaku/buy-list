@@ -170,7 +170,7 @@ export default defineComponent({
     let buyFin = () => {
       store.commit("buyFin", {
         val: buyListRq.value,
-        userId: uid,
+        uid: uid,
       });
       buyListRq.value = store.getters.getBuyStatusItems;
     };

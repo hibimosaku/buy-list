@@ -54,7 +54,7 @@
   <button
     type="button"
     class="btn btn btn-primary btn-sm small"
-    @click="registerItem()"
+    @click="createItemUi()"
   >
     新規登録
   </button>
@@ -87,9 +87,9 @@
           <itemContainer
             :val="val"
             :index="index"
-            @changeItemName="changeItemName"
-            @changeItemPrice="changeItemPrice"
-            @deleteItem="deleteItem"
+            @chaeItemNameUi="chgeItemNameUi"
+            @changeItemPriceUi="changeItemPriceUi"
+            @deleteItemUi="deleteItemUi"
           ></itemContainer>
         </div>
       </div>
@@ -102,9 +102,9 @@
         <itemContainer
           :val="val"
           :index="index"
-          @changeItemName="changeItemName"
-          @changeItemPrice="changeItemPrice"
-          @deleteItem="deleteItem"
+          @chaeItemNameUi="chgeItemNameUi"
+          @changeItemPriceUi="changeItemPriceUi"
+          @deleteItemUi="deleteItemUi"
         ></itemContainer>
       </div>
     </div>
@@ -153,19 +153,13 @@ export default defineComponent({
     let itemListDisplay = computed((): any => {
       if (BuyInfoList.value) {
         let result: BuyInfoList = BuyInfoList.value.sort(
-          (a: BuyInfo, b: BuyInfo) => Number(a.item.id) - Number(b.item.id)
+          (a: BuyInfo, b: BuyInfo) => Number(a.buyInfoId) - Number(b.buyInfoId)
         );
         store.commit("sortItemList", { list: result, uid: uid });
         BuyInfoList.value = store.getters.getItems; //computed
         return result;
       }
     });
-
-    // draggable="true"
-    // @dragstart="dragstart(val, $event)"
-    // @dragenter="dragenter(val)"
-    // @dragover.stop.prevent="dragover"
-    // @dragend.stop.prevent="dragend"
 
     let draggingItem: any = ref();
     draggingItem.value = null;
@@ -182,7 +176,6 @@ export default defineComponent({
         draggingItem.value.item.id,
         item.item.id,
       ];
-      console.log(e);
     };
     let dragover = (e: any) => {
       e.dataTransfer.dropEffect = "move"; // 移動モードに設定
@@ -194,7 +187,7 @@ export default defineComponent({
 
     activeCategory.value = "all";
 
-    let registerItem = () => {
+    const createItemUi = () => {
       if (
         itemName.value == null ||
         itemPrice.value == null ||
@@ -204,11 +197,11 @@ export default defineComponent({
         alert("すべて入力してください");
         return;
       }
-      store.commit("registerItem", {
+      store.commit("createItemStore", {
         categoryId: categoryId.value,
         name: itemName.value,
         price: itemPrice.value,
-        userId: uid,
+        uid: uid,
       });
       alert("新規登録完了");
       itemName.value = null;
@@ -216,21 +209,19 @@ export default defineComponent({
       categoryId.value = null;
     };
 
-    let changeItemName = (itemId: string, name: string, index: number) => {
-      store.commit("changeItemName", {
-        itemId,
+    const changeItemNameUi = (buyInfoId: string, name: string) => {
+      store.commit("changeItemNameStore", {
+        buyInfoId,
         name,
         uid,
-        index,
       });
     };
 
-    let changeItemPrice = (itemId: string, price: number, index: number) => {
-      store.commit("changeItemPrice", {
-        itemId,
+    const changeItemPriceUi = (buyInfoId: string, price: number) => {
+      store.commit("changeItemPriceStore", {
+        buyInfoId,
         price,
         uid,
-        index,
       });
     };
 
@@ -238,13 +229,14 @@ export default defineComponent({
       activeCategory.value = id;
     };
 
-    let deleteItem = (id: string, index: number) => {
-      store.commit("deleteItem", {
-        userId: uid,
-        itemId: id,
-        index: index,
+    const deleteItemUi = (id: string) => {
+      console.log(id);
+      store.commit("deleteItemStore", {
+        uid: uid,
+        buyInfoId: id,
       });
       alert("削除しました");
+      // BuyInfoList.value = store.getters.getItems;
     };
 
     return {
@@ -252,14 +244,13 @@ export default defineComponent({
       itemName,
       itemPrice,
       categorys,
-      registerItem,
-      changeItemName,
+      createItemUi,
+      changeItemNameUi,
       categoryId,
-      deleteItem,
+      deleteItemUi,
       activeCategory,
       onActiveCategory,
-      changeItemPrice,
-
+      changeItemPriceUi,
       itemListDisplay,
       draggingItem,
       dragstart,

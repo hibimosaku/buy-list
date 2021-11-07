@@ -89,7 +89,7 @@ const router = createRouter({
 
 // 認証状態をチェック
 router.beforeEach((to, from, next) => {
-  if (!auth) auth = getAuth();
+  if (!auth) auth = getAuth(); //configが解決した、まだ理解していない
   const requiresAuth = to.matched.some((record) => record.meta.requiresAuth);
   const BuyInfoList = store.getters.getItems;
   const categorys: Array<Category> = store.getters.getCategorys;

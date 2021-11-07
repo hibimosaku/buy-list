@@ -1,8 +1,16 @@
 <template>
   <navComponent></navComponent>
-  <button type="button" class="btn btn-success btn-sm" @click="wantOrder">
-    ほしい順
-  </button>
+  <div class="row g-3 small">
+    <filterBuyInfoListContainer
+      :filterType="filterType"
+      @changefilName="changefilName"
+    >
+      <template #all>すべて</template>
+      <template #no>ないのみ</template>
+      <template #want>ほしいのみ</template>
+    </filterBuyInfoListContainer>
+  </div>
+
   <table class="table small">
     <thead>
       <tr>
@@ -15,23 +23,23 @@
       </tr>
     </thead>
     <tbody v-if="activeCategory === 'all'">
-      <tr v-for="(val, index) in BuyInfoList" :key="val" :index="index">
+      <tr v-for="(val, index) in filterbuyListRq" :key="val" :index="index">
         <buyListContainer
           :val="val"
           :index="index"
-          @changeBuyRequest="changeBuyRequest"
-          @changeItemNum="changeItemNum"
+          @changeBuyRequestUi="changeBuyRequestUi"
+          @changeItemNumUi="changeItemNumUi"
         ></buyListContainer>
       </tr>
     </tbody>
 
-    <tbody v-for="(val, index) in BuyInfoList" :key="val" :index="index">
+    <tbody v-for="(val, index) in filterbuyListRq" :key="val" :index="index">
       <tr v-if="activeCategory == val.categoryId">
         <buyListContainer
           :val="val"
           :index="index"
-          @changeBuyRequest="changeBuyRequest"
-          @changeItemNum="changeItemNum"
+          @changeBuyRequestUi="changeBuyRequestUi"
+          @changeItemNumUi="changeItemNumUi"
         ></buyListContainer>
       </tr>
     </tbody>
@@ -45,71 +53,89 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, ref } from "vue";
+import { computed, defineComponent, onMounted, ref } from "vue";
 import { store } from "../store/store";
 
 import navComponent from "./component/nav.vue";
 import categoryContainer from "./container/category-list.container.vue";
 import buyListContainer from "./container/buy-list.container.vue";
+import filterBuyInfoListContainer from "./container/filter-buyInfoList.container.vue";
 
-import { BuyInfoList, BuyInfo } from "../model/buy-info.model";
+import { BuyInfo, BuyInfoList } from "../model/buy-info.model";
 
 export default defineComponent({
   components: {
     navComponent,
     categoryContainer,
     buyListContainer,
+    filterBuyInfoListContainer,
   },
   setup() {
-    let BuyInfoList = ref<BuyInfoList>();
+    let buyInfoList = ref<BuyInfoList>();
     let categorys = ref<Array<string> | null>();
     let uid: string;
     let activeCategory = ref();
+    let filterStatus = ref<string>("all" || "no" || "want");
+    let filterType = ref<Array<string>>();
+    filterType.value = ["all", "no", "want"];
 
     activeCategory.value = "all";
 
     onMounted(async () => {
       uid = await store.getters.getUid;
-      BuyInfoList.value = store.getters.getItems;
+      buyInfoList.value = store.getters.getItems;
       categorys.value = store.getters.getCategorys;
-      console.log(categorys);
     });
 
-    let changeBuyRequest = (status: boolean, itemId: string) => {
-      store.commit("changeBuyRequest", {
-        itemId,
-        status,
+    const filterbuyListRq = computed((): BuyInfoList | null => {
+      let result: BuyInfoList;
+      if (buyInfoList.value) {
+        result = buyInfoList.value.filter((v: BuyInfo) => {
+          if (filterStatus.value == "all") return v != null;
+          if (filterStatus.value == "no") return v.buyRequest == false;
+          if (filterStatus.value == "want") return v.buyRequest == true;
+          return null;
+        });
+        return result;
+      } else {
+        return null;
+      }
+    });
+
+    const changeBuyRequestUi = (request: boolean, buyInfoId: string) => {
+      store.commit("changeBuyRequestStore", {
+        buyInfoId,
+        request,
         uid,
       });
-      BuyInfoList.value = store.getters.getItems;
+      buyInfoList.value = store.getters.getItems;
     };
 
-    let changeItemNum = (itemNum: number, val: BuyInfo, index: number) => {
-      store.commit("changeItemNum", { itemNum, val, index, uid });
-      BuyInfoList.value = store.getters.getItems;
-    };
-
-    const wantOrder = () => {
-      if (BuyInfoList.value) {
-        BuyInfo.buyRequestWantOrder(BuyInfoList.value);
-      } else {
-        alert("データが登録さてれいません");
-      }
+    const changeItemNumUi = (itemNum: number, buyInfoId: string) => {
+      store.commit("changeItemNumStore", { itemNum, buyInfoId, uid });
+      buyInfoList.value = store.getters.getItems;
     };
 
     let onActiveCategory = (id: string) => {
       activeCategory.value = id;
     };
 
+    let changefilName = (name: string) => {
+      filterStatus.value = name;
+    };
+
     return {
-      BuyInfoList,
+      buyInfoList,
       categorys,
-      wantOrder,
-      // priceOrderBig,
       activeCategory,
       onActiveCategory,
-      changeBuyRequest,
-      changeItemNum,
+      changeBuyRequestUi,
+      changeItemNumUi,
+      filterStatus,
+      // filterName,
+      filterType,
+      filterbuyListRq,
+      changefilName,
     };
   },
 });

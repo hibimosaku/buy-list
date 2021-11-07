@@ -1,7 +1,7 @@
 import { InjectionKey } from "vue";
 import { Store } from "vuex";
 import { Category } from "../../model/category.model";
-import { getCategoryUc, saveCategoryUc } from "../../model/category.use-case";
+import { getCategoryUc, changeCategoryUc } from "../../model/category.use-case";
 
 interface State {
   categorys: Array<Category>;
@@ -14,11 +14,11 @@ const state = {
 };
 
 const mutations = {
-  changeCategory(
+  changeCategoryStore(
     state: State,
-    data: { name: string; id: string; userId: string }
+    data: { name: string; id: string; uid: string }
   ): void {
-    saveCategoryUc(data.name, data.id, data.userId);
+    changeCategoryUc(data.name, data.id, data.uid);
     state.categorys[Number(data.id)] = {
       _tag: "Category",
       id: data.id,
@@ -28,8 +28,8 @@ const mutations = {
 };
 
 const actions = {
-  loadCategory(context: { state: State }, userId: string): void {
-    getCategoryUc(userId).then((v) => {
+  loadCategory(context: { state: State }, uid: string): void {
+    getCategoryUc(uid).then((v) => {
       context.state.categorys = v;
     });
   },

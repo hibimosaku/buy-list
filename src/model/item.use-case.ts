@@ -1,53 +1,57 @@
 //品目のユースケース
 
-import { Item } from "./item.model";
 import { BuyInfoRepository } from "./buy-info.repository";
-import { BuyInfoList } from "./buy-info.model";
+import { BuyInfo, BuyInfoList } from "./buy-info.model";
 
 //品目
 function createItemUc(
   category_id: string,
   name: string,
   price: number,
-  userId: string
+  uid: string
 ) {
-  const item = Item.createItem(name, price);
-  BuyInfoRepository.createBuyInfo(category_id, item, userId);
-  return item;
+  const buyInfo = BuyInfo.createBuyInfo(name, price, category_id);
+  BuyInfoRepository.createBuyInfoRep(buyInfo, uid);
+  return buyInfo;
 }
 
-function updateItemNameUc(item: Item, name: string, uid: string) {
-  const createItem = Item.changeItemName(item, name);
-  BuyInfoRepository.updateItemName(createItem, uid);
-  return item;
+function changeItemNameUc(buyInfo: BuyInfo, name: string, uid: string) {
+  const changeBuyInfo = BuyInfo.changeItemNameUc(buyInfo, name);
+
+  //【課題】引数はDBに必要な最小限の情報でよい？必要なのは、uidとitemIdとnameのみ
+  //今は、DBに依存しないように、モデル単位（集約情報）で渡している
+  BuyInfoRepository.updateItemNameRep(changeBuyInfo, uid);
+  return;
 }
 
-function updateItemPriceUc(item: Item, price: number, uid: string) {
-  const createItem = Item.changeItemPrice(item, price);
-  BuyInfoRepository.updateItemPrice(createItem, uid);
-  return item;
+function changeItemPriceUc(buyInfo: BuyInfo, price: number, uid: string) {
+  const changeBuyInfo = BuyInfo.changeItemPriceUc(buyInfo, price);
+
+  BuyInfoRepository.updateItemPriceRep(changeBuyInfo, uid);
+  return;
 }
 
-function deleteItemUc(userId: string, itemId: string) {
-  BuyInfoRepository.deleteItem(userId, itemId);
+function deleteItemUc(uid: string, buyInfoId: string) {
+  //【課題】モデルにメソッドなし。storeとDB削除のみの作業のため→問題なし
+  BuyInfoRepository.deleteItemRep(uid, buyInfoId);
 }
 
-function loadItemListUc(userId: string) {
-  let result = BuyInfoRepository.fetchItemList(userId).then((val) => {
+function loadItemListUc(uid: string) {
+  let result = BuyInfoRepository.fetchItemListRep(uid).then((val) => {
     return val;
   });
   return result;
 }
 
 function updateItemList(list: BuyInfoList, uid: string) {
-  BuyInfoRepository.updateItemList(list, uid);
+  BuyInfoRepository.updateItemListRep(list, uid);
 }
 
-export const ItemListUc = {
+export const itemUc = {
   loadItemListUc,
   createItemUc,
   deleteItemUc,
-  updateItemNameUc,
-  updateItemPriceUc,
+  changeItemNameUc,
+  changeItemPriceUc,
   updateItemList,
 };

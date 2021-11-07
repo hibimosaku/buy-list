@@ -1,20 +1,29 @@
-//entity
-
 import { createCategory } from "./category.model";
 import { CategoryRepository } from "./category.repository";
 
-//分類登録
-export function saveCategoryUc(
+//分類登録 async
+export function changeCategoryUc(
   name: string,
   categoryId: string,
-  userId: string
+  uid: string
+  // state,
 ): void {
+  // try {
+  //   const category = createCategory(categoryId, name);
+  //   // await CategoryRepository.updateCategory(category, uid);
+  // } catch (error) {
+  //   state.e = error;
+  // }
+  // try {
   const category = createCategory(categoryId, name);
-  CategoryRepository.newSaveCategory(category, userId);
+  CategoryRepository.updateCategory(category, uid);
+  // } catch (error) {
+  //   state.e = error;
+  // }
 }
 
-export function getCategoryUc(userId: string) {
-  let result = CategoryRepository.getCategory(userId).then((value) => {
+export function getCategoryUc(uid: string) {
+  let result = CategoryRepository.getCategory(uid).then((value) => {
     return value;
   });
   return result;
