@@ -1,14 +1,14 @@
 <template>
   <navComponent></navComponent>
   <div class="row g-3 small">
-    <filterBuyInfoListContainer
+    <filterBuyInfoListComponent
       :filterType="filterType"
       @changefilName="changefilName"
     >
       <template #all>すべて</template>
       <template #no>ないのみ</template>
       <template #want>ほしいのみ</template>
-    </filterBuyInfoListContainer>
+    </filterBuyInfoListComponent>
   </div>
 
   <table class="table small">
@@ -17,83 +17,80 @@
         <th scope="col">品目名</th>
         <th scope="col" style="font-size: 10px">価格</th>
         <th scope="col" style="font-size: 10px">購入日</th>
-        <th scope="col">ない</th>
-        <th scope="col">ほしい</th>
+        <th scope="col" colspan="2">リクエスト</th>
+        <!-- <th scope="col">ほしい</th> -->
         <th scope="col" style="font-size: 10px">個数</th>
       </tr>
     </thead>
     <tbody v-if="activeCategory === 'all'">
-      <tr v-for="(val, index) in filterbuyListRq" :key="val" :index="index">
-        <buyListContainer
+      <tr v-for="val in filterbuyList" :key="val">
+        <buyListComponent
           :val="val"
-          :index="index"
-          @changeBuyRequestUi="changeBuyRequestUi"
-          @changeItemNumUi="changeItemNumUi"
-        ></buyListContainer>
+          @changeBuyRequestDoUi="changeBuyRequestDoUi"
+          @changeBuyRequestNumUi="changeBuyRequestNumUi"
+        ></buyListComponent>
       </tr>
     </tbody>
 
-    <tbody v-for="(val, index) in filterbuyListRq" :key="val" :index="index">
+    <tbody v-for="val in filterbuyList" :key="val">
       <tr v-if="activeCategory == val.categoryId">
-        <buyListContainer
+        <buyListComponent
           :val="val"
-          :index="index"
-          @changeBuyRequestUi="changeBuyRequestUi"
-          @changeItemNumUi="changeItemNumUi"
-        ></buyListContainer>
+          @changeBuyRequestDoUi="changeBuyRequestDoUi"
+          @changeBuyRequestNumUi="changeBuyRequestNumUi"
+        ></buyListComponent>
       </tr>
     </tbody>
   </table>
-  <categoryContainer
+  <categoryComponent
     v-if="categorys"
     :categorys="categorys"
     :activeCategory="activeCategory"
     @onActiveCategory="onActiveCategory"
-  ></categoryContainer>
+  ></categoryComponent>
 </template>
 
 <script lang="ts">
 import { computed, defineComponent, onMounted, ref } from "vue";
 import { store } from "../store/store";
 
-import navComponent from "./component/nav.vue";
-import categoryContainer from "./container/category-list.container.vue";
-import buyListContainer from "./container/buy-list.container.vue";
-import filterBuyInfoListContainer from "./container/filter-buyInfoList.container.vue";
+import navComponent from "./component/nav.component.vue";
+import categoryComponent from "./component/category-list.component.vue";
+import buyListComponent from "./component/buy-list.component.vue";
+import filterBuyInfoListComponent from "./component/filter-buyInfoList.component.vue";
 
 import { BuyInfo, BuyInfoList } from "../model/buy-info.model";
+
+import { commonMount } from "./func/common-mount";
 
 export default defineComponent({
   components: {
     navComponent,
-    categoryContainer,
-    buyListContainer,
-    filterBuyInfoListContainer,
+    categoryComponent,
+    buyListComponent,
+    filterBuyInfoListComponent,
   },
   setup() {
     let buyInfoList = ref<BuyInfoList>();
-    let categorys = ref<Array<string> | null>();
-    let uid: string;
     let activeCategory = ref();
     let filterStatus = ref<string>("all" || "no" || "want");
     let filterType = ref<Array<string>>();
     filterType.value = ["all", "no", "want"];
+    let { categorys, uid } = commonMount();
 
     activeCategory.value = "all";
 
     onMounted(async () => {
-      uid = await store.getters.getUid;
-      buyInfoList.value = store.getters.getItems;
-      categorys.value = store.getters.getCategorys;
+      buyInfoList.value = store.getters.getBuyInfoList;
     });
 
-    const filterbuyListRq = computed((): BuyInfoList | null => {
+    const filterbuyList = computed((): BuyInfoList | null => {
       let result: BuyInfoList;
       if (buyInfoList.value) {
         result = buyInfoList.value.filter((v: BuyInfo) => {
           if (filterStatus.value == "all") return v != null;
-          if (filterStatus.value == "no") return v.buyRequest == false;
-          if (filterStatus.value == "want") return v.buyRequest == true;
+          if (filterStatus.value == "no") return v.buyRequestDo == false;
+          if (filterStatus.value == "want") return v.buyRequestDo == true;
           return null;
         });
         return result;
@@ -102,18 +99,25 @@ export default defineComponent({
       }
     });
 
-    const changeBuyRequestUi = (request: boolean, buyInfoId: string) => {
-      store.commit("changeBuyRequestStore", {
+    const changeBuyRequestDoUi = (request: boolean, buyInfoId: string) => {
+      store.commit("changeBuyRequestDoStore", {
         buyInfoId,
         request,
-        uid,
+        uid: uid.value,
       });
-      buyInfoList.value = store.getters.getItems;
+      buyInfoList.value = store.getters.getBuyInfoList;
     };
 
-    const changeItemNumUi = (itemNum: number, buyInfoId: string) => {
-      store.commit("changeItemNumStore", { itemNum, buyInfoId, uid });
-      buyInfoList.value = store.getters.getItems;
+    const changeBuyRequestNumUi = (
+      buyRequestNum: number,
+      buyInfoId: string
+    ) => {
+      store.commit("changeBuyRequestNumStore", {
+        buyRequestNum,
+        buyInfoId,
+        uid,
+      });
+      buyInfoList.value = store.getters.getBuyInfoList;
     };
 
     let onActiveCategory = (id: string) => {
@@ -129,13 +133,14 @@ export default defineComponent({
       categorys,
       activeCategory,
       onActiveCategory,
-      changeBuyRequestUi,
-      changeItemNumUi,
+      changeBuyRequestDoUi,
+      changeBuyRequestNumUi,
       filterStatus,
       // filterName,
       filterType,
-      filterbuyListRq,
+      filterbuyList,
       changefilName,
+      uid,
     };
   },
 });

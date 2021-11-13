@@ -1,38 +1,64 @@
 //品目のユースケース
 
 import { BuyInfoRepository } from "./buy-info.repository";
-import { BuyInfo, BuyInfoList } from "./buy-info.model";
+import { BuyInfo } from "./buy-info.model";
+import { store } from "../store/store";
 
 //品目
-function createItemUc(
+async function createItemUc(
   category_id: string,
   name: string,
   price: number,
-  uid: string
-) {
-  const buyInfo = BuyInfo.createBuyInfo(name, price, category_id);
-  BuyInfoRepository.createBuyInfoRep(buyInfo, uid);
-  return buyInfo;
+  uid: string,
+  sort:number
+) :Promise<BuyInfo | void>{
+  try{
+    const buyInfo = BuyInfo.createBuyInfo(name, price, category_id);
+    console.log('i2')
+    BuyInfoRepository.createBuyInfoRep(buyInfo, uid,sort);
+    return buyInfo;  
+  }catch(e){
+    store.commit('errorCreateItem')
+  }
 }
 
-function changeItemNameUc(buyInfo: BuyInfo, name: string, uid: string) {
-  const changeBuyInfo = BuyInfo.changeItemNameUc(buyInfo, name);
+async function changeItemNameUc(buyInfo: BuyInfo, name: string, uid: string) {
+  try{
+    const changeBuyInfo = BuyInfo.changeItemNameUc(buyInfo, name);
+    console.log('2')
+    BuyInfoRepository.updateItemNameRep(changeBuyInfo, uid)
+    console.log('3')
 
-  //【課題】引数はDBに必要な最小限の情報でよい？必要なのは、uidとitemIdとnameのみ
-  //今は、DBに依存しないように、モデル単位（集約情報）で渡している
-  BuyInfoRepository.updateItemNameRep(changeBuyInfo, uid);
-  return;
+  }catch(e){
+    console.log('4',e)
+    store.commit('errorCreateItem')
+  }
 }
 
-function changeItemPriceUc(buyInfo: BuyInfo, price: number, uid: string) {
-  const changeBuyInfo = BuyInfo.changeItemPriceUc(buyInfo, price);
+async function changeItemPriceUc(buyInfo: BuyInfo, price: number, uid: string) {
+  // try{
+    const changeBuyInfo = await BuyInfo.changeItemPriceUc(buyInfo, price);
+    console.log('p6')
+    await BuyInfoRepository.updateItemPriceRep(changeBuyInfo, uid)
+    .then(()=>{
+      console.log('p13')
+      return
+    })
+    .catch(()=>{
+      console.log('p12')
+      store.commit('errorChangeItemPrice')
 
-  BuyInfoRepository.updateItemPriceRep(changeBuyInfo, uid);
-  return;
+      throw new Error
+    })
+  // }catch(e){
+  //   console.log('p8',e)
+  //   store.commit('errorChangeItemPrice')
+  //   throw new Error
+  // }
+
 }
 
 function deleteItemUc(uid: string, buyInfoId: string) {
-  //【課題】モデルにメソッドなし。storeとDB削除のみの作業のため→問題なし
   BuyInfoRepository.deleteItemRep(uid, buyInfoId);
 }
 
@@ -43,9 +69,9 @@ function loadItemListUc(uid: string) {
   return result;
 }
 
-function updateItemList(list: BuyInfoList, uid: string) {
-  BuyInfoRepository.updateItemListRep(list, uid);
-}
+// function updateItemList(list: BuyInfoList, uid: string) {
+//   BuyInfoRepository.updateItemListRep(list, uid);
+// }
 
 export const itemUc = {
   loadItemListUc,
@@ -53,5 +79,5 @@ export const itemUc = {
   deleteItemUc,
   changeItemNameUc,
   changeItemPriceUc,
-  updateItemList,
+  // updateItemList,
 };

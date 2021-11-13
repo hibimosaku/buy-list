@@ -6,72 +6,88 @@ import {
   updateDoc,
   setDoc,
   deleteDoc,
+  query,
+  orderBy,
 } from "firebase/firestore";
 import { BuyInfoList, BuyInfo } from "./buy-info.model";
 
-function createBuyInfoRep(buyInfo: BuyInfo, uid: string) {
+function createBuyInfoRep(buyInfo: BuyInfo, uid: string,sort:number) {
+  console.log('i3',buyInfo.buyRequestNum.num)
   setDoc(
     doc(getFirestore(), "users/", uid, "items", String(buyInfo.buyInfoId)),
     {
       category_id: String(buyInfo.categoryId),
       name: buyInfo.item.name,
       price: buyInfo.item.price,
-      itemNum: buyInfo.itemNum,
-      buyRequest: buyInfo.buyRequest,
-      buyResult: buyInfo.buyResult,
-      buyDay: buyInfo.buyDay,
+      buyRequestNum: buyInfo.buyRequestNum.num,
+      buyRequestDo: buyInfo.buyRequestDo,
+      buyResultDo: buyInfo.buyResultDo,
+      buyResultDay: buyInfo.buyResultDay,
+      sort
     }
   );
 }
 
 function updateItemListRep(data: BuyInfoList, uid: string) {
-  data.forEach((val: BuyInfo) => {
+  console.log('list',data)
+  data.forEach((val: BuyInfo,index:number) => {
     setDoc(doc(getFirestore(), "users/", uid, "items", String(val.buyInfoId)), {
       category_id: String(val.categoryId),
       name: val.item.name,
       price: val.item.price,
-      itemNum: val.itemNum,
-      buyRequest: val.buyRequest,
-      buyResult: val.buyResult,
-      buyDay: val.buyDay,
+      buyRequestNum: val.buyRequestNum.num,
+      buyRequestDo: val.buyRequestDo,
+      buyResultDo: val.buyResultDo,
+      buyResultDay: val.buyResultDay,
+      sort:index
     });
   });
 }
-function updateItemNameRep(buyInfo: BuyInfo, uid: string) {
-  updateDoc(doc(getFirestore(), "users/", uid, "items", buyInfo.buyInfoId), {
+async function updateItemNameRep(buyInfo: BuyInfo, uid: string) {
+  await updateDoc(doc(getFirestore(), "users/", 'aaa', "items", buyInfo.buyInfoId), {
     name: buyInfo.item.name,
-  });
+  }).then(()=>{
+    console.log('p16')
+    return })
+  .catch((e)=>{
+    console.log('p17',e)
+    throw new Error})
 }
 
-function updateItemPriceRep(buyInfo: BuyInfo, uid: string) {
-  updateDoc(doc(getFirestore(), "users/", uid, "items", buyInfo.buyInfoId), {
+async function updateItemPriceRep(buyInfo: BuyInfo, uid: string) {
+  // throw new Error('aaa')
+  await updateDoc(doc(getFirestore(), "users/", 'aaa', "items", buyInfo.buyInfoId), {
     price: buyInfo.item.price,
-  });
+  }).catch((error)=>{
+    console.log('p7')
+    throw new Error(error)
+  })
 }
 
 function updateItemNumRep(buyInfo: BuyInfo, uid: string) {
   updateDoc(doc(getFirestore(), "users/", uid, "items", buyInfo.buyInfoId), {
-    itemNum: buyInfo.itemNum,
+    buyRequestNum: buyInfo.buyRequestNum.num,
   });
 }
 
-//品目ステータスの変更
-function updatebuyRequestRep(buyInfo: BuyInfo, uid: string) {
+//買物リクエストのするしないの変更
+function updatebuyRequestDoRep(buyInfo: BuyInfo, uid: string) {
   updateDoc(doc(getFirestore(), "users/", uid, "items", buyInfo.buyInfoId), {
-    buyRequest: buyInfo.buyRequest,
+    buyRequestDo: buyInfo.buyRequestDo,
   });
 }
-//買い物ステータスの変更
-function updateBuyResultRep(buyInfo: BuyInfo, uid: string) {
+
+//買い物結果の変更
+function updateBuyResultDoRep(buyInfo: BuyInfo, uid: string) {
   console.log(buyInfo);
   updateDoc(doc(getFirestore(), "users/", uid, "items", buyInfo.buyInfoId), {
-    buyResult: buyInfo.buyResult,
+    buyResultDo: buyInfo.buyResultDo,
   });
 }
 
 async function fetchItemListRep(uid: string) {
   const querySnapshot = await getDocs(
-    collection(getFirestore(), "users", uid, "items")
+    query(collection(getFirestore(), "users", uid, "items"),orderBy("sort"))
   );
   let itemRepository: BuyInfoList = [];
   querySnapshot.forEach((doc) => {
@@ -83,12 +99,14 @@ async function fetchItemListRep(uid: string) {
         name: doc.data().name,
         price: doc.data().price,
       },
-
-      itemNum: doc.data().itemNum,
+      buyRequestNum: {
+        _tag:'BuyRequestNum',
+        num:doc.data().buyRequestNum,
+      },
       categoryId: doc.data().category_id,
-      buyRequest: doc.data().buyRequest,
-      buyResult: doc.data().buyResult,
-      buyDay: doc.data().buyDay,
+      buyRequestDo: doc.data().buyRequestDo,
+      buyResultDo: doc.data().buyResultDo,
+      buyResultDay: doc.data().buyResultDay,
     });
   });
   return itemRepository;
@@ -103,9 +121,9 @@ export const BuyInfoRepository = {
   updateItemListRep,
   fetchItemListRep,
   deleteItemRep,
-  updatebuyRequestRep,
+  updatebuyRequestDoRep,
   updateItemNameRep,
   updateItemPriceRep,
-  updateBuyResultRep,
+  updateBuyResultDoRep,
   updateItemNumRep,
 };

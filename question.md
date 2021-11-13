@@ -1,3 +1,46 @@
+11/14　
+## 在庫管理削除
+
+## エラー対応
+  ・try～catch地獄
+  ・エラー方針
+  　- usecaseでエラー情報を取得する
+  　- 
+
+  ・エラーの分類
+  　- 原因明確　DOでのルール違反（コードで書いたthrow）
+    - 原因不明　firebaseのエラー
+      - https://firebase.google.com/docs/storage/web/handle-errors?hl=ja　
+      →これに対応するtry～catchを記入？
+
+  ・ルール？
+  　-　DOでのエラーは、throw or return null
+      - throw ：　
+      - return null
+    -  ユースケースでのエラーは、UIでの表示のため、alert or UI画面表示（この場合errorをstoreで保持し、UI対応）
+    -  
+  ・ルールで気になる
+    -  UIとDOは分けて考える？でも同じエラー内容
+
+  ・同期処理と非同期処理を別で考える
+  　- 同期処理：try～catch
+  　- 非同期処理：then,catch
+
+  ・ユーザに見せるか見せないか？
+  　見せる：
+  　見せない：
+
+  ・モデルで書いたthrowをUIで表示しないことを考える？
+
+　・コンポーネント側
+
+  ・UIとDOのダブルエラー対応ですよね？
+
+  ・DDD側
+    - 今回はusecaseに入力
+    - 書き方
+      - null
+      - throw
 11/7
 ## 課題
   ・dddに強制力をもたしたい→可能。前のライブららり。
@@ -20,8 +63,8 @@
 　　→再帰ワイルドカードを書かなかったのが原因。
 
 ## 課題と書いた部分
-全てのモノは実行されてimportされる
-
+全てのモノが実行されてimportされる
+→
 
 ## ddd
   ・UIからの流れ

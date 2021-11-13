@@ -1,13 +1,13 @@
 <template>
   <td>{{ val.item.name }}</td>
   <td>{{ val.item.price }}</td>
-  <td>{{ val.itemNum }}</td>
+  <td>{{ val.buyRequestNum.num }}</td>
   <td>
     <button
       type="button"
-      v-bind:class="{
-        'btn btn-primary': val.buyResult == true,
-        'btn btn-light': val.buyResult != true,
+      :class="{
+        'btn btn-primary': val.buyResultDo == true,
+        'btn btn-light': val.buyResultDo != true,
       }"
       @click="changeBuyResultUi(true, val.buyInfoId)"
     >
@@ -32,9 +32,9 @@
   <td>
     <button
       type="button"
-      v-bind:class="{
-        'btn btn-primary': val.buyResult == false,
-        'btn btn-light': val.buyResult != false,
+      :class="{
+        'btn btn-primary': val.buyResultDo == false,
+        'btn btn-light': val.buyResultDo != false,
       }"
       @click="changeBuyResultUi(false, val.buyInfoId)"
     >
@@ -57,12 +57,11 @@
 export default {
   props: {
     val: {},
-    index: Number,
   },
   emits: ["changeBuyResultUi"],
   setup(_props, { emit }) {
-    let changeBuyResultUi = (buyResult, buyInfoId) => {
-      emit("changeBuyResultUi", buyResult, buyInfoId);
+    let changeBuyResultUi = (buyResultDo, buyInfoId) => {
+      emit("changeBuyResultUi", buyResultDo, buyInfoId);
     };
 
     return { changeBuyResultUi };

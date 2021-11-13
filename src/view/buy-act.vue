@@ -1,14 +1,14 @@
 <template>
   <navComponent></navComponent>
   <div class="row g-3 small">
-    <filterBuyInfoListContainer
+    <filterBuyInfoListComponent
       :filterType="filterType"
       @changefilName="changefilName"
     >
       <template #all>すべて</template>
       <template #no>買うのみ</template>
       <template #want>ないのみ</template>
-    </filterBuyInfoListContainer>
+    </filterBuyInfoListComponent>
 
     <div class="dropdown col-3">
       <button
@@ -50,21 +50,19 @@
     </thead>
     <tbody v-if="activeCategory === 'all'">
       <tr v-for="(val, index) in filterbuyListRq" :key="val" :index="index">
-        <buyActContainer
+        <buyActComponent
           :val="val"
-          :index="index"
           @changeBuyResultUi="changeBuyResultUi"
-        ></buyActContainer>
+        ></buyActComponent>
       </tr>
     </tbody>
 
     <tbody v-for="(val, index) in filterbuyListRq" :key="val" :index="index">
       <tr v-if="activeCategory == val.categoryId">
-        <buyActContainer
+        <buyActComponent
           :val="val"
-          :index="index"
           @changeBuyResultUi="changeBuyResultUi"
-        ></buyActContainer>
+        ></buyActComponent>
       </tr>
     </tbody>
   </table>
@@ -72,38 +70,39 @@
     購入完了
   </button>
 
-  <categoryContainer
+  <categoryComponent
     v-if="categorys"
     :categorys="categorys"
     :activeCategory="activeCategory"
     @onActiveCategory="onActiveCategory"
-  ></categoryContainer>
+  ></categoryComponent>
 </template>
 
 <script lang="ts">
 import { computed, defineComponent, onMounted, ref } from "vue";
-
-import navComponent from "./component/nav.vue";
-import categoryContainer from "./container/category-list.container.vue";
-import buyActContainer from "./container/buy-act.container.vue";
-import filterBuyInfoListContainer from "./container/filter-buyInfoList.container.vue";
-
 import { store } from "../store/store";
+
+import navComponent from "./component/nav.component.vue";
+import categoryComponent from "./component/category-list.component.vue";
+import buyActComponent from "./component/buy-act.component.vue";
+import filterBuyInfoListComponent from "./component/filter-buyInfoList.component.vue";
+
 import { BuyInfo, BuyInfoList } from "../model/buy-info.model";
+
+import { commonMount } from "./func/common-mount";
 
 export default defineComponent({
   components: {
     navComponent,
-    categoryContainer,
-    buyActContainer,
-    filterBuyInfoListContainer,
+    categoryComponent,
+    buyActComponent,
+    filterBuyInfoListComponent,
   },
   setup() {
     let buyInfoList = ref<BuyInfoList>();
-    let categorys = ref<Array<string> | null>();
-    let uid: string;
     let activeCategory = ref();
     let filterStatus = ref<string>("all" || "buy" || "no");
+    let { categorys, uid } = commonMount();
 
     let filterType = ref<Array<string>>();
     filterType.value = ["all", "buy", "no"];
@@ -116,9 +115,7 @@ export default defineComponent({
     activeCategory.value = "all";
 
     onMounted(async () => {
-      uid = await store.getters.getUid;
-      categorys.value = await store.getters.getCategorys;
-      buyInfoList.value = store.getters.getBuyStatusItems;
+      buyInfoList.value = store.getters.getBuyResultList;
     });
 
     const filterbuyListRq = computed((): BuyInfoList | null => {
@@ -126,8 +123,8 @@ export default defineComponent({
       if (buyInfoList.value) {
         result = buyInfoList.value.filter((v: BuyInfo) => {
           if (filterStatus.value == "all") return v != null;
-          if (filterStatus.value == "no") return v.buyResult == false;
-          if (filterStatus.value == "buy") return v.buyResult == true;
+          if (filterStatus.value == "no") return v.buyResultDo == false;
+          if (filterStatus.value == "buy") return v.buyResultDo == true;
           return null;
         });
         return result;
@@ -136,15 +133,16 @@ export default defineComponent({
       }
     });
 
-    let changeBuyResultUi = (buyResult: boolean, buyInfoId: string) => {
+    let changeBuyResultUi = (buyResultDo: boolean, buyInfoId: string) => {
       if (buyInfoList.value) {
-        // buyInfoList.value[index].buyResult = buyResult;
+        console.log();
+        // buyInfoList.value[index].buyResultDo = buyResultDo;
         store.commit("changeBuyResultStore", {
-          buyResult,
+          buyResultDo,
           buyInfoId,
-          uid,
+          uid: uid.value,
         });
-        buyInfoList.value = store.getters.getBuyStatusItems;
+        buyInfoList.value = store.getters.getBuyResultList;
       }
     };
 
@@ -155,16 +153,16 @@ export default defineComponent({
     let buyFinUi = () => {
       store.commit("buyFinStore", {
         buyInfoList: buyInfoList.value,
-        uid: uid,
+        uid: uid.value,
       });
-      buyInfoList.value = store.getters.getBuyStatusItems;
+      buyInfoList.value = store.getters.getBuyResultList;
     };
 
     let resetBuyStatusUi = (categoryId: string) => {
-      store.commit("resetBuyStatusStore", {
+      store.commit("resetBuyRequestDoStore", {
         id: categoryId,
       });
-      buyInfoList.value = store.getters.getBuyStatusItems;
+      buyInfoList.value = store.getters.getBuyResultList;
     };
 
     return {
@@ -179,6 +177,7 @@ export default defineComponent({
       resetBuyStatusUi,
       changefilName,
       filterType,
+      uid,
     };
   },
 });

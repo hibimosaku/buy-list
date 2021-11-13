@@ -4,13 +4,17 @@ import { BuyInfo, BuyInfoList } from "./buy-info.model";
 import { BuyInfoRepository } from "./buy-info.repository";
 
 //buyRequestの切り替え
-function changeBuyRequestUc(buyInfo: BuyInfo, request: boolean, uid: string) {
-  const changeBuyInfo = BuyInfo.changeBuyRequest(buyInfo, request);
-  BuyInfoRepository.updatebuyRequestRep(changeBuyInfo, uid);
+function changeBuyRequestDoUc(buyInfo: BuyInfo, request: boolean, uid: string) {
+  const changeBuyInfo = BuyInfo.changeBuyRequestDo(buyInfo, request);
+  BuyInfoRepository.updatebuyRequestDoRep(changeBuyInfo, uid);
 }
 
-function changeItemNumUc(itemNum: number, buyInfo: BuyInfo, uid: string) {
-  const changeBuyInfo = BuyInfo.changeItemNum(buyInfo, itemNum);
+function changeBuyRequestNumUc(
+  buyRequestNum: number,
+  buyInfo: BuyInfo,
+  uid: string
+) {
+  const changeBuyInfo = BuyInfo.changeBuyRequestNum(buyInfo, buyRequestNum);
   BuyInfoRepository.updateItemNumRep(changeBuyInfo, uid);
 }
 
@@ -18,16 +22,16 @@ function finBuyStatusUc(data: BuyInfoList, uid: string) {
   BuyInfoRepository.updateItemListRep(data, uid);
 }
 
-function changeBuyResultUc(result: boolean, buyInfo: BuyInfo, uid: string) {
-  const changeBuyResult = BuyInfo.changeBuyResult(buyInfo, result);
+function changeBuyResultDoUc(result: boolean, buyInfo: BuyInfo, uid: string) {
+  const changeBuyResult = BuyInfo.changeBuyResultDo(buyInfo, result);
   if (changeBuyResult) {
-    BuyInfoRepository.updateBuyResultRep(changeBuyResult, uid);
+    BuyInfoRepository.updateBuyResultDoRep(changeBuyResult, uid);
   }
 }
 
 export const BuyInfoUseCase = {
-  changeBuyRequestUc,
-  changeItemNumUc,
+  changeBuyRequestDoUc,
+  changeBuyRequestNumUc,
   finBuyStatusUc,
-  changeBuyResultUc,
+  changeBuyResultDoUc,
 };

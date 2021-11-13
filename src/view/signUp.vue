@@ -28,7 +28,7 @@
 </template>
 
 <script lang="ts">
-import navComponent from "./component/nav.vue";
+import navComponent from "./component/nav.component.vue";
 import { defineComponent, ref } from "vue";
 import { useRouter } from "vue-router";
 import { AuthUseCase } from "../model/auth.use-case";

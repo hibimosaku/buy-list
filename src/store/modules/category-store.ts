@@ -18,19 +18,22 @@ const mutations = {
     state: State,
     data: { name: string; id: string; uid: string }
   ): void {
-    changeCategoryUc(data.name, data.id, data.uid);
-    state.categorys[Number(data.id)] = {
-      _tag: "Category",
-      id: data.id,
-      name: data.name,
-    };
+    changeCategoryUc(data.name, data.id, data.uid).then(()=>{
+      state.categorys[Number(data.id)] = {
+        _tag: "Category",
+        id: data.id,
+        name: data.name,
+      };  
+    })
   },
 };
 
 const actions = {
   loadCategory(context: { state: State }, uid: string): void {
     getCategoryUc(uid).then((v) => {
-      context.state.categorys = v;
+      if(v){
+        context.state.categorys = v;
+      }
     });
   },
 };

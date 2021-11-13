@@ -1,4 +1,3 @@
-// import { createRouter, createWebHistory, RouteRecordRaw,createWebHashHistory } from "vue-router";
 import { createRouter, RouteRecordRaw, createWebHashHistory } from "vue-router";
 import top from "../view/top.vue";
 import category from "../view/category.vue";
@@ -8,13 +7,13 @@ import buyAct from "../view/buy-act.vue";
 import signUp from "../view/signUp.vue";
 import test from "../view/test.vue";
 
-// import { initializeApp } from "firebase/app";
-import { getAuth } from "firebase/auth";
+// import { getAuth } from "firebase/auth";
 
 import { onAuthStateChanged } from "@firebase/auth";
 import { load } from "../view/func/load.func";
 import { store } from "../store/store";
 import { Category } from "../model/category.model";
+import { getAuth } from "firebase/auth";
 
 //↓【課題→解決】本当はおきたくない。webのsorceで丸見え
 // const firebaseConfig = {
@@ -28,7 +27,7 @@ import { Category } from "../model/category.model";
 // };
 // initializeApp(firebaseConfig);
 
-let auth: any = null;
+// let auth: any = null;
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -57,9 +56,6 @@ const routes: Array<RouteRecordRaw> = [
     path: "/item",
     name: "item",
     component: item,
-    props: (user) => {
-      return user;
-    },
     meta: { requiresAuth: true },
   },
   {
@@ -89,13 +85,13 @@ const router = createRouter({
 
 // 認証状態をチェック
 router.beforeEach((to, from, next) => {
-  if (!auth) auth = getAuth(); //configが解決した、まだ理解していない
+  // if (!auth) auth = getAuth(); //configが解決した、まだ理解していない
   const requiresAuth = to.matched.some((record) => record.meta.requiresAuth);
-  const BuyInfoList = store.getters.getItems;
+  const BuyInfoList = store.getters.getBuyInfoList;
   const categorys: Array<Category> = store.getters.getCategorys;
   //auth→getauthに変える
   if (requiresAuth) {
-    onAuthStateChanged(auth, async (user) => {
+    onAuthStateChanged(getAuth(), async (user) => {
       //【課題】リポジトリにもっていく？
       if (user && BuyInfoList && categorys.length == 9) {
         next();
