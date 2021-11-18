@@ -81,7 +81,7 @@ async function sortUpItemRep(
   prevBuyInfo: BuyInfo,
   uid: string
 ): Promise<void> {
-  //【課題】firestoreのリファレンスどおりだが、なぜエラー時は戻り値あるか不明？
+  //【課題】firestoreのリファレンスどおり(Promise<void>)だが、なぜエラー時は戻り値あるか不明？
   await updateDoc(
     doc(getFirestore(), "users", uid, "items", targetBuyInfo.buyInfoId),
     {

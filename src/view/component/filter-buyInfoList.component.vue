@@ -1,5 +1,5 @@
 <template>
-  <div class="col-9">
+  <div class="col-12" style="margin:10px 0px;">
     <div class="form-check form-check-inline">
       <input
         class="form-check-input"

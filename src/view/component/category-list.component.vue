@@ -44,10 +44,10 @@ export default {
     categorys: Array,
     activeCategory: String,
   },
-  emits: ["activeCategory", "activeAll"],
+  emits: ["onActiveCategory"],
   setup(_props: any, { emit }: any) {
-    let onActiveCategory = (index: number) => {
-      emit("onActiveCategory", index);
+    const onActiveCategory = (index: number) => {
+      emit("onActiveCategory", String(index));
     };
     return {
       onActiveCategory,

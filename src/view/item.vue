@@ -213,18 +213,12 @@ export default defineComponent({
     let itemErrors = ref({ name: false, price: false, category: false });
     let errorPrice = ref();
     let errPriceUi = ref<[string | null, boolean]>([null, false]);
-    // let nextIndex=ref()
-    // let prevIndex=ref()
 
     onMounted(() => {
       buyInfoList.value = store.getters.getBuyInfoList; //computed
       errorPrice.value = store.getters.getErrorchangeItemPrice;
     });
 
-    // onUpdated(()=>{
-    //   buyInfoList.value = store.getters.getBuyInfoList; //computed
-    //   errorPrice.value = store.getters.getErrorchangeItemPrice;
-    // })
 
     const errPriceInfo = computed((): any => {
       if (store.getters.getErrorChangeItemPrice) {
@@ -312,10 +306,8 @@ export default defineComponent({
         uid: uid.value,
         buyInfoId: id,
       });
-      alert("削除しました");
     };
 
-    // const sortUpItemUi = (id: string | undefined, idTarget: string | undefined) => {//入れ替えたいIDあればOK
     const sortUpItemUi = (
       targetBuyinfoId: string,
       index: number,
@@ -359,73 +351,6 @@ export default defineComponent({
         uid: uid.value,
       });
     };
-
-    // const sortDownItemUi = (id: string, index: number) => {
-    //   if (buyInfoList.value == undefined) return;
-
-    //   if (activeCategory.value == "all") {
-    //     if (buyInfoList.value.length - 1 == index) return;
-
-    //     let a; //clickしたbuyInfo情報
-    //     let b; //clickの前のbuyInfo情報
-    //     if (buyInfoList.value != undefined) {
-    //       a = buyInfoList.value[index];
-    //       b = buyInfoList.value[index + 1];
-
-    //       if (b != undefined) {
-    //         buyInfoList.value[index] = b;
-    //         buyInfoList.value[index + 1] = a;
-    //         if (uid.value) {
-    //           BuyInfoRepository.updateItemListRep(buyInfoList.value, uid.value);
-    //         }
-    //       }
-    //     }
-    //   } else {
-    //     if (
-    //       categoryBuyInfoList.value != undefined &&
-    //       categoryBuyInfoList.value.length - 1 == index
-    //     )
-    //       return;
-    //     let filterBuyList: BuyInfoList;
-    //     //categoryのみのリスト作成
-    //     filterBuyList = buyInfoList.value.filter((v, k) => {
-    //       return v.categoryId == activeCategory.value;
-    //     });
-    //     //クリックした下のbuyInfoIdを取得
-    //     let nextBuyInfoId: string;
-    //     filterBuyList.forEach((v: BuyInfo, k: number) => {
-    //       if (v.buyInfoId == id) {
-    //         nextBuyInfoId = filterBuyList[k + 1].buyInfoId;
-    //       }
-    //     });
-
-    //     //category分けされいていないbuyInfoList情報取得
-    //     let targetIndex; //clickした配列番号
-    //     let nextIndex; //click後の配列番号
-    //     //buyInfoListでの
-    //     buyInfoList.value.forEach((v: BuyInfo, k) => {
-    //       if (v.buyInfoId == id) {
-    //         targetIndex = k;
-    //       }
-    //       if (v.buyInfoId == nextBuyInfoId) {
-    //         nextIndex = k;
-    //       }
-    //     });
-
-    //     if (
-    //       targetIndex !== undefined &&
-    //       nextIndex != undefined &&
-    //       buyInfoList != undefined &&
-    //       uid.value != undefined
-    //     ) {
-    //       [buyInfoList.value[targetIndex], buyInfoList.value[nextIndex]] = [
-    //         buyInfoList.value[nextIndex],
-    //         buyInfoList.value[targetIndex],
-    //       ];
-    //       BuyInfoRepository.updateItemListRep(buyInfoList.value, uid.value);
-    //     }
-    //   }
-    // };
 
     return {
       buyInfoList,

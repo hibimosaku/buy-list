@@ -6,8 +6,8 @@
       @changefilName="changefilName"
     >
       <template #all>すべて</template>
-      <template #no>ないのみ</template>
-      <template #want>ほしいのみ</template>
+      <template #no>リクなしのみ</template>
+      <template #want>リクありのみ</template>
     </filterBuyInfoListComponent>
   </div>
 
