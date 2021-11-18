@@ -64,8 +64,7 @@ export default {
     index: Number,
     nextBuyInfoId: String || undefined,
     prevBuyInfoId: String || undefined,
-    // nextBuyInfoId:BuyInfo,
-    // prevBuyInfoId:BuyInfo
+    categoryBuyInfoList: Array,
   },
   emits: [
     "deleteItemUi",
@@ -89,18 +88,17 @@ export default {
         "sortUpItemUi",
         targetBuyinfoId,
         index,
-        props.nextBuyInfoId,
-        props.prevBuyInfoId
+        props.prevBuyInfoId,
+        props.categoryBuyInfoList
       );
     };
     const sortDownItemUi = (targetBuyinfoId, index) => {
-      console.log(val);
       emit(
         "sortDownItemUi",
         targetBuyinfoId,
         index,
         props.nextBuyInfoId,
-        props.prevBuyInfoId
+        props.categoryBuyInfoList
       );
     };
 

@@ -63,12 +63,6 @@ async function sortUpItemUc(
   prevBuyInfo: BuyInfo,
   uid: string
 ) {
-  console.log(
-    targetIndex,
-    targetBuyInfo.item.name,
-    prevIndex,
-    prevBuyInfo.item.name
-  );
   await BuyInfoRepository.sortUpItemRep(
     targetIndex,
     prevIndex,
@@ -77,6 +71,24 @@ async function sortUpItemUc(
     uid
   ).catch((e) => {
     throw new Error(`sortUpItem is failure,${e}`);
+  });
+}
+
+async function sortDownItemUc(
+  targetIndex: number,
+  nextIndex: number | null,
+  targetBuyInfo: BuyInfo,
+  nextBuyInfo: BuyInfo,
+  uid: string
+) {
+  await BuyInfoRepository.sortDownItemRep(
+    targetIndex,
+    nextIndex,
+    targetBuyInfo,
+    nextBuyInfo,
+    uid
+  ).catch((e) => {
+    throw new Error(`sortDownItem is failure,${e}`);
   });
 }
 
@@ -91,5 +103,6 @@ export const ItemUc = {
   changeItemNameUc,
   changeItemPriceUc,
   sortUpItemUc,
+  sortDownItemUc,
   // updateItemList,
 };

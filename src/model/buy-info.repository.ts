@@ -75,14 +75,13 @@ function updateItemNumRep(buyInfo: BuyInfo, uid: string) {
 }
 
 async function sortUpItemRep(
-  targetId: number,
+  targetIndex: number,
   prevIndex: number | null,
   targetBuyInfo: BuyInfo,
   prevBuyInfo: BuyInfo,
   uid: string
 ): Promise<void> {
   //【課題】firestoreのリファレンスどおりだが、なぜエラー時は戻り値あるか不明？
-
   await updateDoc(
     doc(getFirestore(), "users", uid, "items", targetBuyInfo.buyInfoId),
     {
@@ -92,7 +91,29 @@ async function sortUpItemRep(
   await updateDoc(
     doc(getFirestore(), "users", uid, "items", prevBuyInfo.buyInfoId),
     {
-      sort: targetId,
+      sort: targetIndex,
+    }
+  );
+}
+
+async function sortDownItemRep(
+  targetIndex: number,
+  nextIndex: number | null,
+  targetBuyInfo: BuyInfo,
+  nextBuyInfo: BuyInfo,
+  uid: string
+): Promise<void> {
+  //【課題】firestoreのリファレンスどおりだが、なぜエラー時は戻り値あるか不明？
+  await updateDoc(
+    doc(getFirestore(), "users", uid, "items", targetBuyInfo.buyInfoId),
+    {
+      sort: nextIndex,
+    }
+  );
+  await updateDoc(
+    doc(getFirestore(), "users", uid, "items", nextBuyInfo.buyInfoId),
+    {
+      sort: targetIndex,
     }
   );
 }
@@ -154,4 +175,5 @@ export const BuyInfoRepository = {
   updateBuyResultDoRep,
   updateItemNumRep,
   sortUpItemRep,
+  sortDownItemRep,
 };

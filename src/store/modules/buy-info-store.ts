@@ -244,28 +244,30 @@ const actions = {
     context: { commit: Commit; state: State },
     arg: {
       buyInfoList: BuyInfoList;
+      categoryBuyInfoList: BuyInfoList;
       activeCategory: string;
       targetBuyinfoId: string;
-      nextBuyInfoId: string;
       prevBuyInfoId: string;
       targetIndex: number;
       prevIndex: number | null;
-      targetBuyInfo: BuyInfo;
-      prevBuyInfo: BuyInfo;
       uid: string;
     }
   ) {
+    if (arg.prevIndex == null) return;
+
     if (arg.activeCategory === "all") {
       await ItemUc.sortUpItemUc(
         arg.targetIndex,
         arg.prevIndex,
-        arg.targetBuyInfo,
-        arg.prevBuyInfo,
+        arg.buyInfoList[arg.targetIndex],
+        arg.buyInfoList[arg.prevIndex],
         arg.uid
       ).then(() => {
         if (arg.activeCategory === "all" && arg.prevIndex != null) {
-          context.state.BuyInfoList[arg.prevIndex] = arg.targetBuyInfo;
-          context.state.BuyInfoList[arg.targetIndex] = arg.prevBuyInfo;
+          context.state.BuyInfoList[arg.prevIndex] =
+            arg.buyInfoList[arg.targetIndex];
+          context.state.BuyInfoList[arg.targetIndex] =
+            arg.buyInfoList[arg.prevIndex];
         } else {
           return;
         }
@@ -283,13 +285,69 @@ const actions = {
         await ItemUc.sortUpItemUc(
           targetIndex,
           prevIndex,
-          arg.targetBuyInfo,
-          arg.prevBuyInfo,
+          arg.buyInfoList[targetIndex],
+          arg.buyInfoList[prevIndex],
           arg.uid
         ).then(() => {
           if (targetIndex != undefined && prevIndex != undefined) {
             context.state.BuyInfoList[prevIndex] = arg.buyInfoList[targetIndex];
             context.state.BuyInfoList[targetIndex] = arg.buyInfoList[prevIndex];
+          }
+        });
+      }
+    }
+  },
+
+  async sortDownItemStore(
+    context: { commit: Commit; state: State },
+    arg: {
+      buyInfoList: BuyInfoList;
+      activeCategory: string;
+      targetBuyinfoId: string;
+      nextBuyInfoId: string;
+      targetIndex: number;
+      nextIndex: number | null;
+      uid: string;
+    }
+  ) {
+    if (arg.nextIndex == null) return;
+    if (arg.activeCategory === "all") {
+      await ItemUc.sortUpItemUc(
+        arg.targetIndex,
+        arg.nextIndex,
+        arg.buyInfoList[arg.targetIndex],
+        arg.buyInfoList[arg.nextIndex],
+        arg.uid
+      ).then(() => {
+        if (arg.activeCategory === "all" && arg.nextIndex != null) {
+          context.state.BuyInfoList[arg.nextIndex] =
+            arg.buyInfoList[arg.targetIndex];
+          context.state.BuyInfoList[arg.targetIndex] =
+            arg.buyInfoList[arg.nextIndex];
+        } else {
+          return;
+        }
+      });
+    } else {
+      const targetIndex = BuyInfo.RetrieveIndex(
+        arg.buyInfoList,
+        arg.targetBuyinfoId
+      );
+      const nextIndex = BuyInfo.RetrieveIndex(
+        arg.buyInfoList,
+        arg.nextBuyInfoId
+      );
+      if (targetIndex != undefined && nextIndex != undefined) {
+        await ItemUc.sortUpItemUc(
+          targetIndex,
+          nextIndex,
+          arg.buyInfoList[targetIndex],
+          arg.buyInfoList[nextIndex],
+          arg.uid
+        ).then(() => {
+          if (targetIndex != undefined && nextIndex != undefined) {
+            context.state.BuyInfoList[nextIndex] = arg.buyInfoList[targetIndex];
+            context.state.BuyInfoList[targetIndex] = arg.buyInfoList[nextIndex];
           }
         });
       }
