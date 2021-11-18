@@ -19,7 +19,7 @@ export interface BuyInfo {
 
 export type BuyInfoList = Array<BuyInfo>;
 
-//【課題】以下関数のreturnはBuyInfoにしている。
+//【課題→解決】以下関数のreturnはBuyInfoにしている。
 //DB、Storeで使う形に合わせると、return絞れるが、依存はよくないですよね？→ドメインの都合でOK
 function createBuyInfo(
   name: string,
@@ -49,7 +49,7 @@ function changeItemNameUc(buyInfo: BuyInfo, name: string): BuyInfo {
   };
 }
 
-function changeItemPriceUc(buyInfo: BuyInfo, price: number): BuyInfo {
+function changeItemPrice(buyInfo: BuyInfo, price: number): BuyInfo {
   const item = Item.changeItemPrice(buyInfo.item, price);
   return {
     ...buyInfo,
@@ -94,18 +94,17 @@ function buyFin(buyInfo: BuyInfo): BuyInfo {
     buyRequestDo: false,
     buyResultDay,
   };
+}
 
-  // let changeBuyInfoList:BuyInfoList=buyInfoList.map((v)=>{
-  //   if(v.buyResult == true && v.buyInfoId === v.buyInfoId){
-  //     return {
-  //       ...v,
-  //       buyRequest:null,
-  //       buyResult:null,
-  //       buyResultDay:buyResultDay
-  //     }
-  //   }else{
-  //     return v
-  //   }
+function RetrieveIndex(
+  buyInfoList: BuyInfoList,
+  buyInfoId: string
+): number | undefined {
+  let result;
+  result = buyInfoList.findIndex((v, k) => {
+    return v.buyInfoId == buyInfoId;
+  });
+  return result;
 }
 
 //無効化
@@ -129,10 +128,12 @@ function buyFin(buyInfo: BuyInfo): BuyInfo {
 export const BuyInfo = {
   createBuyInfo,
   changeItemNameUc,
-  changeItemPriceUc,
+  changeItemPrice,
   changeBuyRequestDo,
   changeBuyRequestNum,
   changeBuyResultDo,
   // purifyitemList,
   buyFin,
+  RetrieveIndex,
+  // orderUpItem
 };

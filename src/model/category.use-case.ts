@@ -9,20 +9,22 @@ export async function changeCategoryUc(
   categoryId: string,
   uid: string
   // state:State,
-) :Promise<void>{
+): Promise<void> {
   try {
     const category = createCategory(categoryId, name);
-    CategoryRepository.updateCategory(category, uid)
+    CategoryRepository.updateCategory(category, uid);
   } catch (error) {
-    store.commit("errorChangeCategory");//【課題】or　alert
+    store.commit("errorChangeCategory"); //【課題】or　alert
   }
 }
 
 export function getCategoryUc(uid: string) {
-  let result = CategoryRepository.getCategory(uid).then((value) => {
-    return value;
-  }).catch(()=>{
-    store.commit("errorGetCategory")//【課題】throw？
-  })
+  let result = CategoryRepository.getCategory(uid)
+    .then((value) => {
+      return value;
+    })
+    .catch(() => {
+      store.commit("errorGetCategory"); //【課題】throw？
+    });
   return result;
 }

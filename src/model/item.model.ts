@@ -11,6 +11,9 @@ const MAX_NAME = 10;
 const MIN_PRICE = 0;
 const MAX_PRICE = 9999;
 
+//【課題】使いどころが分からない
+//vue側の関数で利用？
+// type CreateItem=(name:string,price:number)=>Item
 function createItem(name: string, price: number): Item {
   if (name.length <= MIN_NAME || name.length > MAX_NAME)
     throw new Error(`name should be ${MIN_NAME} to ${MAX_NAME}`);

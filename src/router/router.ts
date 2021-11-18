@@ -96,7 +96,7 @@ router.beforeEach((to, from, next) => {
       if (user && BuyInfoList && categorys.length == 9) {
         next();
       } else if (user) {
-        await load(user.uid);
+        await load(user.uid); //ここのawait消すとエラー
         await store.commit("registerAuth", user.uid);
         next();
       } else {

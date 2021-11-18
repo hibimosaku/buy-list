@@ -8,8 +8,8 @@ export const commonMount = () => {
   onMounted(() => {
     uid.value = store.getters.getUid;
     categorys.value = store.getters.getCategorys;
-    if(store.getters.getErrorGetCategory){
-      alert('categoryの取得を失敗しました(error名：getErrorGetCategory')
+    if (store.getters.getErrorGetCategory) {
+      alert("categoryの取得を失敗しました(error名：getErrorGetCategory");
     }
   });
 

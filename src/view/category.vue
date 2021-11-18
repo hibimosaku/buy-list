@@ -12,9 +12,9 @@
       v-model="categorys[index].name"
       @change="changeCategoryUi(index, categorys[index].name)"
     />
-    <div class="form-text text-danger"
-      v-if="category.name.length>5"
-    >分類名は5文字以内でお願いします</div>
+    <div class="form-text text-danger" v-if="category.name.length > 5">
+      分類名は5文字以内でお願いします
+    </div>
   </div>
 </template>
 <script lang="ts">
@@ -37,11 +37,10 @@ export default defineComponent({
         name,
         id: index,
         uid: uid.value,
-      })
+      });
 
-      if(store.getters.getErrorChangeCategory){
-        alert('登録に失敗しました')
-
+      if (store.getters.getErrorChangeCategory) {
+        alert("登録に失敗しました");
       }
     };
 

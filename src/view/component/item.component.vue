@@ -19,7 +19,7 @@
   />
   <button
     @click="deleteItemUi(val.buyInfoId)"
-    class="btn btn-outline-secondary col-2"
+    class="form-control col-2"
     type="button"
     id="button-addon2"
   >
@@ -40,35 +40,41 @@
       />
     </svg>
   </button>
-  <div
-      class="form-control col-2"
+  <button
+    type="button"
+    class="form-control col-1"
+    @click="sortUpItemUi(val.buyInfoId, index)"
   >
-    <div>
-      <div @click="orderUpItem(val.buyInfoId,index)">
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-up-square" viewBox="0 0 16 16">
-          <path fill-rule="evenodd" d="M15 2a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2zM0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2zm8.5 9.5a.5.5 0 0 1-1 0V5.707L5.354 7.854a.5.5 0 1 1-.708-.708l3-3a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 5.707V11.5z"/>
-        </svg>
-      </div>
-      <div @click="orderDownItem(index)">
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-down-square" viewBox="0 0 16 16">
-          <path fill-rule="evenodd" d="M15 2a1 1 0 0 0-1-1H2a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2zM0 2a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V2zm8.5 2.5a.5.5 0 0 0-1 0v5.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V4.5z"/>
-        </svg>
-      </div>
-    </div>
-  </div>
-
-
-
+    ↑
+  </button>
+  <button
+    type="button"
+    class="form-control col-1"
+    @click="sortDownItemUi(val.buyInfoId, index)"
+  >
+    ↓
+  </button>
 </template>
 
 <script>
+import { BuyInfo } from "../../model/buy-info.model";
 export default {
   props: {
     val: {},
-    index:String
+    index: Number,
+    nextBuyInfoId: String || undefined,
+    prevBuyInfoId: String || undefined,
+    // nextBuyInfoId:BuyInfo,
+    // prevBuyInfoId:BuyInfo
   },
-  emits: ["deleteItemUi", "changeItemNameUi", "changeItemPriceUi","orderUpItem","orderDownItem"],
-  setup(_props, { emit }) {
+  emits: [
+    "deleteItemUi",
+    "changeItemNameUi",
+    "changeItemPriceUi",
+    "sortUpItemUi",
+    "sortDownItemUi",
+  ],
+  setup(props, { emit }) {
     const deleteItemUi = (id) => {
       emit("deleteItemUi", id);
     };
@@ -78,14 +84,33 @@ export default {
     const changeItemPriceUi = (id, price) => {
       emit("changeItemPriceUi", id, price);
     };
-    const orderUpItem=(id,index)=>{
-      emit("orderUpItem",id,index)
-    }
-    const orderDownItem=(index)=>{
-      emit("orderDownItem",index)
-    }
+    const sortUpItemUi = (targetBuyinfoId, index) => {
+      emit(
+        "sortUpItemUi",
+        targetBuyinfoId,
+        index,
+        props.nextBuyInfoId,
+        props.prevBuyInfoId
+      );
+    };
+    const sortDownItemUi = (targetBuyinfoId, index) => {
+      console.log(val);
+      emit(
+        "sortDownItemUi",
+        targetBuyinfoId,
+        index,
+        props.nextBuyInfoId,
+        props.prevBuyInfoId
+      );
+    };
 
-    return { deleteItemUi, changeItemNameUi, changeItemPriceUi,orderUpItem,orderDownItem };
+    return {
+      deleteItemUi,
+      changeItemNameUi,
+      changeItemPriceUi,
+      sortUpItemUi,
+      sortDownItemUi,
+    };
   },
 };
 </script>

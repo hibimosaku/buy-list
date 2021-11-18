@@ -1,46 +1,25 @@
+11/21
+## idの重複チェックいる？
+firestoreでチェックしてくれるし、一意のIDを生成したつもりなので不要かなと
+
+
+## ブラウザなしでコード書けない
+
 11/14　
-## 在庫管理削除
+## async,await
+  ・自分の理解レベル
+    -async →promiseが返される　→　成功での処理 →　return →　then
+                              →　失敗での処理 →　throw  →　catch
+    -await asybnc関数内に複数処理があれば、処理完了まで次の工程に進まない
+  - try catchとの関係
+    - await使えば、try catch利用できる？
+    asyncだけなら、promiseを返す必要がありreturn or throwが必要
+    async+awaitならawaitがPromiseを返すので不要
 
-## エラー対応
-  ・try～catch地獄
-  ・エラー方針
-  　- usecaseでエラー情報を取得する
-  　- 
+    async function をただ呼び出すときは try catch は意味をなさない
+    await 付きで呼び出せば try catch が意味をなす
+    await の有無にかかわらず .catch(e => {}) で拾うことができる
 
-  ・エラーの分類
-  　- 原因明確　DOでのルール違反（コードで書いたthrow）
-    - 原因不明　firebaseのエラー
-      - https://firebase.google.com/docs/storage/web/handle-errors?hl=ja　
-      →これに対応するtry～catchを記入？
-
-  ・ルール？
-  　-　DOでのエラーは、throw or return null
-      - throw ：　
-      - return null
-    -  ユースケースでのエラーは、UIでの表示のため、alert or UI画面表示（この場合errorをstoreで保持し、UI対応）
-    -  
-  ・ルールで気になる
-    -  UIとDOは分けて考える？でも同じエラー内容
-
-  ・同期処理と非同期処理を別で考える
-  　- 同期処理：try～catch
-  　- 非同期処理：then,catch
-
-  ・ユーザに見せるか見せないか？
-  　見せる：
-  　見せない：
-
-  ・モデルで書いたthrowをUIで表示しないことを考える？
-
-　・コンポーネント側
-
-  ・UIとDOのダブルエラー対応ですよね？
-
-  ・DDD側
-    - 今回はusecaseに入力
-    - 書き方
-      - null
-      - throw
 11/7
 ## 課題
   ・dddに強制力をもたしたい→可能。前のライブららり。

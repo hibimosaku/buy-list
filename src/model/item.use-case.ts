@@ -10,52 +10,39 @@ async function createItemUc(
   name: string,
   price: number,
   uid: string,
-  sort:number
-) :Promise<BuyInfo | void>{
-  try{
+  sort: number
+): Promise<BuyInfo | void> {
+  try {
     const buyInfo = BuyInfo.createBuyInfo(name, price, category_id);
-    console.log('i2')
-    BuyInfoRepository.createBuyInfoRep(buyInfo, uid,sort);
-    return buyInfo;  
-  }catch(e){
-    store.commit('errorCreateItem')
+    BuyInfoRepository.createBuyInfoRep(buyInfo, uid, sort);
+    return buyInfo;
+  } catch (e) {
+    store.commit("errorCreateItem");
   }
 }
 
 async function changeItemNameUc(buyInfo: BuyInfo, name: string, uid: string) {
-  try{
+  try {
     const changeBuyInfo = BuyInfo.changeItemNameUc(buyInfo, name);
-    console.log('2')
-    BuyInfoRepository.updateItemNameRep(changeBuyInfo, uid)
-    console.log('3')
-
-  }catch(e){
-    console.log('4',e)
-    store.commit('errorCreateItem')
+    console.log("2");
+    BuyInfoRepository.updateItemNameRep(changeBuyInfo, uid);
+    console.log("3");
+  } catch (e) {
+    console.log("4", e);
+    store.commit("errorCreateItem");
+    throw new Error();
   }
 }
 
 async function changeItemPriceUc(buyInfo: BuyInfo, price: number, uid: string) {
-  // try{
-    const changeBuyInfo = await BuyInfo.changeItemPriceUc(buyInfo, price);
-    console.log('p6')
-    await BuyInfoRepository.updateItemPriceRep(changeBuyInfo, uid)
-    .then(()=>{
-      console.log('p13')
-      return
-    })
-    .catch(()=>{
-      console.log('p12')
-      store.commit('errorChangeItemPrice')
-
-      throw new Error
-    })
-  // }catch(e){
-  //   console.log('p8',e)
-  //   store.commit('errorChangeItemPrice')
-  //   throw new Error
-  // }
-
+  try {
+    const changeBuyInfo = await BuyInfo.changeItemPrice(buyInfo, price); //await。
+    await BuyInfoRepository.updateItemPriceRep(changeBuyInfo, uid); //promiseを返している(そこに成功(resolve)、失敗(reject)ステータス持っている)..thenと同じ処理。awaitつけなけらば、trycatchは利用できない
+  } catch (e) {
+    store.commit("errorChangeItemPrice"); //【課題】これを値ごとに管理するなら？modelにエラー追加が楽だが。。。
+    console.error(`errMethod:errorChangeItemPrice,${e},${buyInfo.buyInfoId}`);
+    throw new Error();
+  }
 }
 
 function deleteItemUc(uid: string, buyInfoId: string) {
@@ -69,15 +56,40 @@ function loadItemListUc(uid: string) {
   return result;
 }
 
+async function sortUpItemUc(
+  targetIndex: number,
+  prevIndex: number | null,
+  targetBuyInfo: BuyInfo,
+  prevBuyInfo: BuyInfo,
+  uid: string
+) {
+  console.log(
+    targetIndex,
+    targetBuyInfo.item.name,
+    prevIndex,
+    prevBuyInfo.item.name
+  );
+  await BuyInfoRepository.sortUpItemRep(
+    targetIndex,
+    prevIndex,
+    targetBuyInfo,
+    prevBuyInfo,
+    uid
+  ).catch((e) => {
+    throw new Error(`sortUpItem is failure,${e}`);
+  });
+}
+
 // function updateItemList(list: BuyInfoList, uid: string) {
 //   BuyInfoRepository.updateItemListRep(list, uid);
 // }
 
-export const itemUc = {
+export const ItemUc = {
   loadItemListUc,
   createItemUc,
   deleteItemUc,
   changeItemNameUc,
   changeItemPriceUc,
+  sortUpItemUc,
   // updateItemList,
 };
