@@ -11,9 +11,9 @@ export interface BuyInfo {
   buyInfoId: ID["raw"];
   item: Item;
   categoryId: Category["id"];
-  buyRequestDo: boolean | null;
+  buyRequest: boolean | null;
   buyRequestNum: BuyRequestNum;
-  buyResultDo: boolean | null;
+  buyResult: boolean | null;
   buyResultDay: string | null;
 }
 
@@ -34,9 +34,9 @@ function createBuyInfo(
     buyInfoId: id,
     item,
     categoryId,
-    buyRequestDo: false,
+    buyRequest: false,
     buyRequestNum: num,
-    buyResultDo: null,
+    buyResult: null,
     buyResultDay: null,
   };
 }
@@ -60,7 +60,7 @@ function changeItemPrice(buyInfo: BuyInfo, price: number): BuyInfo {
 function changeBuyRequestDo(buyInfo: BuyInfo, doRequest: boolean): BuyInfo {
   return {
     ...buyInfo,
-    buyRequestDo: doRequest,
+    buyRequest: doRequest,
   };
 }
 
@@ -78,7 +78,7 @@ function changeBuyResultDo(
 ): BuyInfo | null {
   return {
     ...buyInfo,
-    buyResultDo: requestDo,
+    buyResult: requestDo,
   };
 }
 
@@ -91,7 +91,7 @@ function buyFin(buyInfo: BuyInfo): BuyInfo {
 
   return {
     ...buyInfo,
-    buyRequestDo: false,
+    buyRequest: false,
     buyResultDay,
   };
 }
@@ -109,7 +109,7 @@ function RetrieveIndex(
 
 //無効化
 // function purifyitemList(list: BuyInfoList): BuyInfoList {
-//   let result: BuyInfoList = [];
+//   const result: BuyInfoList = [];
 //   list.forEach((val) => {
 //     result.push({
 //       _tag: "BuyInfo",

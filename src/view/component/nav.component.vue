@@ -60,7 +60,7 @@ import { getAuth } from "firebase/auth";
 
 export default {
   setup() {
-    let signOut = async () => {
+    const signOut = async () => {
       const auth = await getAuth();
       const user = await auth.currentUser;
       //【課題→解決】ログアウトしてもuid消えない

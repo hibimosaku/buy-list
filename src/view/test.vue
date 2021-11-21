@@ -29,9 +29,9 @@ export default defineComponent({
   setup() {
     //参考URL：https://zukucode.com/2020/05/vue-drag-drop-order.html
 
-    let fruits: any = ref();
-    let dragging = ref(false);
-    let enabled = ref(true);
+    const fruits: any = ref();
+    const dragging = ref(false);
+    const enabled = ref(true);
 
     fruits.value = [
       { id: 1, name: "りんご", price: 200, order: 1 },
@@ -39,14 +39,14 @@ export default defineComponent({
       { id: 3, name: "ばなな", price: 100, order: 3 },
     ];
 
-    let fruitsDisp = computed(() => {
+    const fruitsDisp = computed(() => {
       return fruits.value.sort((a: any, b: any) => a.order - b.order);
     });
 
-    let draggingItem: any = ref();
+    const draggingItem: any = ref();
     draggingItem.value = null;
 
-    let dragstart = (item: any, e: any) => {
+    const dragstart = (item: any, e: any) => {
       draggingItem.value = item; // ドラッグ中の要素を保持
       e.draggable = true;
       e.returnValue = true;
@@ -54,7 +54,7 @@ export default defineComponent({
       // e.dataTransfer.effectAllowed = "move"; // 移動モードに設定
       e.target.style.opacity = 0.5; // ドラッグ中要素のスタイルを変更
     };
-    let dragenter = (item: any, e: any) => {
+    const dragenter = (item: any, e: any) => {
       // ドラッグ中の要素とドラッグ先の要素の表示順を入れ替える
       [item.order, draggingItem.value.order] = [
         draggingItem.value.order,
@@ -68,19 +68,19 @@ export default defineComponent({
         e.changedTouches[0].identifier
       );
     };
-    let dragover = (e: any) => {
+    const dragover = (e: any) => {
       e.draggable = true;
 
       console.log("2");
       // e.dataTransfer.dropEffect = "move"; // 移動モードに設定
     };
-    let dragend = (e: any) => {
+    const dragend = (e: any) => {
       e.target.style.opacity = 1; // ドラッグ中要素のスタイルを変更（元に戻す）
       draggingItem.value = null; // ドラッグ中の要素をクリア
       console.log("3");
     };
 
-    let aaa = (item: any, e: any) => {
+    const aaa = (item: any, e: any) => {
       console.log(item, e);
     };
 

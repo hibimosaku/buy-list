@@ -11,51 +11,29 @@ import {
 } from "firebase/firestore";
 import { BuyInfoList, BuyInfo } from "./buy-info.model";
 
-function createBuyInfoRep(buyInfo: BuyInfo, uid: string, sort: number) {
-  console.log("i3", buyInfo.buyRequestNum.num);
-  setDoc(
-    doc(getFirestore(), "users", uid, "items", String(buyInfo.buyInfoId)),
+async function createBuyInfoRep(buyInfo: BuyInfo, uid: string, sort: number) {
+  return setDoc(
+    doc(getFirestore(), "users", "a", "items", String(buyInfo.buyInfoId)),
     {
       category_id: String(buyInfo.categoryId),
       name: buyInfo.item.name,
       price: buyInfo.item.price,
       buyRequestNum: buyInfo.buyRequestNum.num,
-      buyRequestDo: buyInfo.buyRequestDo,
-      buyResultDo: buyInfo.buyResultDo,
+      buyRequest: buyInfo.buyRequest,
+      buyResult: buyInfo.buyResult,
       buyResultDay: buyInfo.buyResultDay,
       sort,
     }
   );
 }
 
-function updateItemListRep(data: BuyInfoList, uid: string) {
-  data.forEach((val: BuyInfo, index: number) => {
-    setDoc(doc(getFirestore(), "users", uid, "items", String(val.buyInfoId)), {
-      category_id: String(val.categoryId),
-      name: val.item.name,
-      price: val.item.price,
-      buyRequestNum: val.buyRequestNum.num,
-      buyRequestDo: val.buyRequestDo,
-      buyResultDo: val.buyResultDo,
-      buyResultDay: val.buyResultDay,
-      sort: index,
-    });
-  });
-}
-async function updateItemNameRep(buyInfo: BuyInfo, uid: string) {
-  await updateDoc(
+function updateItemNameRep(buyInfo: BuyInfo, uid: string) {
+  return updateDoc(
     doc(getFirestore(), "users", uid, "items", buyInfo.buyInfoId),
     {
       name: buyInfo.item.name,
     }
-  )
-    .then(() => {
-      return;
-    })
-    .catch((e) => {
-      console.log("p17", e);
-      throw new Error();
-    });
+  );
 }
 
 function updateItemPriceRep(buyInfo: BuyInfo, uid: string): Promise<void> {
@@ -74,6 +52,12 @@ function updateItemNumRep(buyInfo: BuyInfo, uid: string) {
   });
 }
 
+function deleteItemRep(uid: string, buyInfoId: string) {
+  return deleteDoc(
+    doc(getFirestore(), "users", uid, "items", String(buyInfoId))
+  );
+}
+
 async function sortUpItemRep(
   targetIndex: number,
   prevIndex: number | null,
@@ -81,9 +65,9 @@ async function sortUpItemRep(
   prevBuyInfo: BuyInfo,
   uid: string
 ): Promise<void> {
-  //【課題】firestoreのリファレンスどおり(Promise<void>)だが、なぜエラー時は戻り値あるか不明？
+  //【課題】まとめて更新と以下の部分更新どちらがよい？ケースによる。利用者少数。件数30件。データサイズ。負荷試験のレスポンス。
   await updateDoc(
-    doc(getFirestore(), "users", uid, "items", targetBuyInfo.buyInfoId),
+    doc(getFirestore(), "users", "a", "items", targetBuyInfo.buyInfoId),
     {
       sort: prevIndex,
     }
@@ -119,17 +103,37 @@ async function sortDownItemRep(
 }
 
 //買物リクエストのするしないの変更
-function updatebuyRequestDoRep(buyInfo: BuyInfo, uid: string) {
-  updateDoc(doc(getFirestore(), "users", uid, "items", buyInfo.buyInfoId), {
-    buyRequestDo: buyInfo.buyRequestDo,
-  });
+function updateBuyRequestRep(buyInfo: BuyInfo, uid: string) {
+  return updateDoc(
+    doc(getFirestore(), "users", uid, "items", buyInfo.buyInfoId),
+    {
+      buyRequest: buyInfo.buyRequest,
+    }
+  );
 }
 
 //買い物結果の変更
-function updateBuyResultDoRep(buyInfo: BuyInfo, uid: string) {
-  console.log(buyInfo);
-  updateDoc(doc(getFirestore(), "users", uid, "items", buyInfo.buyInfoId), {
-    buyResultDo: buyInfo.buyResultDo,
+function updateBuyResultRep(buyInfo: BuyInfo, uid: string) {
+  return updateDoc(
+    doc(getFirestore(), "users", uid, "items", buyInfo.buyInfoId),
+    {
+      buyResult: buyInfo.buyResult,
+    }
+  );
+}
+
+function updateItemListRep(data: BuyInfoList, uid: string) {
+  return data.forEach((val: BuyInfo, index: number) => {
+    setDoc(doc(getFirestore(), "users", uid, "items", String(val.buyInfoId)), {
+      category_id: String(val.categoryId),
+      name: val.item.name,
+      price: val.item.price,
+      buyRequestNum: val.buyRequestNum.num,
+      buyRequest: val.buyRequest,
+      buyResult: val.buyResult,
+      buyResultDay: val.buyResultDay,
+      sort: index,
+    });
   });
 }
 
@@ -137,7 +141,7 @@ async function fetchItemListRep(uid: string) {
   const querySnapshot = await getDocs(
     query(collection(getFirestore(), "users", uid, "items"), orderBy("sort"))
   );
-  let itemRepository: BuyInfoList = [];
+  const itemRepository: BuyInfoList = [];
   querySnapshot.forEach((doc) => {
     itemRepository.push({
       _tag: "BuyInfo",
@@ -152,16 +156,12 @@ async function fetchItemListRep(uid: string) {
         num: doc.data().buyRequestNum,
       },
       categoryId: doc.data().category_id,
-      buyRequestDo: doc.data().buyRequestDo,
-      buyResultDo: doc.data().buyResultDo,
+      buyRequest: doc.data().buyRequest,
+      buyResult: doc.data().buyResult,
       buyResultDay: doc.data().buyResultDay,
     });
   });
   return itemRepository;
-}
-
-function deleteItemRep(uid: string, buyInfoId: string) {
-  deleteDoc(doc(getFirestore(), "users", uid, "items", String(buyInfoId)));
 }
 
 export const BuyInfoRepository = {
@@ -169,10 +169,10 @@ export const BuyInfoRepository = {
   updateItemListRep,
   fetchItemListRep,
   deleteItemRep,
-  updatebuyRequestDoRep,
+  updateBuyRequestRep,
   updateItemNameRep,
   updateItemPriceRep,
-  updateBuyResultDoRep,
+  updateBuyResultRep,
   updateItemNumRep,
   sortUpItemRep,
   sortDownItemRep,

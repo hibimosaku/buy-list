@@ -10,8 +10,8 @@
     <button
       type="button"
       :class="{
-        'btn btn-primary btn-sm': val.buyRequestDo == false,
-        'btn btn-light btn-sm': val.buyRequestDo != false,
+        'btn btn-primary btn-sm': val.buyRequest == false,
+        'btn btn-light btn-sm': val.buyRequest != false,
       }"
       @click="changeBuyRequestDoUi(false, val.buyInfoId)"
     >
@@ -38,8 +38,8 @@
     <button
       type="button"
       :class="{
-        'btn btn-primary btn-sm': val.buyRequestDo == true,
-        'btn btn-light btn-sm': val.buyRequestDo != true,
+        'btn btn-primary btn-sm': val.buyRequest == true,
+        'btn btn-light btn-sm': val.buyRequest != true,
       }"
       @click="changeBuyRequestDoUi(true, val.buyInfoId)"
     >
@@ -68,7 +68,7 @@
       @change="changeBuyRequestNumUi(val.buyRequestNum.num, val.buyInfoId)"
       v-model="val.buyRequestNum.num"
       :disabled="
-        val.buyRequestDo == false || val.buyRequestDo == null ? true : false
+        val.buyRequest == false || val.buyRequest == null ? true : false
       "
     >
       <option style="font-size: 5px" v-for="num in 9" :key="num">
@@ -85,10 +85,13 @@ export default {
   },
   emits: ["changeBuyRequestDoUi", "changeBuyRequestNumUi"],
   setup(_props: any, { emit }: any) {
-    let changeBuyRequestDoUi = (request: boolean, buyInfoId: string) => {
+    const changeBuyRequestDoUi = (request: boolean, buyInfoId: string) => {
       emit("changeBuyRequestDoUi", request, buyInfoId);
     };
-    let changeBuyRequestNumUi = (buyRequestNum: number, buyInfoId: string) => {
+    const changeBuyRequestNumUi = (
+      buyRequestNum: number,
+      buyInfoId: string
+    ) => {
       emit("changeBuyRequestNumUi", buyRequestNum, buyInfoId);
     };
     return { changeBuyRequestDoUi, changeBuyRequestNumUi };

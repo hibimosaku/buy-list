@@ -1,5 +1,7 @@
 <template>
   <navComponent></navComponent>
+  <errDbComponent></errDbComponent>
+
   <div class="row g-3 small">
     <filterBuyInfoListComponent
       :filterType="filterType"
@@ -9,35 +11,15 @@
       <template #no>買うのみ</template>
       <template #want>ないのみ</template>
     </filterBuyInfoListComponent>
-
-    <div class="dropdown col-3">
-      <button
-        class="btn btn-info btn-sm dropdown-toggle col-md-6"
-        type="button"
-        id="dropdownMenuButton"
-        data-bs-toggle="dropdown"
-        aria-expanded="false"
-      >
-        リセット
-      </button>
-      <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-        <li>
-          <a
-            class="dropdown-item small"
-            @click="resetBuyStatusUi(activeCategory)"
-            >すべて</a
-          >
-        </li>
-        <li>
-          <a
-            class="dropdown-item small"
-            @click="resetBuyStatusUi(activeCategory)"
-            >選択の分類のみ</a
-          >
-        </li>
-      </ul>
-    </div>
   </div>
+  <button
+    type="button"
+    class="btn btn-success btn-sm"
+    @click="resetBuyResultUi"
+  >
+    リセット
+  </button>
+
   <table class="table small">
     <thead>
       <tr>
@@ -48,17 +30,9 @@
         <th scope="col">ない</th>
       </tr>
     </thead>
-    <tbody v-if="activeCategory === 'all'">
-      <tr v-for="(val, index) in filterbuyListRq" :key="val" :index="index">
-        <buyActComponent
-          :val="val"
-          @changeBuyResultUi="changeBuyResultUi"
-        ></buyActComponent>
-      </tr>
-    </tbody>
 
     <tbody v-for="(val, index) in filterbuyListRq" :key="val" :index="index">
-      <tr v-if="activeCategory == val.categoryId">
+      <tr>
         <buyActComponent
           :val="val"
           @changeBuyResultUi="changeBuyResultUi"
@@ -86,6 +60,7 @@ import navComponent from "./component/nav.component.vue";
 import categoryComponent from "./component/category-list.component.vue";
 import buyActComponent from "./component/buy-act.component.vue";
 import filterBuyInfoListComponent from "./component/filter-buyInfoList.component.vue";
+import errDbComponent from "./container/error-db.container.vue";
 
 import { BuyInfo, BuyInfoList } from "../model/buy-info.model";
 
@@ -97,17 +72,18 @@ export default defineComponent({
     categoryComponent,
     buyActComponent,
     filterBuyInfoListComponent,
+    errDbComponent,
   },
   setup() {
-    let buyInfoList = ref<BuyInfoList>();
-    let activeCategory = ref();
-    let filterStatus = ref<string>("all" || "buy" || "no");
-    let { categorys, uid } = commonMount();
+    const buyInfoList = ref<BuyInfoList>();
+    const activeCategory = ref();
+    const filterStatus = ref<string>("all" || "buy" || "no");
+    const { categorys, uid } = commonMount();
 
-    let filterType = ref<Array<string>>();
+    const filterType = ref<Array<string>>();
     filterType.value = ["all", "buy", "no"];
 
-    let changefilName = (name: string) => {
+    const changefilName = (name: string) => {
       filterStatus.value = name;
     };
 
@@ -120,49 +96,65 @@ export default defineComponent({
 
     const filterbuyListRq = computed((): BuyInfoList | null => {
       let result: BuyInfoList;
-      if (buyInfoList.value) {
+
+      if (buyInfoList.value == undefined) return null;
+      if (activeCategory.value == "all") {
         result = buyInfoList.value.filter((v: BuyInfo) => {
           if (filterStatus.value == "all") return v != null;
-          if (filterStatus.value == "no") return v.buyResultDo == false;
-          if (filterStatus.value == "buy") return v.buyResultDo == true;
+          if (filterStatus.value == "no") return v.buyResult == false;
+          if (filterStatus.value == "buy") return v.buyResult == true;
           return null;
         });
         return result;
       } else {
-        return null;
+        result = buyInfoList.value.filter((v: BuyInfo) => {
+          if (
+            activeCategory.value == v.categoryId &&
+            filterStatus.value == "all"
+          )
+            return v != null;
+          if (
+            activeCategory.value == v.categoryId &&
+            filterStatus.value == "no"
+          )
+            return v.buyResult == false;
+          if (
+            activeCategory.value == v.categoryId &&
+            filterStatus.value == "buy"
+          )
+            return v.buyResult == true;
+          return null;
+        });
+        return result;
       }
     });
 
-    let changeBuyResultUi = (buyResultDo: boolean, buyInfoId: string) => {
+    const changeBuyResultUi = (buyResult: boolean, buyInfoId: string) => {
       if (buyInfoList.value) {
-        console.log();
-        // buyInfoList.value[index].buyResultDo = buyResultDo;
         store.commit("changeBuyResultStore", {
-          buyResultDo,
+          buyResult,
           buyInfoId,
           uid: uid.value,
         });
-        buyInfoList.value = store.getters.getBuyResultList;
       }
     };
 
-    let onActiveCategory = (id: string) => {
+    const onActiveCategory = (id: string) => {
       activeCategory.value = id;
     };
 
-    let buyFinUi = () => {
+    const buyFinUi = () => {
       store.commit("buyFinStore", {
         buyInfoList: buyInfoList.value,
         uid: uid.value,
       });
-      buyInfoList.value = store.getters.getBuyResultList;
     };
 
-    let resetBuyStatusUi = (categoryId: string) => {
-      store.commit("resetBuyRequestDoStore", {
-        id: categoryId,
+    const resetBuyResultUi = () => {
+      store.commit("resetBuyResultStore", {
+        id: activeCategory.value,
+        uid: uid.value,
       });
-      buyInfoList.value = store.getters.getBuyResultList;
     };
 
     return {
@@ -174,7 +166,7 @@ export default defineComponent({
       changeBuyResultUi,
       filterStatus,
       filterbuyListRq,
-      resetBuyStatusUi,
+      resetBuyResultUi,
       changefilName,
       filterType,
       uid,

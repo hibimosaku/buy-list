@@ -6,8 +6,8 @@
     <button
       type="button"
       :class="{
-        'btn btn-primary': val.buyResultDo == true,
-        'btn btn-light': val.buyResultDo != true,
+        'btn btn-primary': val.buyResult == true,
+        'btn btn-light': val.buyResult != true,
       }"
       @click="changeBuyResultUi(true, val.buyInfoId)"
     >
@@ -33,8 +33,8 @@
     <button
       type="button"
       :class="{
-        'btn btn-primary': val.buyResultDo == false,
-        'btn btn-light': val.buyResultDo != false,
+        'btn btn-primary': val.buyResult == false,
+        'btn btn-light': val.buyResult != false,
       }"
       @click="changeBuyResultUi(false, val.buyInfoId)"
     >
@@ -60,8 +60,8 @@ export default {
   },
   emits: ["changeBuyResultUi"],
   setup(_props, { emit }) {
-    let changeBuyResultUi = (buyResultDo, buyInfoId) => {
-      emit("changeBuyResultUi", buyResultDo, buyInfoId);
+    const changeBuyResultUi = (buyResult, buyInfoId) => {
+      emit("changeBuyResultUi", buyResult, buyInfoId);
     };
 
     return { changeBuyResultUi };

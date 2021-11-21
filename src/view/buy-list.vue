@@ -1,5 +1,7 @@
 <template>
   <navComponent></navComponent>
+  <errDbComponent></errDbComponent>
+
   <div class="row g-3 small">
     <filterBuyInfoListComponent
       :filterType="filterType"
@@ -22,18 +24,8 @@
         <th scope="col" style="font-size: 10px">個数</th>
       </tr>
     </thead>
-    <tbody v-if="activeCategory === 'all'">
-      <tr v-for="val in filterbuyList" :key="val">
-        <buyListComponent
-          :val="val"
-          @changeBuyRequestDoUi="changeBuyRequestDoUi"
-          @changeBuyRequestNumUi="changeBuyRequestNumUi"
-        ></buyListComponent>
-      </tr>
-    </tbody>
-
     <tbody v-for="val in filterbuyList" :key="val">
-      <tr v-if="activeCategory == val.categoryId">
+      <tr>
         <buyListComponent
           :val="val"
           @changeBuyRequestDoUi="changeBuyRequestDoUi"
@@ -58,6 +50,7 @@ import navComponent from "./component/nav.component.vue";
 import categoryComponent from "./component/category-list.component.vue";
 import buyListComponent from "./component/buy-list.component.vue";
 import filterBuyInfoListComponent from "./component/filter-buyInfoList.component.vue";
+import errDbComponent from "./container/error-db.container.vue";
 
 import { BuyInfo, BuyInfoList } from "../model/buy-info.model";
 
@@ -69,16 +62,14 @@ export default defineComponent({
     categoryComponent,
     buyListComponent,
     filterBuyInfoListComponent,
+    errDbComponent,
   },
   setup() {
-    let buyInfoList = ref<BuyInfoList>();
-    let activeCategory = ref();
-    let filterStatus = ref<string>("all" || "no" || "want");
-    let filterType = ref<Array<string>>();
-    filterType.value = ["all", "no", "want"];
-    let { categorys, uid } = commonMount();
-
-    activeCategory.value = "all";
+    const buyInfoList = ref<BuyInfoList>();
+    const activeCategory = ref("all");
+    const filterStatus = ref<string>("all" || "no" || "want");
+    const filterType = ref<Array<string>>(["all", "no", "want"]);
+    const { categorys, uid } = commonMount();
 
     onMounted(async () => {
       buyInfoList.value = store.getters.getBuyInfoList;
@@ -86,16 +77,37 @@ export default defineComponent({
 
     const filterbuyList = computed((): BuyInfoList | null => {
       let result: BuyInfoList;
-      if (buyInfoList.value) {
+
+      if (buyInfoList.value == undefined) return null;
+
+      if (activeCategory.value == "all") {
         result = buyInfoList.value.filter((v: BuyInfo) => {
           if (filterStatus.value == "all") return v != null;
-          if (filterStatus.value == "no") return v.buyRequestDo == false;
-          if (filterStatus.value == "want") return v.buyRequestDo == true;
+          if (filterStatus.value == "no") return v.buyRequest == false;
+          if (filterStatus.value == "want") return v.buyRequest == true;
           return null;
         });
         return result;
       } else {
-        return null;
+        result = buyInfoList.value.filter((v: BuyInfo) => {
+          if (
+            activeCategory.value == v.categoryId &&
+            filterStatus.value == "all"
+          )
+            return v != null;
+          if (
+            activeCategory.value == v.categoryId &&
+            filterStatus.value == "no"
+          )
+            return v.buyRequest == false;
+          if (
+            activeCategory.value == v.categoryId &&
+            filterStatus.value == "want"
+          )
+            return v.buyRequest == true;
+          return null;
+        });
+        return result;
       }
     });
 
@@ -105,7 +117,6 @@ export default defineComponent({
         request,
         uid: uid.value,
       });
-      buyInfoList.value = store.getters.getBuyInfoList;
     };
 
     const changeBuyRequestNumUi = (
@@ -117,14 +128,13 @@ export default defineComponent({
         buyInfoId,
         uid,
       });
-      buyInfoList.value = store.getters.getBuyInfoList;
     };
 
-    let onActiveCategory = (id: string) => {
+    const onActiveCategory = (id: string) => {
       activeCategory.value = id;
     };
 
-    let changefilName = (name: string) => {
+    const changefilName = (name: string) => {
       filterStatus.value = name;
     };
 
@@ -136,7 +146,6 @@ export default defineComponent({
       changeBuyRequestDoUi,
       changeBuyRequestNumUi,
       filterStatus,
-      // filterName,
       filterType,
       filterbuyList,
       changefilName,

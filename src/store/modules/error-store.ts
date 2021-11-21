@@ -7,62 +7,57 @@ import { Store } from "vuex";
 // }
 
 interface State {
-  errorChangeCategory: boolean;
-  errorGetCategory: boolean;
-  errorCreateItem: boolean;
-  errorCreatePrice: boolean;
-  errorChangeItemPrice: boolean;
-
-  // errCreatePriceList:Array<errorCreatePrice>
+  isErrorDbCategory: boolean;
+  isErrorDbItem: boolean;
+  isErrorDbBuyList: boolean;
+  isErrorDbBuyAct: boolean;
 }
 
 export const key: InjectionKey<Store<State>> = Symbol();
 
 const state = {
-  errorChangeCategory: false,
-  errorGetCategory: false,
-  errorCreateItem: false,
-  errorCreatePriceList: false,
-  errorChangeItemPrice: false,
+  isErrorDbCategory: false,
+  isErrorDbItem: false,
+  isErrorDbBuyList: false,
+  isErrorDbBuyAct: false,
 };
 
 const mutations = {
-  errorChangeCategory(state: State) {
-    state.errorChangeCategory = true;
+  isErrorDbCategory(state: State) {
+    state.isErrorDbCategory = true;
   },
-  errorGetCategory(state: State) {
-    state.errorGetCategory = true;
+  isErrorDbItem(state: State) {
+    state.isErrorDbItem = true;
   },
-  errorCreateItem(state: State) {
-    state.errorCreateItem = true;
-  },
-  errorCreatePrice(state: State) {
-    state.errorCreatePrice = true;
+  isErrorDbFalse(state: State) {
+    state.isErrorDbCategory = false;
+    state.isErrorDbItem = false;
+    state.isErrorDbBuyList = false;
+    state.isErrorDbBuyList = false;
   },
 
-  errorChangeItemPrice(state: State, id: number) {
-    state.errorChangeItemPrice = true;
+  isErrorDbBuyList(state: State) {
+    state.isErrorDbBuyList = true;
+  },
+  isErrorDbBuyAct(state: State) {
+    state.isErrorDbBuyList = true;
   },
 };
 
 const actions = {};
 
 const getters = {
-  getErrorChangeCategory(state: State) {
-    return state.errorChangeCategory;
+  getIsErrorCategory(state: State) {
+    return state.isErrorDbCategory;
   },
-  getErrorGetCategory(state: State) {
-    return state.errorGetCategory;
+  getErrorItem(state: State) {
+    return state.isErrorDbItem;
   },
-  getErrorCreateItem(state: State) {
-    return state.errorCreateItem;
+  getErrorBuyList(state: State) {
+    return state.isErrorDbBuyList;
   },
-  getErrorchangeItemPrice(state: State) {
-    return state.errorCreatePrice;
-  },
-  getErrorChangeItemPrice(state: State) {
-    //【課題】詳細な情報は無理がある？
-    return state.errorChangeItemPrice;
+  getErrorBuyAct(state: State) {
+    return state.isErrorDbBuyList;
   },
 };
 

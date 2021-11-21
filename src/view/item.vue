@@ -1,5 +1,6 @@
 <template>
   <navComponent></navComponent>
+  <errDbComponent></errDbComponent>
 
   <div
     class="text-success"
@@ -132,10 +133,6 @@
     </div>
   </div>
 
-  <div class="text-danger" v-if="errPriceInfo">
-    エラーが発生しました。管理者への問い合わせお願いします。
-  </div>
-
   <!-- :current="val" -->
 
   <!-- :next="categoryBuyInfoList[index + 1]"
@@ -144,7 +141,6 @@
   <div v-for="(val, index) in categoryBuyInfoList" :key="val" :index="index">
     <div v-if="val">
       <div class="input-group" style="margin-bottom: 10px">
-        <!-- 【課題】categoryBuyInfoList[index +1]==undefined.buyInfoIdならエラーでUI表示されなかったなぜ？ -->
         <itemComponent
           :val="val"
           :categoryBuyInfoList="categoryBuyInfoList"
@@ -168,10 +164,17 @@
       </div>
       <div
         class="text-danger"
-        style="margin-bottom: 10px"
-        v-if="errPriceUi[1] == true && errPriceUi[0] == val.buyInfoId"
+        style="margin-bottom: 5px"
+        v-if="val.item.price > 9999"
       >
         価格の限度額を超えています（0～9999円）
+      </div>
+      <div
+        class="text-danger"
+        style="margin-bottom: 5px"
+        v-if="val.item.name.length > 10"
+      >
+        名前は10文字以内で入力してください
       </div>
     </div>
   </div>
@@ -190,8 +193,9 @@ import { store } from "../store/store";
 import navComponent from "./component/nav.component.vue";
 import categoryComponent from "./component/category-list.component.vue";
 import itemComponent from "./component/item.component.vue";
+import errDbComponent from "./container/error-db.container.vue";
 
-import { BuyInfoList } from "../model/buy-info.model";
+import { BuyInfo, BuyInfoList } from "../model/buy-info.model";
 
 import { commonMount } from "./func/common-mount";
 
@@ -200,53 +204,50 @@ export default defineComponent({
     navComponent,
     categoryComponent,
     itemComponent,
+    errDbComponent,
   },
   //refに頼らない。
   setup() {
-    let itemName = ref<string | null>();
-    let itemPrice = ref<number | null>();
-    let categoryId = ref<string | null>();
-    let buyInfoList = ref<BuyInfoList>();
-    let activeCategory = ref("all");
-    let { categorys, uid } = commonMount();
-    let newItem = ref<boolean>(false);
-    let itemErrors = ref({ name: false, price: false, category: false });
-    let errorPrice = ref();
-    let errPriceUi = ref<[string | null, boolean]>([null, false]);
+    const itemName = ref<string | null>();
+    const itemPrice = ref<number | null>();
+    const categoryId = ref<string | null>();
+    const buyInfoList = ref<BuyInfoList>();
+    const activeCategory = ref("all");
+    const { categorys, uid } = commonMount();
+    const newItem = ref<boolean>(false);
+    const itemErrors = ref({ name: false, price: false, category: false });
+    const errorPrice = ref();
+
+    // const modal=ref(false)
+
+    const onActiveCategory = (id: string) => {
+      activeCategory.value = id;
+    };
 
     onMounted(() => {
-      buyInfoList.value = store.getters.getBuyInfoList; //computed
+      buyInfoList.value = store.getters.getBuyInfoList;
       errorPrice.value = store.getters.getErrorchangeItemPrice;
-    });
-
-
-    const errPriceInfo = computed((): any => {
-      if (store.getters.getErrorChangeItemPrice) {
-        buyInfoList.value = store.getters.getBuyInfoList; //【課題】これ反映している？
-        return store.getters.getErrorChangeItemPrice;
-      }
     });
 
     const categoryBuyInfoList = computed(() => {
       if (activeCategory.value == "all") {
         return buyInfoList.value;
       } else {
-        let result = buyInfoList.value?.filter((v) => {
-          return v.categoryId == activeCategory.value;
+        const result = buyInfoList.value?.filter((v: BuyInfo) => {
+          return v.categoryId == activeCategory.value; //関数の型
         });
         return result;
       }
     });
 
-    const createItemUi = () => {
+    const createItemUi = async () => {
       if (itemName.value == null) itemErrors.value.name = true;
       if (itemPrice.value == null) itemErrors.value.price = true;
       if (categoryId.value == null) itemErrors.value.category = true;
       if (!buyInfoList.value) {
         return;
       }
-
-      store
+      await store
         .dispatch("createItemStore", {
           categoryId: categoryId.value,
           name: itemName.value,
@@ -255,50 +256,28 @@ export default defineComponent({
           sort: buyInfoList.value.length + 1,
         })
         .then(() => {
-          console.log("i0");
-          buyInfoList.value = store.getters.getBuyInfoList;
-          itemName.value = null;
+          itemName.value = null; //【課題】awaitがないとstore終了前に処理されている。await storeだけでよいと思っている。
           itemPrice.value = null;
           categoryId.value = null;
-        })
-        .catch(() => {});
-
-      if (store.getters.getErrorCreateItem) {
-        alert("登録に失敗しました");
-        return;
-      }
+        });
     };
 
-    const changeItemNameUi = (buyInfoId: string, name: string) => {
+    const changeItemNameUi = async (buyInfoId: string, name: string) => {
+      if (name.length > 10) return;
       store.commit("changeItemNameStore", {
         buyInfoId,
         name,
         uid: uid.value,
       });
-      if (store.getters.getErrorCreateItem) {
-        console.log("1");
-        alert("登録に失敗しました");
-        return;
-      }
     };
 
     const changeItemPriceUi = (buyInfoId: string, price: number) => {
-      if (price > 10000) {
-        errPriceUi.value = [buyInfoId, true];
-        return;
-      } else {
-        errPriceUi.value = [null, false];
-        store.dispatch("changeItemPriceStore", {
-          //catchは使えない
-          buyInfoId,
-          price,
-          uid: uid.value,
-        });
-      }
-    };
-
-    const onActiveCategory = (id: string) => {
-      activeCategory.value = id;
+      if (price > 9999) return;
+      store.dispatch("changeItemPriceStore", {
+        buyInfoId,
+        price,
+        uid: uid.value,
+      });
     };
 
     const deleteItemUi = (id: string) => {
@@ -371,10 +350,6 @@ export default defineComponent({
       sortUpItemUi,
       sortDownItemUi,
       categoryBuyInfoList,
-      errPriceInfo,
-      errPriceUi,
-      // nextIndex,
-      // prevIndex
     };
   },
 });

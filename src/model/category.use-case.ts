@@ -12,19 +12,21 @@ export async function changeCategoryUc(
 ): Promise<void> {
   try {
     const category = createCategory(categoryId, name);
-    CategoryRepository.updateCategory(category, uid);
-  } catch (error) {
-    store.commit("errorChangeCategory"); //【課題】or　alert
+    await CategoryRepository.updateCategoryRep(category, uid);
+  } catch (e) {
+    store.commit("isErrorDbCategory");
+    console.error(`errMethod:changeCategoryUi,${e}`);
   }
 }
 
 export function getCategoryUc(uid: string) {
-  let result = CategoryRepository.getCategory(uid)
+  const result = CategoryRepository.getCategoryRep(uid)
     .then((value) => {
       return value;
     })
-    .catch(() => {
-      store.commit("errorGetCategory"); //【課題】throw？
+    .catch((e) => {
+      store.commit(`isErrorDbCategory`);
+      console.error(`errMethod:getBuyInfoList,${e}`);
     });
   return result;
 }

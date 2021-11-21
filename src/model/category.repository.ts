@@ -7,12 +7,15 @@ import {
 } from "firebase/firestore";
 import { Category } from "./category.model";
 
-function updateCategory(category: Category, uid: string) {
-  setDoc(doc(getFirestore(), "users/", uid, "categorys", String(category.id)), {
-    name: category.name,
-  });
+function updateCategoryRep(category: Category, uid: string) {
+  return setDoc(
+    doc(getFirestore(), "users/", uid, "categorys", String(category.id)),
+    {
+      name: category.name,
+    }
+  );
 }
-async function getCategory(uid: string): Promise<Array<Category>> {
+async function getCategoryRep(uid: string): Promise<Array<Category>> {
   const querySnapshot = await getDocs(
     collection(getFirestore(), "users", uid, "categorys")
   );
@@ -28,6 +31,6 @@ async function getCategory(uid: string): Promise<Array<Category>> {
 }
 
 export const CategoryRepository = {
-  updateCategory,
-  getCategory,
+  updateCategoryRep,
+  getCategoryRep,
 };

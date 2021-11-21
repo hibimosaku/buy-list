@@ -1,5 +1,5 @@
 <template>
-  <div class="col-12" style="margin:10px 0px;">
+  <div class="col-12" style="margin: 10px 0px">
     <div class="form-check form-check-inline">
       <input
         class="form-check-input"
@@ -46,7 +46,7 @@ export default {
   },
   emits: ["changefilName"],
   setup(_props: any, { emit }: any) {
-    let changefilName = (name: string) => {
+    const changefilName = (name: string) => {
       emit("changefilName", name);
     };
     return {

@@ -2,8 +2,8 @@ import { onMounted, ref } from "@vue/runtime-dom";
 import { store } from "../../store/store";
 
 export const commonMount = () => {
-  let categorys = ref<Array<string> | null>();
-  let uid = ref<string>(); //【課題】refで成立
+  const categorys = ref<Array<string> | null>();
+  const uid = ref<string>();
 
   onMounted(() => {
     uid.value = store.getters.getUid;

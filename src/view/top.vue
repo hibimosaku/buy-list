@@ -38,8 +38,8 @@ export default defineComponent({
     navComponent,
   },
   setup() {
-    let mail = ref<string>();
-    let pw = ref<string>();
+    const mail = ref<string>();
+    const pw = ref<string>();
 
     const router = useRouter();
 

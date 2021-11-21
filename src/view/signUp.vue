@@ -38,9 +38,9 @@ export default defineComponent({
     navComponent,
   },
   setup() {
-    // let store = useStore(key);
-    let mail = ref<string>();
-    let pw = ref<string>();
+    // const store = useStore(key);
+    const mail = ref<string>();
+    const pw = ref<string>();
 
     // const auth = getAuth();
     const router = useRouter();

@@ -27,7 +27,7 @@ import { getAuth } from "firebase/auth";
 // };
 // initializeApp(firebaseConfig);
 
-// let auth: any = null;
+// const auth: any = null;
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -43,7 +43,16 @@ const routes: Array<RouteRecordRaw> = [
 
   {
     path: "/",
-    component: top,
+    component: item,
+  },
+  {
+    path: "/:catchAll(.*)",
+    name: "NotFound",
+    component: () => import("../view/notfound.vue"),
+    meta: {
+      titele: "NotFoundページ",
+      description: "NotFoundページの説明",
+    },
   },
   {
     path: "/category",
