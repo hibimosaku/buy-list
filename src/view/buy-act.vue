@@ -1,8 +1,5 @@
 <template>
-  <navComponent></navComponent>
-  <errDbComponent></errDbComponent>
-
-  <div class="row g-3 small">
+  <div class="row g-3 small text-right">
     <filterBuyInfoListComponent
       :filterType="filterType"
       @changefilName="changefilName"
@@ -12,15 +9,13 @@
       <template #want>ないのみ</template>
     </filterBuyInfoListComponent>
   </div>
-  <button
-    type="button"
-    class="btn btn-success btn-sm"
-    @click="resetBuyResultUi"
-  >
-    リセット
-  </button>
 
-  <table class="table small">
+  <div class="text-right">
+    <button class="btn btn-primary btn-sm" @click="resetBuyResultUi">リセット</button>
+    <button class="btn btn-primary btn-sm" @click="resetBuyResultUi">買物完了Line</button>
+  </div>
+
+  <table class="table">
     <thead>
       <tr>
         <th scope="col">品目名</th>
@@ -30,7 +25,6 @@
         <th scope="col">ない</th>
       </tr>
     </thead>
-
     <tbody v-for="(val, index) in filterbuyListRq" :key="val" :index="index">
       <tr>
         <buyActComponent
@@ -40,7 +34,7 @@
       </tr>
     </tbody>
   </table>
-  <button class="btn btn-success btn-block" type="button" @click="buyFinUi">
+  <button class="btn btn-primary btn-block" type="button" @click="buyFinUi">
     購入完了
   </button>
 
@@ -97,12 +91,12 @@ export default defineComponent({
     const filterbuyListRq = computed((): BuyInfoList | null => {
       let result: BuyInfoList;
 
-      if (buyInfoList.value == undefined) return null;
-      if (activeCategory.value == "all") {
+      if (buyInfoList.value === undefined) return null;
+      if (activeCategory.value === "all") {
         result = buyInfoList.value.filter((v: BuyInfo) => {
-          if (filterStatus.value == "all") return v != null;
-          if (filterStatus.value == "no") return v.buyResult == false;
-          if (filterStatus.value == "buy") return v.buyResult == true;
+          if (filterStatus.value === "all") return v != null;
+          if (filterStatus.value === "no") return v.buyResult === false;
+          if (filterStatus.value === "buy") return v.buyResult === true;
           return null;
         });
         return result;
@@ -119,10 +113,10 @@ export default defineComponent({
           )
             return v.buyResult == false;
           if (
-            activeCategory.value == v.categoryId &&
-            filterStatus.value == "buy"
+            activeCategory.value === v.categoryId &&
+            filterStatus.value === "buy"
           )
-            return v.buyResult == true;
+            return v.buyResult === true;
           return null;
         });
         return result;
@@ -144,10 +138,16 @@ export default defineComponent({
     };
 
     const buyFinUi = () => {
-      store.commit("buyFinStore", {
+      store.dispatch("buyFinStore", {
         buyInfoList: buyInfoList.value,
         uid: uid.value,
-      });
+      }).then(()=>{
+        buyInfoList.value = store.getters.getBuyResultList;
+        alert('更新しました')
+      })
+      .catch(()=>{
+
+      })
     };
 
     const resetBuyResultUi = () => {
@@ -156,6 +156,7 @@ export default defineComponent({
         uid: uid.value,
       });
     };
+
 
     return {
       buyInfoList,
@@ -174,3 +175,18 @@ export default defineComponent({
   },
 });
 </script>
+<style lang="scss" scoped>
+table {
+    display: block;
+    overflow-y: scroll;
+    height: 390px;
+}
+table thead th {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    background-color: white;
+
+}
+
+</style>

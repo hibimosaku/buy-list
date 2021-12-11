@@ -27,10 +27,12 @@ async function changeBuyRequestNumUc(
 ) {
   try {
     const changeBuyInfo = BuyInfo.changeBuyRequestNum(buyInfo, buyRequestNum);
-    await BuyInfoRepository.updateItemNumRep(changeBuyInfo, uid);
+    console.log(changeBuyInfo)
+
+    await BuyInfoRepository.updateBuyRequestNumRep(changeBuyInfo, uid);
   } catch (e) {
     store.commit("isErrorDbBuyList");
-    console.error(`errMethod:changeBuyRequest,${e}`);
+    console.error(`errMethod:changeBuyRequestNum,${e}`);
     throw new Error();
   }
 }
@@ -52,9 +54,9 @@ async function changeBuyResultUc(
   }
 }
 
-async function finBuyStatusUc(data: BuyInfoList, uid: string) {
+async function finBuyUc(data: BuyInfoList, uid: string,day:BuyInfo['buyResultDay']) {
   try {
-    await BuyInfoRepository.updateItemListRep(data, uid);
+    await BuyInfoRepository.updateBuyfinRep(data, uid,day);
   } catch (e) {
     store.commit("isErrorDbBuyAct");
     console.error(`errMethod:finBuyStatus,${e}`);
@@ -62,9 +64,18 @@ async function finBuyStatusUc(data: BuyInfoList, uid: string) {
   }
 }
 
+async function resetBuyRequestUc(data:BuyInfoList,uid:string){
+  try {
+    await BuyInfoRepository.updateResetBuyRequestRep(data,uid);
+  }catch(e){
+    console.error(`errMethod:resetBuyRequestUc,${e}`);
+    throw new Error()
+  }
+}
+
 async function resetBuyResultUc(data: BuyInfoList, uid: string) {
   try {
-    await BuyInfoRepository.updateItemListRep(data, uid);
+    await BuyInfoRepository.updateResetBuyResultRep(data, uid);
   } catch (e) {
     store.commit("isErrorDbBuyAct");
     console.error(`errMethod:resetBuyResult,${e}`);
@@ -75,7 +86,8 @@ async function resetBuyResultUc(data: BuyInfoList, uid: string) {
 export const BuyInfoUseCase = {
   changeBuyRequestUc,
   changeBuyRequestNumUc,
-  finBuyStatusUc,
+  finBuyUc,
   changeBuyResultUc,
   resetBuyResultUc,
+  resetBuyRequestUc
 };

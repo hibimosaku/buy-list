@@ -95,7 +95,6 @@ async function sortDownItemUc(
     uid
   )
     .then((s) => {
-      console.log(s);
     })
     .catch((e) => {
       store.commit("isErrorDbItem");

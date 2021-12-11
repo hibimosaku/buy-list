@@ -28,7 +28,7 @@ const mutations = {
     }
   ): void {
     state.BuyInfoList.forEach((v) => {
-      if (v.buyInfoId == data.buyInfoId) {
+      if (v.buyInfoId === data.buyInfoId) {
         ItemUc.changeItemNameUc(v, data.name, data.uid)
           .then(() => {
             v.item = Item.changeItemName(v.item, data.name);
@@ -58,7 +58,7 @@ const mutations = {
     data: { buyRequestNum: number; buyInfoId: string; uid: string }
   ) {
     state.BuyInfoList.forEach((v) => {
-      if (v.buyInfoId == data.buyInfoId) {
+      if (v.buyInfoId === data.buyInfoId) {
         const num = createBuyRequestNum(data.buyRequestNum);
         BuyInfoUseCase.changeBuyRequestNumUc(data.buyRequestNum, v, data.uid)
           .then(() => {
@@ -72,11 +72,6 @@ const mutations = {
     });
   },
 
-  // sortItemListStore(state: State, data: { list: BuyInfoList; uid: string }) {
-  //   state.BuyInfoList = data.list;
-  //   ItemUc.updateItemList(data.list, data.uid);
-  // },
-
   deleteItemStore(
     state: State,
     data: { uid: string; buyInfoId: string }
@@ -84,7 +79,7 @@ const mutations = {
     ItemUc.deleteItemUc(data.uid, data.buyInfoId)
       .then(() => {
         state.BuyInfoList.forEach((v, key) => {
-          if (v.buyInfoId == data.buyInfoId) {
+          if (v.buyInfoId === data.buyInfoId) {
             delete state.BuyInfoList[key];
           }
         });
@@ -107,7 +102,7 @@ const mutations = {
     }
   ) {
     state.BuyInfoList.forEach((v) => {
-      if (v.buyInfoId == data.buyInfoId) {
+      if (v.buyInfoId === data.buyInfoId) {
         BuyInfoUseCase.changeBuyRequestUc(v, data.request, data.uid)
           .then(() => {
             v.buyRequest = data.request;
@@ -159,29 +154,55 @@ const mutations = {
   //状態のnull化
   resetBuyResultStore(state: State, data: { id: string; uid: string }) {
     state.BuyInfoList.forEach((v, k) => {
-      if (data.id == "all") {
-        if (v.buyRequest == true) {
+      if (data.id === "all") {
+        if (v.buyRequest === true) {
           state.BuyInfoList[k].buyResult = null;
         }
       } else {
-        if (data.id == v.categoryId && v.buyRequest == true) {
+        if (data.id === v.categoryId && v.buyRequest === true) {
           state.BuyInfoList[k].buyResult = null;
         }
       }
     });
-    BuyInfoUseCase.resetBuyResultUc(state.BuyInfoList, data.uid);
+    BuyInfoUseCase.resetBuyResultUc(state.BuyInfoList, data.uid)
   },
 
-  buyFinStore(state: State, data: { buyInfoList: BuyInfoList; uid: string }) {
-    state.BuyInfoList.forEach((v: BuyInfo, key) => {
-      if (v.buyResult == true) {
-        state.BuyInfoList[key] = BuyInfo.buyFin(v); //【課題→解決】上とは違うのがいや→参照「key」成功する。配列、オブジェクト
+  resetBuyRequestStore(state:State,data:{id:string,uid:string}){
+    state.BuyInfoList.forEach((v, k) => {
+      if (data.id === "all") {
+          state.BuyInfoList[k].buyRequest = false;
+      } else {
+        if (data.id === v.categoryId) {
+          state.BuyInfoList[k].buyRequest = false;
+        }
       }
-    });
-    BuyInfoUseCase.finBuyStatusUc(state.BuyInfoList, data.uid).catch(() => {
-      return;
-    });
+    });  
+    BuyInfoUseCase.resetBuyRequestUc(state.BuyInfoList,data.uid)
+
   },
+
+
+
+  // buyFinStore(state: State, data: { buyInfoList: BuyInfoList; uid: string }) {
+  //   BuyInfoUseCase.finBuyStatusUc(state.BuyInfoList, data.uid)
+  //   .then(()=>{
+  //     console.log('0')
+  //     state.BuyInfoList.forEach((v: BuyInfo, key) => {
+  //       if (v.buyResult === true) {
+
+  //         state.BuyInfoList[key] = BuyInfo.buyFin(v);
+  //         console.log('finSto',state.BuyInfoList[key],BuyInfo.buyFin(v))
+
+  //       }
+  //     });        
+  //   }).catch(()=>{
+  //     console.log('2')
+  //     throw new Error()
+  //   })
+  // },
+
+
+
 };
 
 const actions = {
@@ -229,7 +250,7 @@ const actions = {
     }
   ) {
     context.state.BuyInfoList.forEach((v) => {
-      if (v.buyInfoId == data.buyInfoId) {
+      if (v.buyInfoId === data.buyInfoId) {
         ItemUc.changeItemPriceUc(v, data.price, data.uid).then(() => {
           v.item = Item.changeItemPrice(v.item, data.price);
           return;
@@ -238,6 +259,21 @@ const actions = {
     });
   },
 
+  buyFinStore(context:{state: State}, data: { buyInfoList: BuyInfoList; uid: string }) {
+    const day = BuyInfo.createBuyResultDay()
+    return BuyInfoUseCase.finBuyUc(state.BuyInfoList, data.uid,day)
+    .then(()=>{
+      context.state.BuyInfoList.forEach((v: BuyInfo, key) => {
+        if (v.buyResult === true) {
+          context.state.BuyInfoList[key] = BuyInfo.buyFin(v,day);
+        }
+      });
+      // return    
+    }).catch(()=>{
+      throw new Error()
+    })
+  },
+  
   async sortUpItemStore(
     context: { commit: Commit; state: State },
     arg: {
@@ -251,7 +287,7 @@ const actions = {
       uid: string;
     }
   ) {
-    if (arg.prevIndex == null) return;
+    if (arg.prevIndex === null) return;
 
     if (arg.activeCategory === "all") {
       await ItemUc.sortUpItemUc(
@@ -308,7 +344,7 @@ const actions = {
       uid: string;
     }
   ) {
-    if (arg.nextIndex == null) return;
+    if (arg.nextIndex === null) return;
     if (arg.activeCategory === "all") {
       await ItemUc.sortDownItemUc(
         arg.targetIndex,
@@ -359,7 +395,7 @@ const getters = {
   },
   getBuyResultList: (state: State, uid: string) => {
     const result = state.BuyInfoList.filter((val: BuyInfo) => {
-      return val.buyRequest == true;
+      return val.buyRequest === true;
     });
     return result; //returnは、stateにしないとリアクティブにならない.component側でcomputed
   },

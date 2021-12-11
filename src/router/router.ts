@@ -1,11 +1,13 @@
 import { createRouter, RouteRecordRaw, createWebHashHistory } from "vue-router";
-import top from "../view/top.vue";
+import login from "../view/login.vue";
 import category from "../view/category.vue";
 import item from "../view/item.vue";
 import buyList from "../view/buy-list.vue";
 import buyAct from "../view/buy-act.vue";
 import signUp from "../view/signUp.vue";
 import test from "../view/test.vue";
+import common from "../view/common.vue";
+import forgetPw from "../view/forget-pw.vue";
 
 // import { getAuth } from "firebase/auth";
 
@@ -31,19 +33,58 @@ import { getAuth } from "firebase/auth";
 
 const routes: Array<RouteRecordRaw> = [
   {
-    path: "/top",
-    name: "top",
-    component: top,
+    path: "/login",
+    name: "login",
+    component: login,
   },
   {
     path: "/signUp",
     // name: "signUp",
     component: signUp,
   },
+  {
+    path:"/forgetPw",
+    component:forgetPw,
 
+  },
   {
     path: "/",
-    component: item,
+    component: common,
+    children: [
+      {
+        path: "/item",
+        name: "item",
+        component: item,
+        meta: {
+          requiresAuth: true,
+        },
+      },
+      {
+        path: "/category",
+        name: "category",
+        component: category,
+        meta: {
+          requiresAuth: true,
+        },
+      },
+      {
+        path: "/buyList",
+        name: "buyList",
+        component: buyList,
+        meta: { requiresAuth: true },
+      },
+      {
+        path: "/buyAct",
+        name: "buyAct",
+        component: buyAct,
+        meta: { requiresAuth: true },
+      },
+      {
+        path: "/test",
+        name: "test",
+        component: test,
+      },
+    ],
   },
   {
     path: "/:catchAll(.*)",
@@ -54,31 +95,13 @@ const routes: Array<RouteRecordRaw> = [
       description: "NotFoundページの説明",
     },
   },
-  {
-    path: "/category",
-    name: "category",
-    component: category,
-    meta: { requiresAuth: true },
-  },
 
-  {
-    path: "/item",
-    name: "item",
-    component: item,
-    meta: { requiresAuth: true },
-  },
-  {
-    path: "/buyList",
-    name: "buyList",
-    component: buyList,
-    meta: { requiresAuth: true },
-  },
-  {
-    path: "/buyAct",
-    name: "buyAct",
-    component: buyAct,
-    meta: { requiresAuth: true },
-  },
+  // {
+  //   path: "/item",
+  //   name: "item",
+  //   component: item,
+  //   meta: { requiresAuth: true },
+  // },
   {
     path: "/test",
     component: test,
@@ -87,8 +110,8 @@ const routes: Array<RouteRecordRaw> = [
 
 const router = createRouter({
   //createWebHistoryを以下に変更することにより、リロード時404エラーなくなった
-
   history: createWebHashHistory(),
+  // history: createWebHistory(),
   routes,
 });
 
@@ -102,14 +125,14 @@ router.beforeEach((to, from, next) => {
   if (requiresAuth) {
     onAuthStateChanged(getAuth(), async (user) => {
       //【課題】リポジトリにもっていく？
-      if (user && BuyInfoList && categorys.length == 9) {
+      if (user && BuyInfoList && categorys.length === 9) {
         next();
       } else if (user) {
-        await load(user.uid); //ここのawait消すとエラー
+        await load(user.uid);
         await store.commit("registerAuth", user.uid);
         next();
       } else {
-        router.push("./");
+        router.push("./login");
       }
     });
   } else {

@@ -40,12 +40,15 @@
   </div>
 </template>
 <script lang="ts">
+
 export default {
   props: {
     filterType: Array,
   },
   emits: ["changefilName"],
   setup(_props: any, { emit }: any) {
+    // const jsonpAdapter = require('axios-jsonp');
+
     const changefilName = (name: string) => {
       emit("changefilName", name);
     };

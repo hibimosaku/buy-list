@@ -4,6 +4,8 @@ import {
   onAuthStateChanged,
   signInWithEmailAndPassword,
   signOut,
+  deleteUser,
+  sendPasswordResetEmail,
 } from "firebase/auth";
 import {
   getFirestore,
@@ -13,15 +15,27 @@ import {
 } from "firebase/firestore";
 
 async function signUp(mail: string, pw: string) {
-  createUserWithEmailAndPassword(getAuth(), mail, pw)
-    //ログイン時、DBにドキュメント作成
-    //【課題→解決】for文で、何回もDB送信している。
-    .then((userCredential) => {
-      setDoc(
-        doc(getFirestore(), "users/", userCredential.user.uid, "categorys/"),
-        [...new Array(10)].map((_) => ({ name: "" }))
-      );
-    });
+  return (
+    createUserWithEmailAndPassword(getAuth(), mail, pw)
+      //ログイン時、DBにドキュメント作成
+      //【課題→解決】for文で、何回もDB送信している。
+      .then((userCredential) => {
+        for (let i = 0; i < 9; i++) {
+          setDoc(
+            doc(
+              getFirestore(),
+              "users/",
+              userCredential.user.uid,
+              "categorys/",
+              String(i)
+            ),
+            {
+              name: "",
+            }
+          );
+        }
+      })
+  );
 }
 
 //失敗
@@ -31,16 +45,32 @@ function userConfirm() {
   });
 }
 async function signIn(mail: string, pw: string) {
-  return await signInWithEmailAndPassword(getAuth(), mail, pw);
+  return signInWithEmailAndPassword(getAuth(), mail, pw);
 }
 
-async function signOutR() {
-  await signOut(getAuth());
+async function signOutRep() {
+  return signOut(getAuth());
+}
+
+async function userDelete(){
+  onAuthStateChanged(getAuth(),(user)=>{
+    if(user){
+      return deleteUser(user)
+    }else{
+      throw new Error('user is no')
+    }
+  })
+}
+
+async function forgetPwRp(mail:string){
+  return sendPasswordResetEmail(getAuth(), mail)
 }
 
 export const AuthRepository = {
   signUp,
   signIn,
   userConfirm,
-  signOutR,
+  signOutRep,
+  userDelete,
+  forgetPwRp
 };

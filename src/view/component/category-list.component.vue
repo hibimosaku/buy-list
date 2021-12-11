@@ -1,5 +1,5 @@
 <template>
-  <div class="container fixed-bottom" style="background-color: #ffffff">
+  <div class="container fixed-bottom" style="background-color: #ffffff;">
     <div class="row btn-group-sm" role="group" aria-label="Basic example">
       <button
         type="button"
@@ -23,6 +23,7 @@
       >
         {{ categorys[n - 1].name }}
       </button>
+
     </div>
     <div class="row btn-group-sm" role="group" aria-label="Basic example">
       <button
@@ -30,12 +31,17 @@
         class="col btn btn-outline-primary"
         v-for="n in 5"
         :key="n"
+        :class="{
+          'col btn btn-outline-primary active': activeCategory == n + 3,
+          'col btn btn-outline-primary': activeCategory != n + 3,
+        }"
         @click="onActiveCategory(n + 3)"
       >
         {{ categorys[n + 3].name }}
       </button>
     </div>
   </div>
+
 </template>
 
 <script lang="ts">

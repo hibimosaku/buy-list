@@ -6,7 +6,7 @@
     <button
       type="button"
       :class="{
-        'btn btn-primary': val.buyResult == true,
+        'btn btn-primary': val.buyResult === true,
         'btn btn-light': val.buyResult != true,
       }"
       @click="changeBuyResultUi(true, val.buyInfoId)"
@@ -33,7 +33,7 @@
     <button
       type="button"
       :class="{
-        'btn btn-primary': val.buyResult == false,
+        'btn btn-primary': val.buyResult === false,
         'btn btn-light': val.buyResult != false,
       }"
       @click="changeBuyResultUi(false, val.buyInfoId)"

@@ -13,7 +13,7 @@ import { BuyInfoList, BuyInfo } from "./buy-info.model";
 
 async function createBuyInfoRep(buyInfo: BuyInfo, uid: string, sort: number) {
   return setDoc(
-    doc(getFirestore(), "users", "a", "items", String(buyInfo.buyInfoId)),
+    doc(getFirestore(), "users", uid, "items", String(buyInfo.buyInfoId)),
     {
       category_id: String(buyInfo.categoryId),
       name: buyInfo.item.name,
@@ -46,10 +46,12 @@ function updateItemPriceRep(buyInfo: BuyInfo, uid: string): Promise<void> {
   );
 }
 
-function updateItemNumRep(buyInfo: BuyInfo, uid: string) {
-  updateDoc(doc(getFirestore(), "users", uid, "items", buyInfo.buyInfoId), {
+//購入数の変更
+async function updateBuyRequestNumRep(buyInfo: BuyInfo, uid: string) {
+  console.log(buyInfo.buyInfoId)
+  return updateDoc(doc(getFirestore(), "users", uid, "items", buyInfo.buyInfoId), {
     buyRequestNum: buyInfo.buyRequestNum.num,
-  });
+  })
 }
 
 function deleteItemRep(uid: string, buyInfoId: string) {
@@ -65,9 +67,9 @@ async function sortUpItemRep(
   prevBuyInfo: BuyInfo,
   uid: string
 ): Promise<void> {
-  //【課題】まとめて更新と以下の部分更新どちらがよい？ケースによる。利用者少数。件数30件。データサイズ。負荷試験のレスポンス。
+  //【課題→解決】まとめて更新と以下の部分更新どちらがよい？ケースによる。利用者少数。件数30件。データサイズ。負荷試験のレスポンス。
   await updateDoc(
-    doc(getFirestore(), "users", "a", "items", targetBuyInfo.buyInfoId),
+    doc(getFirestore(), "users", uid, "items", targetBuyInfo.buyInfoId),
     {
       sort: prevIndex,
     }
@@ -87,7 +89,7 @@ async function sortDownItemRep(
   nextBuyInfo: BuyInfo,
   uid: string
 ): Promise<void> {
-  //【課題】firestoreのリファレンスどおりだが、なぜエラー時は戻り値あるか不明？
+  //【課題→解決】firestoreのリファレンスどおりだが、なぜエラー時は戻り値あるか不明？
   await updateDoc(
     doc(getFirestore(), "users", uid, "items", targetBuyInfo.buyInfoId),
     {
@@ -121,19 +123,65 @@ function updateBuyResultRep(buyInfo: BuyInfo, uid: string) {
     }
   );
 }
+//リクエストリセット
+function updateResetBuyRequestRep(data:BuyInfoList,uid:string){
+  return data.forEach((v:BuyInfo,k:number)=>{
+    if(v.buyRequest===false){
+      updateDoc(doc(getFirestore(),"users",uid,"items",v.buyInfoId),{
+        buyRequest: false,
+      })
+    }
+  })
+}
 
+
+//買物リセット
+function updateResetBuyResultRep(data:BuyInfoList,uid:string){
+  return data.forEach((v:BuyInfo,k:number)=>{
+    if(v.buyResult===false || v.buyResult===true){
+      updateDoc(doc(getFirestore(),"users",uid,"items",v.buyInfoId),{
+        buyResult: null,
+      })
+    }
+  })
+}
+
+//買物完了
+function updateBuyfinRep(data: BuyInfoList, uid: string,day:BuyInfo['buyResultDay']) {
+  return data.forEach((v: BuyInfo, k: number) => {
+    if(v.buyResult===true){
+      setDoc(doc(getFirestore(), "users", uid, "items", String(v.buyInfoId)), {
+        category_id: String(v.categoryId),
+        name: v.item.name,
+        price: v.item.price,
+        buyRequestNum: v.buyRequestNum.num,
+        buyRequest: false,
+        buyResult: null,
+        buyResultDay: day,
+        sort: k,
+      });  
+    }else{
+      return
+    }
+  });
+}
+
+
+//全データの更新
 function updateItemListRep(data: BuyInfoList, uid: string) {
-  return data.forEach((val: BuyInfo, index: number) => {
-    setDoc(doc(getFirestore(), "users", uid, "items", String(val.buyInfoId)), {
-      category_id: String(val.categoryId),
-      name: val.item.name,
-      price: val.item.price,
-      buyRequestNum: val.buyRequestNum.num,
-      buyRequest: val.buyRequest,
-      buyResult: val.buyResult,
-      buyResultDay: val.buyResultDay,
-      sort: index,
-    });
+  return data.forEach((v: BuyInfo, k: number) => {
+    if(v.buyResult===true){
+      setDoc(doc(getFirestore(), "users", uid, "items", String(v.buyInfoId)), {
+        category_id: String(v.categoryId),
+        name: v.item.name,
+        price: v.item.price,
+        buyRequestNum: v.buyRequestNum.num,
+        buyRequest: v.buyRequest,
+        buyResult: v.buyResult,
+        buyResultDay: v.buyResultDay,
+        sort: k,
+      });  
+    }
   });
 }
 
@@ -173,7 +221,10 @@ export const BuyInfoRepository = {
   updateItemNameRep,
   updateItemPriceRep,
   updateBuyResultRep,
-  updateItemNumRep,
+  updateBuyRequestNumRep,
   sortUpItemRep,
   sortDownItemRep,
+  updateBuyfinRep,
+  updateResetBuyRequestRep,
+  updateResetBuyResultRep
 };

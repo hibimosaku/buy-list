@@ -3,12 +3,13 @@
 import { AuthRepository } from "./auth.repository";
 
 async function signUpUc(mail: string, pw: string) {
-  await AuthRepository.signUp(mail, pw)
-    .then((val) => {
+  return AuthRepository.signUp(mail, pw)
+    .then(() => {
+      console.log("成功");
       return;
     })
     .catch((error) => {
-      throw new Error();
+      throw new Error(`${error},sign up is failure`);
     });
 }
 
@@ -22,18 +23,40 @@ async function loginUc(mail: string, pw: string) {
     });
 }
 
-async function signOUtUc(mail: string, pw: string) {
-  await AuthRepository.signOutR()
-    .then((val) => {
+async function signOUtUc() {
+  await AuthRepository.signOutRep()
+    .then(() => {
       return;
     })
     .catch((error) => {
-      throw new Error();
+      throw new Error("signOut is failure");
     });
+}
+
+async function userDeleteUc(){
+  await AuthRepository.userDelete()
+    .then(()=>{
+      return
+    })
+    .catch((e)=>{
+      throw new Error("userDelete is failure")
+    })
+}
+
+async function forgetPwUc(mail:string){
+  await AuthRepository.forgetPwRp(mail)
+    .then(()=>{
+      return
+    })
+    .catch(()=>{
+      throw new Error("error")
+    })
 }
 
 export const AuthUseCase = {
   loginUc,
   signUpUc,
   signOUtUc,
+  userDeleteUc,
+  forgetPwUc
 };

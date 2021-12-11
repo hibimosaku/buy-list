@@ -10,7 +10,7 @@
     <button
       type="button"
       :class="{
-        'btn btn-primary btn-sm': val.buyRequest == false,
+        'btn btn-primary btn-sm': val.buyRequest === false,
         'btn btn-light btn-sm': val.buyRequest != false,
       }"
       @click="changeBuyRequestDoUi(false, val.buyInfoId)"
@@ -38,7 +38,7 @@
     <button
       type="button"
       :class="{
-        'btn btn-primary btn-sm': val.buyRequest == true,
+        'btn btn-primary btn-sm': val.buyRequest === true,
         'btn btn-light btn-sm': val.buyRequest != true,
       }"
       @click="changeBuyRequestDoUi(true, val.buyInfoId)"
@@ -68,7 +68,7 @@
       @change="changeBuyRequestNumUi(val.buyRequestNum.num, val.buyInfoId)"
       v-model="val.buyRequestNum.num"
       :disabled="
-        val.buyRequest == false || val.buyRequest == null ? true : false
+        val.buyRequest === false || val.buyRequest === null ? true : false
       "
     >
       <option style="font-size: 5px" v-for="num in 9" :key="num">

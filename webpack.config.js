@@ -1,5 +1,5 @@
 const webpack = require('webpack');
-// const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const { VueLoaderPlugin } = require('vue-loader');
 
 const webpack_config = {
@@ -31,22 +31,26 @@ const webpack_config = {
           appendTsSuffixTo: [/\.vue$/],
         },
       },
-      // {
-      //   test: /\.html$/,
-      //   use: 'html-loader',
-      // },
+      {
+        test: /\.css$/,
+        use: [
+          'vue-style-loader',
+          'css-loader',
+        ]
+      },
+
       {
         test: /\.vue$/,
         use: 'vue-loader',
       },
-      // {
-      //   test: /\.s[ac]ss$/,
-      //   use: [MiniCssExtractPlugin.loader, 'css-loader', 'sass-loader'],
-      // },
-      // {
-      //   test: /\.(gif|png|jpe?g|)$/,
-      //   use: 'url-loader',
-      // },
+      {
+        test: /\.s[ac]ss$/,
+        use: [MiniCssExtractPlugin.loader, 'css-loader', 'sass-loader'],
+      },
+      {
+        test: /\.(gif|png|jpe?g|)$/,
+        use: 'url-loader',
+      },
     ],
   },
 
@@ -58,9 +62,9 @@ const webpack_config = {
   },
 
   plugins: [
-    // new MiniCssExtractPlugin({
-    //   filename: 'assets/css/index.css',
-    // }),
+    new MiniCssExtractPlugin({
+      filename: 'assets/css/index.css',
+    }),
     new VueLoaderPlugin(),
     // new webpack.DefinePlugin({
     //   'process.env': {
@@ -69,5 +73,4 @@ const webpack_config = {
     // }),
   ],
 };
-
 module.exports = webpack_config;

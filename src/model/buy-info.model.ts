@@ -11,7 +11,7 @@ export interface BuyInfo {
   buyInfoId: ID["raw"];
   item: Item;
   categoryId: Category["id"];
-  buyRequest: boolean | null;
+  buyRequest: boolean;
   buyRequestNum: BuyRequestNum;
   buyResult: boolean | null;
   buyResultDay: string | null;
@@ -82,18 +82,22 @@ function changeBuyResultDo(
   };
 }
 
-function buyFin(buyInfo: BuyInfo): BuyInfo {
+function buyFin(buyInfo: BuyInfo,day:BuyInfo['buyResultDay']): BuyInfo {
+  return {
+    ...buyInfo,
+    buyRequest: false,
+    buyResultDay:day
+  };
+}
+
+function createBuyResultDay():BuyInfo['buyResultDay']{
   const today = new Date();
   const year = today.getFullYear();
   const month = today.getMonth() + 1;
   const day = today.getDate();
   const buyResultDay = String(year) + String(month) + String(day);
 
-  return {
-    ...buyInfo,
-    buyRequest: false,
-    buyResultDay,
-  };
+  return buyResultDay
 }
 
 function RetrieveIndex(
@@ -102,7 +106,7 @@ function RetrieveIndex(
 ): number | undefined {
   let result;
   result = buyInfoList.findIndex((v, k) => {
-    return v.buyInfoId == buyInfoId;
+    return v.buyInfoId === buyInfoId;
   });
   return result;
 }
@@ -132,8 +136,7 @@ export const BuyInfo = {
   changeBuyRequestDo,
   changeBuyRequestNum,
   changeBuyResultDo,
-  // purifyitemList,
   buyFin,
   RetrieveIndex,
-  // orderUpItem
+  createBuyResultDay
 };

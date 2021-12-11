@@ -13,7 +13,7 @@ export type Item = VoBase<
   },
   "Item"
 >;
-
+//【学習】key ofの使い方
 // interface VoBaseInterface<P extends { [k: string]: any }, Tag extends string> {
 //   readonly _tag: Tag;
 //   readonly [K in keyof P]: P[K];//for

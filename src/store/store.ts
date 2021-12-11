@@ -5,7 +5,9 @@ import BuyInfoList from "./modules/buy-info-store";
 import auth from "./modules/auth-store";
 import error from "./modules/error-store";
 
-export interface State {}
+export interface State {
+  // nowPage:string
+}
 
 // define injection key
 export const key: InjectionKey<Store<State>> = Symbol();

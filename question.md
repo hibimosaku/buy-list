@@ -1,9 +1,76 @@
+12/12
+・たぶん型がぐちゃぐちゃ
+  - model,コンポーネント、firebase
+・気になる点
+  - ファイルごとの整理
+・追加機能（余裕あれば）
+  - css整理
+  - ページ説明（ポップオーバー）
+    - 項目にカーソルを置くと、説明書きが表示
+  - 並び替えのマウスで移動（出来なかったので）
+  - 並び替えボタン押したときのhoverがおかしい
+・ポートフォリオ
+  - どのぐらいの単位でつくるのがよいか？
+    - ひと月レベル？
+
+  - 新しい技術（機能）？
+
+・フリーランス案件
+
+
+7. firebase
+  - cloud functionsエラー
+    1. 関数処理で使っているライブラリが、functionsの中のpackage.jsonに入っているか？
+    2. GCPからcloud storageのデータを削除する
+   　　参考：https://zenn.dev/imaginelab/scraps/a9257aac32d0be
+    3. GCPからcloud functionsの権限にAll usersを追加
+    　 参考：https://qiita.com/toshiaki_takase/items/ce65cd5582a80917b52f
+
+
+12/4
+gitignore
+https://www.toptal.com/developers/gitignore
+11/28
+## できなかった
+・line送信失敗
+  - 方法　axios(アクシオス)
+  - 原因　cors 
+  - 解決方法
+    - jsonp？
+    - サーバーサイドでの処理？
+    - firebase cloud functions？→これ
+  
+・ターミナルエラー vue.tsになっているがbuildでは成功なので問題ななし
+・webpackでのscss
+
+
+## cors（Cross-Origin Resource Sharing）の考え方
+・ブラウザでのエラー
+・origin === protocol + domain + port number
+・エラー時の対策は？
+  - クライアントサイド：特になし
+  - サーバサイド：「Access-Control-Allow-Origin:」の追加が必要
+・フロントでできることは？
+  - サーバサイドから送信
+  - firebase cloud functionsでは？
+
+## web api
+- リクエストに必要な情報
+  - APIに接続するための情報
+    - APIエンドポイント
+    - APIキー
+  - APIに送信する情報：各APIのドキュメントに細かく記載
+    - HTTPメソッド
+    - ヘッダ：データの種類、APIキーなどの認証情報
+    - ボディ：JSON形式で送受信したい情報
+
+
 11/21
 ## idの重複チェックいる？
 firestoreでチェックしてくれるし、一意のIDを生成したつもりなので不要かなと
 
-## === と == 違い
-
+## === と === 違い
+原則===で。==を使うことは基本ない。
 
 ## ブラウザなしでコード書けない
 
@@ -77,6 +144,7 @@ storeの役割・状態管理、meesageパス
 ## buy-request.vue
   ・したいこと
   　リロード時にデータ消去させない。localstoragの利用
+    →localstorgeではなく、routerのbeforeachを利用
   ・現状
   　画面操作すると、×
 

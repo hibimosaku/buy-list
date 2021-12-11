@@ -1,11 +1,8 @@
 <template>
-  <navComponent></navComponent>
-  <errDbComponent></errDbComponent>
-
   <div
-    class="text-success"
+    class="text-primary"
     style="margin-bottom: 10px"
-    @click="newItem == true ? (newItem = false) : (newItem = true)"
+    @click="newItem = !newItem"
   >
     <div v-if="!newItem">
       <svg
@@ -39,8 +36,8 @@
   <div v-if="newItem">
     <div
       :class="{
-        'input-group input-group-sm mb-3': itemErrors.name == false,
-        'input-group input-group-sm': itemErrors.name == true,
+        'input-group input-group-sm mb-3': itemErrors.name === false,
+        'input-group input-group-sm': itemErrors.name === true,
       }"
     >
       <span
@@ -61,13 +58,13 @@
       品目名の入力お願いします。
     </p>
     <!-- <p class="text-danger small" v-if="itemName.length>10">
-      品目名は10文字以内の入力でお願いします。
-    </p> -->
+          品目名は10文字以内の入力でお願いします。
+        </p> -->
 
     <div
       :class="{
-        'input-group input-group-sm mb-3': itemErrors.price == false,
-        'input-group input-group-sm': itemErrors.price == true,
+        'input-group input-group-sm mb-3': itemErrors.price === false,
+        'input-group input-group-sm': itemErrors.price === true,
       }"
     >
       <span
@@ -90,8 +87,8 @@
 
     <div
       :class="{
-        'input-group input-group-sm mb-3': itemErrors.category == false,
-        'input-group input-group-sm': itemErrors.category == true,
+        'input-group input-group-sm mb-3': itemErrors.category === false,
+        'input-group input-group-sm': itemErrors.category === true,
       }"
     >
       <label
@@ -133,48 +130,51 @@
     </div>
   </div>
 
-  <!-- :current="val" -->
-
-  <!-- :next="categoryBuyInfoList[index + 1]"
-          :prev="categoryBuyInfoList[index - 1]" -->
-
-  <div v-for="(val, index) in categoryBuyInfoList" :key="val" :index="index">
-    <div v-if="val">
-      <div class="input-group" style="margin-bottom: 10px">
-        <itemComponent
-          :val="val"
-          :categoryBuyInfoList="categoryBuyInfoList"
-          :index="index"
-          :nextBuyInfoId="
-            categoryBuyInfoList[index + 1] == undefined
-              ? undefined
-              : categoryBuyInfoList[index + 1].buyInfoId
-          "
-          :prevBuyInfoId="
-            categoryBuyInfoList[index - 1] == undefined
-              ? undefined
-              : categoryBuyInfoList[index - 1].buyInfoId
-          "
-          @changeItemNameUi="changeItemNameUi"
-          @changeItemPriceUi="changeItemPriceUi"
-          @deleteItemUi="deleteItemUi"
-          @sortUpItemUi="sortUpItemUi"
-          @sortDownItemUi="sortDownItemUi"
-        ></itemComponent>
-      </div>
-      <div
-        class="text-danger"
-        style="margin-bottom: 5px"
-        v-if="val.item.price > 9999"
-      >
-        価格の限度額を超えています（0～9999円）
-      </div>
-      <div
-        class="text-danger"
-        style="margin-bottom: 5px"
-        v-if="val.item.name.length > 10"
-      >
-        名前は10文字以内で入力してください
+  <div
+    :style="[
+      newItem
+        ? 'overflow:scroll; height:250px;'
+        : 'overflow:scroll; height:430px;',
+    ]"
+  >
+    <div v-for="(val, index) in categoryBuyInfoList" :key="val" :index="index">
+      <div v-if="val">
+        <div class="input-group" style="margin-bottom: 10px">
+          <itemComponent
+            :val="val"
+            :categoryBuyInfoList="categoryBuyInfoList"
+            :index="index"
+            :nextBuyInfoId="
+              categoryBuyInfoList[index + 1] === undefined
+                ? undefined
+                : categoryBuyInfoList[index + 1].buyInfoId
+            "
+            :prevBuyInfoId="
+              categoryBuyInfoList[index - 1] === undefined
+                ? undefined
+                : categoryBuyInfoList[index - 1].buyInfoId
+            "
+            @changeItemNameUi="changeItemNameUi"
+            @changeItemPriceUi="changeItemPriceUi"
+            @deleteItemUi="deleteItemUi"
+            @sortUpItemUi="sortUpItemUi"
+            @sortDownItemUi="sortDownItemUi"
+          ></itemComponent>
+        </div>
+        <div
+          class="text-danger"
+          style="margin-bottom: 5px"
+          v-if="val.item.price > 9999"
+        >
+          価格の限度額を超えています（0～9999円）
+        </div>
+        <div
+          class="text-danger"
+          style="margin-bottom: 5px"
+          v-if="val.item.name.length > 10"
+        >
+          名前は10文字以内で入力してください
+        </div>
       </div>
     </div>
   </div>
@@ -218,8 +218,6 @@ export default defineComponent({
     const itemErrors = ref({ name: false, price: false, category: false });
     const errorPrice = ref();
 
-    // const modal=ref(false)
-
     const onActiveCategory = (id: string) => {
       activeCategory.value = id;
     };
@@ -227,23 +225,29 @@ export default defineComponent({
     onMounted(() => {
       buyInfoList.value = store.getters.getBuyInfoList;
       errorPrice.value = store.getters.getErrorchangeItemPrice;
+      // itemPage.value=true
     });
-
     const categoryBuyInfoList = computed(() => {
-      if (activeCategory.value == "all") {
+      if (activeCategory.value === "all") {
         return buyInfoList.value;
       } else {
-        const result = buyInfoList.value?.filter((v: BuyInfo) => {
-          return v.categoryId == activeCategory.value; //関数の型
-        });
-        return result;
+        if (buyInfoList.value) {
+          const result = buyInfoList.value.filter((v: BuyInfo) => {
+            return (
+              v.categoryId === activeCategory.value
+            );
+          });
+          return result;
+        } else {
+          throw new Error("buyInfolist is undefined");
+        }
       }
     });
 
     const createItemUi = async () => {
-      if (itemName.value == null) itemErrors.value.name = true;
-      if (itemPrice.value == null) itemErrors.value.price = true;
-      if (categoryId.value == null) itemErrors.value.category = true;
+      if (itemName.value === null) itemErrors.value.name = true;
+      if (itemPrice.value === null) itemErrors.value.price = true;
+      if (categoryId.value === null) itemErrors.value.category = true;
       if (!buyInfoList.value) {
         return;
       }
@@ -256,7 +260,7 @@ export default defineComponent({
           sort: buyInfoList.value.length + 1,
         })
         .then(() => {
-          itemName.value = null; //【課題】awaitがないとstore終了前に処理されている。await storeだけでよいと思っている。
+          itemName.value = null; //【課題→解決】awaitがないとstore終了前に処理されている。await storeだけでよいと思っている。
           itemPrice.value = null;
           categoryId.value = null;
         });
@@ -293,9 +297,9 @@ export default defineComponent({
       prevBuyInfoId: string | undefined,
       categoryBuyInfoList: BuyInfoList
     ) => {
-      if (index == 0) return;
-      if (buyInfoList.value == undefined) return;
-      if (prevBuyInfoId == undefined) return;
+      if (index === 0) return;
+      if (buyInfoList.value === undefined) return;
+      if (prevBuyInfoId === undefined) return;
 
       store.dispatch("sortUpItemStore", {
         buyInfoList: [...buyInfoList.value],
@@ -315,9 +319,9 @@ export default defineComponent({
       nextBuyInfoId: string | undefined,
       categoryBuyInfoList: BuyInfoList
     ) => {
-      if (buyInfoList.value == undefined) return;
-      if (nextBuyInfoId == undefined) return;
-      if (index == buyInfoList.value.length - 1) return;
+      if (buyInfoList.value === undefined) return;
+      if (nextBuyInfoId === undefined) return;
+      if (index === buyInfoList.value.length - 1) return;
 
       store.dispatch("sortDownItemStore", {
         buyInfoList: [...buyInfoList.value],
@@ -354,3 +358,4 @@ export default defineComponent({
   },
 });
 </script>
+<style></style>
