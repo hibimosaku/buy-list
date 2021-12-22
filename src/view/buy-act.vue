@@ -73,7 +73,6 @@ export default defineComponent({
     const activeCategory = ref();
     const filterStatus = ref<string>("all" || "buy" || "no");
     const { categorys, uid } = commonMount();
-
     const filterType = ref<Array<string>>();
     filterType.value = ["all", "buy", "no"];
 
@@ -176,17 +175,18 @@ export default defineComponent({
 });
 </script>
 <style lang="scss" scoped>
-table {
+@media screen and(max-height:670px)and(max-width:420px){
+  table {
     display: block;
     overflow-y: scroll;
-    height: 390px;
-}
-table thead th {
+    height: 400px;
+  }
+  table thead {
     position: sticky;
     top: 0;
     z-index: 1;
     background-color: white;
-
+  }
 }
-
 </style>
+

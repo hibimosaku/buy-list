@@ -14,33 +14,62 @@
 .fade-enter-to {
   opacity: 1;
 }
+/*!*******************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js!./node_modules/vue-loader/dist/stylePostLoader.js!./node_modules/sass-loader/dist/cjs.js!./node_modules/vue-loader/dist/index.js??ruleSet[1].rules[9].use[0]!./src/view/item.vue?vue&type=style&index=0&id=29347e34&lang=scss ***!
+  \*******************************************************************************************************************************************************************************************************************************************************************************/
+.list {
+  display: block;
+  overflow-y: scroll;
+}
+.list_active_newItem {
+  height: 480px;
+}
+.list_inActive_newItem {
+  height: 670px;
+}
+@media screen and (max-height: 670px) and (max-width: 420px) {
+.list {
+    display: block;
+    overflow-y: scroll;
+}
+.list_active_newItem {
+    height: 250px;
+}
+.list_inActive_newItem {
+    height: 440px;
+}
+}
 /*!***********************************************************************************************************************************************************************************************************************************************************************************************!*\
   !*** css ./node_modules/css-loader/dist/cjs.js!./node_modules/vue-loader/dist/stylePostLoader.js!./node_modules/sass-loader/dist/cjs.js!./node_modules/vue-loader/dist/index.js??ruleSet[1].rules[9].use[0]!./src/view/buy-list.vue?vue&type=style&index=0&id=3ba4c526&lang=scss&scoped=true ***!
   \***********************************************************************************************************************************************************************************************************************************************************************************************/
 @charset "UTF-8";
 /*　スクロールバーの実装 */
+@media screen and (max-height: 670px) and (max-width: 420px) {
 table[data-v-3ba4c526] {
-  display: block;
-  overflow-y: scroll;
-  height: 410px;
+    display: block;
+    overflow-y: scroll;
+    height: 400px;
 }
 table thead[data-v-3ba4c526] {
-  position: sticky;
-  top: 0;
-  z-index: 1;
-  background-color: white;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    background-color: white;
+}
 }
 /*!**********************************************************************************************************************************************************************************************************************************************************************************************!*\
   !*** css ./node_modules/css-loader/dist/cjs.js!./node_modules/vue-loader/dist/stylePostLoader.js!./node_modules/sass-loader/dist/cjs.js!./node_modules/vue-loader/dist/index.js??ruleSet[1].rules[9].use[0]!./src/view/buy-act.vue?vue&type=style&index=0&id=07e6598c&lang=scss&scoped=true ***!
   \**********************************************************************************************************************************************************************************************************************************************************************************************/
+@media screen and (max-height: 670px) and (max-width: 420px) {
 table[data-v-07e6598c] {
-  display: block;
-  overflow-y: scroll;
-  height: 390px;
+    display: block;
+    overflow-y: scroll;
+    height: 400px;
 }
-table thead th[data-v-07e6598c] {
-  position: sticky;
-  top: 0;
-  z-index: 1;
-  background-color: white;
+table thead[data-v-07e6598c] {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    background-color: white;
+}
 }

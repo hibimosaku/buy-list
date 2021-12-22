@@ -1,5 +1,5 @@
 <template>
-  <div class="container fixed-bottom" style="background-color: #ffffff;">
+  <div class="fixed-bottom" style="background-color: #ffffff;">
     <div class="row btn-group-sm" role="group" aria-label="Basic example">
       <button
         type="button"

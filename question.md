@@ -1,4 +1,7 @@
 12/12
+
+・firebaseのoncall
+
 ・たぶん型がぐちゃぐちゃ
   - model,コンポーネント、firebase
 ・気になる点
@@ -9,16 +12,30 @@
     - 項目にカーソルを置くと、説明書きが表示
   - 並び替えのマウスで移動（出来なかったので）
   - 並び替えボタン押したときのhoverがおかしい
+
+lineapi
+gitignore
+forcepush
+
 ・ポートフォリオ
   - どのぐらいの単位でつくるのがよいか？
     - ひと月レベル？
+
+投稿
+・過去
+・新しいことを記事にする
+  - vue.js
+    - 次のver
+
+
+・過去と新しい記事を合わせもつ
 
   - 新しい技術（機能）？
 
 ・フリーランス案件
 
 
-7. firebase
+1. firebase
   - cloud functionsエラー
     1. 関数処理で使っているライブラリが、functionsの中のpackage.jsonに入っているか？
     2. GCPからcloud storageのデータを削除する

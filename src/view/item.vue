@@ -121,22 +121,17 @@
     </button>
   </div>
 
-  <div class="container" style="margin: 10px 0px">
+  <div style="margin: 10px 0px">
     <div class="row">
-      <div class="col-6">品目名</div>
+      <div class="col-6" style="text-align:center">品目名</div>
       <div class="col-2">価格</div>
       <div class="col-2">削除</div>
-      <div class="col-2" style="font-size: 12px">並び替え</div>
+      <div class="col-2" style="font-size: 12px; text-align:left; padding:0px;">並び替え</div>
     </div>
   </div>
 
-  <div
-    :style="[
-      newItem
-        ? 'overflow:scroll; height:250px;'
-        : 'overflow:scroll; height:430px;',
-    ]"
-  >
+  <div :class="{'list list_active_newItem':newItem,
+                'list list_inActive_newItem':!newItem}">
     <div v-for="(val, index) in categoryBuyInfoList" :key="val" :index="index">
       <div v-if="val">
         <div class="input-group" style="margin-bottom: 10px">
@@ -358,4 +353,31 @@ export default defineComponent({
   },
 });
 </script>
-<style></style>
+<style lang="scss">
+  .list {
+    display: block;
+    overflow-y: scroll;
+  }
+  .list_active_newItem{
+  height: 480px;
+  }
+  .list_inActive_newItem{
+    height: 670px;
+  }
+
+@media screen and(max-height:670px)and(max-width:420px){
+  .list {
+    display: block;
+    overflow-y: scroll;
+    // height: 250px;
+  }
+  .list_active_newItem{
+    height: 250px;
+  }
+  .list_inActive_newItem{
+    height: 440px;
+  }
+  
+}
+
+</style>

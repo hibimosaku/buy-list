@@ -247,15 +247,17 @@ export default defineComponent({
 </script>
 <style lang="scss" scoped>
 /*　スクロールバーの実装 */
-table {
-  display: block;
-  overflow-y: scroll;
-  height: 410px;
-}
-table thead {
-  position: sticky;
-  top: 0;
-  z-index: 1;
-  background-color: white;
+@media screen and(max-height:670px)and(max-width:420px){
+  table {
+    display: block;
+    overflow-y: scroll;
+    height: 400px;
+  }
+  table thead {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    background-color: white;
+  }
 }
 </style>
