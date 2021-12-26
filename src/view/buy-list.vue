@@ -14,7 +14,6 @@
     <button class="btn btn-primary btn-sm" @click="resetBuyRequestUi">リセット</button>
     <button class="btn btn-primary btn-sm" @click="lineRequest">買物依頼Line</button>
   </div>
-    
   <input
     class="form-control　form-control-sm me-2"
     v-model="search"
@@ -22,6 +21,7 @@
     style="margin-bottom:10px;"
     placeholder="文字入力で検索できます"
   />
+  {{resultMessage}}    
     <table class="table small">
       <thead>
         <tr>
@@ -60,10 +60,9 @@ import buyListComponent from "./component/buy-list.component.vue";
 import filterBuyInfoListComponent from "./component/filter-buyInfoList.component.vue";
 import errDbComponent from "./container/error-db.container.vue";
 
-import { BuyInfo, BuyInfoList } from "../model/buy-info.model";
-
 import { commonMount } from "./func/common-mount";
 import { Line } from "../model/line.use.case";
+import { useFilterBuyList } from "../view/func/useFilterBuyList"
 
 export default defineComponent({
   components: {
@@ -73,119 +72,25 @@ export default defineComponent({
     errDbComponent,
   },
   setup() {
-    const buyInfoList = ref<BuyInfoList>();
-    const activeCategory = ref("all");
-    const filterStatus = ref<string>("all" || "no" || "want");
     const filterType = ref<Array<string>>(["all", "no", "want"]);
+    const {buyInfoList,filterbuyList,search,activeCategory,filterStatus} = useFilterBuyList()
     const { categorys, uid } = commonMount();
-    const search = ref("");
-
 
     onMounted(() => {
       buyInfoList.value = store.getters.getBuyInfoList;
     });
 
-    const filterbuyList = computed((): BuyInfoList | null => {
-      let result: BuyInfoList;
-
-      if (buyInfoList.value === undefined) return null;
-
-      function kanaToHira(str:string) {
-        return str.replace(/[\u30a1-\u30f6]/g, function(match) {
-            var chr = match.charCodeAt(0) - 0x60;
-            return String.fromCharCode(chr);
-        });    
+    const resultMessage=computed(()=>{
+      if(search.value==='') return null
+      if(!filterbuyList.value) return null
+      if(search.value!=='' && filterbuyList.value.length>0){
+        return `検索結果：${filterbuyList.value.length}件該当`
       }
-
-      function hiraToKana(str:string) {
-          return str.replace(/[\u3041-\u3096]/g, function(match) {
-              var chr = match.charCodeAt(0) + 0x60;
-              return String.fromCharCode(chr);
-          });
+      if(search.value!=='' && filterbuyList.value.length===0){
+        return '検索結果：該当なし'
       }
-      const searchByKana=kanaToHira(search.value)
-      const searchByHira=hiraToKana(search.value)
-
-      if (activeCategory.value === "all" && search.value === "") {
-        result = buyInfoList.value.filter((v: BuyInfo) => {
-          if (filterStatus.value === "all") return v != null;
-          if (filterStatus.value === "no") return v.buyRequest === false;
-          if (filterStatus.value === "want") return v.buyRequest === true;
-          return null;
-        });
-        return result;
-      }
-
-      if (activeCategory.value === "all" && search.value !== "") {
-        result = buyInfoList.value.filter((v: BuyInfo) => {
-          if (filterStatus.value === "all" && buyInfoList.value)
-            return v! !== null && (v.item.name.includes(String(searchByKana)) || v.item.name.includes(String(searchByHira))) 
-          if (filterStatus.value === "no")
-            return (
-              v.buyRequest === false &&
-              v.item.name.includes(String(search.value))
-            );
-          if (filterStatus.value === "want")
-            return (
-              v.buyRequest === true &&
-              v.item.name.includes(String(search.value))
-            );
-          return null;
-        });
-        return result;
-      }
-
-      if (activeCategory.value !== "all" && search.value === "") {
-        result = buyInfoList.value.filter((v: BuyInfo) => {
-          if (
-            activeCategory.value === v.categoryId &&
-            filterStatus.value === "all"
-          )
-            return v != null;
-          if (
-            activeCategory.value === v.categoryId &&
-            filterStatus.value === "no"
-          )
-            return v.buyRequest === false;
-          if (
-            activeCategory.value === v.categoryId &&
-            filterStatus.value === "want"
-          )
-            return v.buyRequest === true;
-          return null;
-        });
-        return result;
-      }
-
-      if (activeCategory.value !== "all" && search.value !== "") {
-        result = buyInfoList.value.filter((v: BuyInfo) => {
-          if (
-            activeCategory.value === v.categoryId &&
-            filterStatus.value === "all"
-          )
-            return v != null && v.item.name.includes(String(search.value));
-          if (
-            activeCategory.value === v.categoryId &&
-            filterStatus.value === "no"
-          )
-            return (
-              v.buyRequest === false &&
-              v.item.name.includes(String(search.value))
-            );
-          if (
-            activeCategory.value === v.categoryId &&
-            filterStatus.value === "want"
-          )
-            return (
-              v.buyRequest === true &&
-              v.item.name.includes(String(search.value))
-            );
-          return null;
-        });
-        return result;
-      }
-      return null;
-    });
+      return null
+    })
 
     const changeBuyRequestDoUi = (request: boolean, buyInfoId: string) => {
       store.commit("changeBuyRequestDoStore", {
@@ -240,13 +145,14 @@ export default defineComponent({
       uid,
       search,
       resetBuyRequestUi,
-      lineRequest
+      lineRequest,
+      resultMessage,
     };
   },
 });
 </script>
 <style lang="scss" scoped>
-/*　スクロールバーの実装 */
+
 @media screen and(max-height:670px)and(max-width:420px){
   table {
     display: block;

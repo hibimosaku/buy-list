@@ -138,5 +138,5 @@ export const BuyInfo = {
   changeBuyResultDo,
   buyFin,
   RetrieveIndex,
-  createBuyResultDay
+  createBuyResultDay,
 };

@@ -1,8 +1,6 @@
 <template>
-  <transition name="fade">
-    <h5 v-if="pageNow === 'category'">分類名</h5>
-  </transition>
-  <transition-group name="fade">
+    <p>品目を分類ごとで利用したい場合、登録お願いします。</p>
+  <!-- <transition-group name="fade"> -->
     <div
       v-for="(category, index) in categorys"
       :key="category.name"
@@ -18,12 +16,12 @@
         分類名は4文字以内でお願いします
       </div>
     </div>
-  </transition-group>
+  <!-- </transition-group> -->
 </template>
 <script lang="ts">
 // import "./style.scss";
 import "../../assets/css/style.scss";
-import { defineComponent, onMounted, ref } from "vue";
+import { defineComponent, onMounted } from "vue";
 import { store } from "../store/store";
 
 import { commonMount } from "./func/common-mount";
@@ -35,7 +33,6 @@ export default defineComponent({
   setup() {
     const { categorys, uid } = commonMount();
     const router = useRouter();
-    const pageNow = ref();
 
     onMounted(() => {});
     const changeCategoryUi = (index: number, name: string) => {
@@ -54,7 +51,6 @@ export default defineComponent({
       changeCategoryUi,
       uid,
       router,
-      pageNow,
     };
   },
 });

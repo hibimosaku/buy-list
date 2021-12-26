@@ -27,7 +27,7 @@ async function createBuyInfoRep(buyInfo: BuyInfo, uid: string, sort: number) {
   );
 }
 
-function updateItemNameRep(buyInfo: BuyInfo, uid: string) {
+async function updateItemNameRep(buyInfo: BuyInfo, uid: string) {
   return updateDoc(
     doc(getFirestore(), "users", uid, "items", buyInfo.buyInfoId),
     {
@@ -36,7 +36,7 @@ function updateItemNameRep(buyInfo: BuyInfo, uid: string) {
   );
 }
 
-function updateItemPriceRep(buyInfo: BuyInfo, uid: string): Promise<void> {
+async function updateItemPriceRep(buyInfo: BuyInfo, uid: string): Promise<void> {
   return updateDoc(
     //return を返さないとpromiseを返さない
     doc(getFirestore(), "users", uid, "items", buyInfo.buyInfoId),

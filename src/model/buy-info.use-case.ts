@@ -27,8 +27,6 @@ async function changeBuyRequestNumUc(
 ) {
   try {
     const changeBuyInfo = BuyInfo.changeBuyRequestNum(buyInfo, buyRequestNum);
-    console.log(changeBuyInfo)
-
     await BuyInfoRepository.updateBuyRequestNumRep(changeBuyInfo, uid);
   } catch (e) {
     store.commit("isErrorDbBuyList");

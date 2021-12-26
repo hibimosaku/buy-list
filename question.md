@@ -1,3 +1,15 @@
+12/26
+・検索中の表示
+　処理の始まりにfalse終わりにtrueで対応？
+　computede()で、false→検索中、true→検索結果表示
+　→失敗
+
+・DDDの中での検索中は？
+　処理の始まりにfalse終わりにtrueで対応？
+　→usecaseをかき
+　computede()で、false→検索中、true→検索結果表示
+　→一緒
+
 12/12
 
 ・firebaseのoncall

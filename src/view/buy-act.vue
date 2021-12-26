@@ -18,11 +18,11 @@
   <table class="table">
     <thead>
       <tr>
-        <th scope="col">品目名</th>
-        <th scope="col">価格</th>
-        <th scope="col">個数</th>
-        <th scope="col">買う</th>
-        <th scope="col">ない</th>
+        <th scope="col" style="width:40%">品目名</th>
+        <th scope="col" style="width:20%">価格</th>
+        <th scope="col" style="width:20%">個数</th>
+        <th scope="col" style="width:10%">買う</th>
+        <th scope="col" style="width:10%">ない</th>
       </tr>
     </thead>
     <tbody v-for="(val, index) in filterbuyListRq" :key="val" :index="index">
@@ -47,7 +47,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onMounted, ref } from "vue";
+import { defineComponent, onMounted, ref } from "vue";
 import { store } from "../store/store";
 
 import navComponent from "./component/nav.component.vue";
@@ -56,9 +56,9 @@ import buyActComponent from "./component/buy-act.component.vue";
 import filterBuyInfoListComponent from "./component/filter-buyInfoList.component.vue";
 import errDbComponent from "./container/error-db.container.vue";
 
-import { BuyInfo, BuyInfoList } from "../model/buy-info.model";
 
 import { commonMount } from "./func/common-mount";
+import { useBuyAct } from "./func/useFilterBuyAct";
 
 export default defineComponent({
   components: {
@@ -69,10 +69,11 @@ export default defineComponent({
     errDbComponent,
   },
   setup() {
-    const buyInfoList = ref<BuyInfoList>();
-    const activeCategory = ref();
-    const filterStatus = ref<string>("all" || "buy" || "no");
+    // const buyInfoList = ref<BuyInfoList>();
+    // const activeCategory = ref();
+    // const filterStatus = ref<string>("all" || "buy" || "no");
     const { categorys, uid } = commonMount();
+    const { buyInfoList,activeCategory,filterStatus,filterbuyListRq} = useBuyAct()
     const filterType = ref<Array<string>>();
     filterType.value = ["all", "buy", "no"];
 
@@ -85,41 +86,6 @@ export default defineComponent({
 
     onMounted(async () => {
       buyInfoList.value = store.getters.getBuyResultList;
-    });
-
-    const filterbuyListRq = computed((): BuyInfoList | null => {
-      let result: BuyInfoList;
-
-      if (buyInfoList.value === undefined) return null;
-      if (activeCategory.value === "all") {
-        result = buyInfoList.value.filter((v: BuyInfo) => {
-          if (filterStatus.value === "all") return v != null;
-          if (filterStatus.value === "no") return v.buyResult === false;
-          if (filterStatus.value === "buy") return v.buyResult === true;
-          return null;
-        });
-        return result;
-      } else {
-        result = buyInfoList.value.filter((v: BuyInfo) => {
-          if (
-            activeCategory.value == v.categoryId &&
-            filterStatus.value == "all"
-          )
-            return v != null;
-          if (
-            activeCategory.value == v.categoryId &&
-            filterStatus.value == "no"
-          )
-            return v.buyResult == false;
-          if (
-            activeCategory.value === v.categoryId &&
-            filterStatus.value === "buy"
-          )
-            return v.buyResult === true;
-          return null;
-        });
-        return result;
-      }
     });
 
     const changeBuyResultUi = (buyResult: boolean, buyInfoId: string) => {
@@ -175,6 +141,21 @@ export default defineComponent({
 });
 </script>
 <style lang="scss" scoped>
+  // table {
+  //   display: block;
+  //   overflow-y: scroll;
+  //   height: 400px;
+  // }
+  // table thead {
+  //   position: sticky;
+  //   top: 0;
+  //   z-index: 1;
+  //   background-color: white;
+  // }
+
+table{
+  margin-bottom:5px;
+}
 @media screen and(max-height:670px)and(max-width:420px){
   table {
     display: block;

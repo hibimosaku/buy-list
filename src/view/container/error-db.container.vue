@@ -11,10 +11,10 @@
         class="alert alert-light"
         role="alert"
         style="
-          position: fixed;
+          position: fixed
           z-index: 2000;
           left: 0;
-          login: 0;
+          top: 0;
           width: 100%;
           height: 100%;
           overflow: auto;
@@ -33,7 +33,7 @@
         style="
           position: fixed;
           z-index: 2500;
-          login: 0;
+          top: 0;
           left: 10%;
           background-color: #fefefe;
           margin: 10% auto;
@@ -99,7 +99,7 @@ export default defineComponent({
   },
 });
 </script>
-<style>
+<style lang="scss">
 /* .fade-leave-active {
   transition: opacity 5s ease;
 } */

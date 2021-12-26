@@ -7,18 +7,42 @@ import error from "./modules/error-store";
 
 export interface State {
   // nowPage:string
+  isProcessing:boolean;
 }
 
 // define injection key
 export const key: InjectionKey<Store<State>> = Symbol();
 
 export const store = createStore<State>({
-  state: {},
-  mutations: {},
+  state: {
+    isProcessing:false
+  },
+  mutations: {
+    doProcessing(state:State){
+      state.isProcessing=true
+    },
+    notDoProcessing(state:State){
+      state.isProcessing=false
+    }    
+  },
 
-  actions: {},
+  actions: {
+    doProcessing(context:{state:State}){
+      context.state.isProcessing=true
+      return
+    },
+    notDoProcessing(context:{state:State}){
+      context.state.isProcessing=false
+      return
+    },
 
-  getters: {},
+  },
+
+  getters: {
+    getProcessing(state:State){
+      return state.isProcessing
+    }
+  },
 
   modules: {
     category,

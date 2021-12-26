@@ -34,6 +34,7 @@
     </div>
   </div>
   <div v-if="newItem">
+    {{resultMessage}}
     <div
       :class="{
         'input-group input-group-sm mb-3': itemErrors.name === false,
@@ -203,9 +204,9 @@ export default defineComponent({
   },
   //refに頼らない。
   setup() {
-    const itemName = ref<string | null>();
-    const itemPrice = ref<number | null>();
-    const categoryId = ref<string | null>();
+    const itemName = ref<string | null>(null);
+    const itemPrice = ref<number | null>(null);
+    const categoryId = ref<string | null>(null);
     const buyInfoList = ref<BuyInfoList>();
     const activeCategory = ref("all");
     const { categorys, uid } = commonMount();
@@ -220,7 +221,6 @@ export default defineComponent({
     onMounted(() => {
       buyInfoList.value = store.getters.getBuyInfoList;
       errorPrice.value = store.getters.getErrorchangeItemPrice;
-      // itemPage.value=true
     });
     const categoryBuyInfoList = computed(() => {
       if (activeCategory.value === "all") {
@@ -239,26 +239,39 @@ export default defineComponent({
       }
     });
 
-    const createItemUi = async () => {
-      if (itemName.value === null) itemErrors.value.name = true;
-      if (itemPrice.value === null) itemErrors.value.price = true;
-      if (categoryId.value === null) itemErrors.value.category = true;
-      if (!buyInfoList.value) {
-        return;
+    const resultMessage=computed(()=>{
+      if(store.getters.getProcessing){
+        return '処理中です'
+      }else{
+        return
       }
-      await store
-        .dispatch("createItemStore", {
-          categoryId: categoryId.value,
-          name: itemName.value,
-          price: itemPrice.value,
-          uid: uid.value,
-          sort: buyInfoList.value.length + 1,
-        })
-        .then(() => {
-          itemName.value = null; //【課題→解決】awaitがないとstore終了前に処理されている。await storeだけでよいと思っている。
-          itemPrice.value = null;
-          categoryId.value = null;
-        });
+    })
+
+
+    const createItemUi = async () => {
+      if(itemName.value!==null && itemPrice.value!==null && categoryId.value!==null){
+        if (!buyInfoList.value) return
+        await store
+          .dispatch("createItemStore", {
+            categoryId: categoryId.value,
+            name: itemName.value,
+            price: itemPrice.value,
+            uid: uid.value,
+            sort: buyInfoList.value.length + 1,
+          })
+          .then(() => {
+            itemName.value = null; //【課題→解決】awaitがないとstore終了前に処理されている。await storeだけでよいと思っている。
+            itemPrice.value = null;
+            categoryId.value = null;
+            itemErrors.value.name=false
+            itemErrors.value.price = false
+            itemErrors.value.category = false
+          });
+        }else{
+          if (itemName.value === null) itemErrors.value.name = true
+          if (itemPrice.value === null) itemErrors.value.price = true;
+          if (categoryId.value === null) itemErrors.value.category = true;
+        }
     };
 
     const changeItemNameUi = async (buyInfoId: string, name: string) => {
@@ -349,6 +362,7 @@ export default defineComponent({
       sortUpItemUi,
       sortDownItemUi,
       categoryBuyInfoList,
+      resultMessage,
     };
   },
 });
@@ -356,7 +370,6 @@ export default defineComponent({
 <style lang="scss">
   .list {
     display: block;
-    overflow-y: scroll;
   }
   .list_active_newItem{
   height: 480px;

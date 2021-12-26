@@ -4,6 +4,14 @@ import { BuyInfoRepository } from "./buy-info.repository";
 import { BuyInfo } from "./buy-info.model";
 import { store } from "../store/store";
 
+// const sleep = (waitSeconds:any) => {
+// 	return new Promise(resolve => {
+// 		setTimeout(() => {
+// 			resolve('成功')
+// 		}, waitSeconds * 1000)
+// 	})	
+// }
+
 //品目
 async function createItemUc(
   category_id: string,
@@ -12,15 +20,25 @@ async function createItemUc(
   uid: string,
   sort: number
 ): Promise<BuyInfo | void> {
+  store.dispatch('doProcessing')
   try {
     const buyInfo = BuyInfo.createBuyInfo(name, price, category_id);
     await BuyInfoRepository.createBuyInfoRep(buyInfo, uid, sort);
+    // await sleep(3)
+    // const sleep=await setTimeout(()=>{
+    //   console.log('成功')
+    // },5000)
+    // await sleep
+
+    store.dispatch('notDoProcessing')
     return buyInfo;
   } catch (e) {
     store.commit("isErrorDbItem");
     console.error(`errMethod:createItemUi,${e}`);
+    store.dispatch('notDoProcessing')
     throw new Error();
   }
+
 }
 
 async function changeItemNameUc(buyInfo: BuyInfo, name: string, uid: string) {
