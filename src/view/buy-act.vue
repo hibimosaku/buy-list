@@ -69,9 +69,6 @@ export default defineComponent({
     errDbComponent,
   },
   setup() {
-    // const buyInfoList = ref<BuyInfoList>();
-    // const activeCategory = ref();
-    // const filterStatus = ref<string>("all" || "buy" || "no");
     const { categorys, uid } = commonMount();
     const { buyInfoList,activeCategory,filterStatus,filterbuyListRq} = useBuyAct()
     const filterType = ref<Array<string>>();

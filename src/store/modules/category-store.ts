@@ -14,16 +14,14 @@ const state = {
 };
 
 const mutations = {
+  //【課題】UI→Usecaseのリターンをもとにstate変更の考え方でよい？
+  //もともとUIからもらったデータをもとに変更していたが。。。modelでのcreate使っていない。
   changeCategoryStore(
     state: State,
     data: { name: string; id: string; uid: string }
   ): void {
-    changeCategoryUc(data.name, data.id, data.uid).then(() => {
-      state.categorys[Number(data.id)] = {
-        _tag: "Category",
-        id: data.id,
-        name: data.name,
-      };
+    changeCategoryUc(data.name, data.id, data.uid).then((category:Category) => {
+      state.categorys[Number(data.id)] = category
     });
   },
 };
