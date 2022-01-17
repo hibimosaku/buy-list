@@ -20,10 +20,10 @@ export const useFilterBuyList=()=>{
     }
 
     function hiraToKana(str:string) {
-        return str.replace(/[\u3041-\u3096]/g, function(match) {
-            var chr = match.charCodeAt(0) + 0x60;
-            return String.fromCharCode(chr);
-        });
+      return str.replace(/[\u3041-\u3096]/g, function(match) {
+          var chr = match.charCodeAt(0) + 0x60;
+          return String.fromCharCode(chr);
+      });
     }
     const searchByKana=kanaToHira(search.value)
     const searchByHira=hiraToKana(search.value)

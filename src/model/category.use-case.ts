@@ -1,6 +1,6 @@
 import { store } from "../store/store";
 
-import { createCategory } from "./category.model";
+import { Category, createCategory } from "./category.model";
 import { CategoryRepository } from "./category.repository";
 
 //分類登録 async
@@ -9,13 +9,15 @@ export async function changeCategoryUc(
   categoryId: string,
   uid: string
   // state:State,
-): Promise<void> {
+): Promise<Category> {
   try {
     const category = createCategory(categoryId, name);
     await CategoryRepository.updateCategoryRep(category, uid);
+    return category
   } catch (e) {
     store.commit("isErrorDbCategory");
     console.error(`errMethod:changeCategoryUi,${e}`);
+    throw new Error
   }
 }
 
