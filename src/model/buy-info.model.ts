@@ -41,7 +41,7 @@ function createBuyInfo(
   };
 }
 
-function changeItemNameUc(buyInfo: BuyInfo, name: string): BuyInfo {
+function changeItemName(buyInfo: BuyInfo, name: string): BuyInfo {
   const item = Item.changeItemName(buyInfo.item, name);
   return {
     ...buyInfo,
@@ -131,7 +131,7 @@ function RetrieveIndex(
 
 export const BuyInfo = {
   createBuyInfo,
-  changeItemNameUc,
+  changeItemName,
   changeItemPrice,
   changeBuyRequestDo,
   changeBuyRequestNum,

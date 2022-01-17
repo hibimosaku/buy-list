@@ -43,7 +43,7 @@ async function createItemUc(
 
 async function changeItemNameUc(buyInfo: BuyInfo, name: string, uid: string) {
   try {
-    const changeBuyInfo = BuyInfo.changeItemNameUc(buyInfo, name);
+    const changeBuyInfo = BuyInfo.changeItemName(buyInfo, name);
     await BuyInfoRepository.updateItemNameRep(changeBuyInfo, uid);
   } catch (e) {
     store.commit("isErrorDbItem");
