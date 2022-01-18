@@ -39,17 +39,19 @@ const routes: Array<RouteRecordRaw> = [
   },
   {
     path: "/signUp",
-    // name: "signUp",
+    name: "signUp",
     component: signUp,
   },
   {
     path:"/forgetPw",
+    name:"forgetPw",
     component:forgetPw,
 
   },
   {
     path: "/",
     component: common,
+    name:"common",
     children: [
       {
         path: "/item",
