@@ -1,6 +1,6 @@
 //use-case
 
-import { AuthRepository } from "./auth.repository";
+import { AuthRepository } from "./auth.api-service";
 
 async function signUpUc(mail: string, pw: string) {
   return AuthRepository.signUp(mail, pw)
