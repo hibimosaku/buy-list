@@ -63,6 +63,7 @@ async function finBuyUc(data: BuyInfoList, uid: string,day:BuyInfo['buyResultDay
 }
 
 async function resetBuyRequestUc(data:BuyInfoList,uid:string){
+  console.log('2',data)
   try {
     await BuyInfoRepository.updateResetBuyRequestRep(data,uid);
   }catch(e){

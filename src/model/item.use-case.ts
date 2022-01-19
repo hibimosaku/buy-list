@@ -3,6 +3,7 @@
 import { BuyInfoRepository } from "./buy-info.repository";
 import { BuyInfo } from "./buy-info.model";
 import { store } from "../store/store";
+import { ID } from "./id.value";
 
 // const sleep = (waitSeconds:any) => {
 // 	return new Promise(resolve => {
@@ -62,7 +63,7 @@ async function changeItemPriceUc(buyInfo: BuyInfo, price: number, uid: string) {
   }
 }
 
-async function deleteItemUc(uid: string, buyInfoId: string) {
+async function deleteItemUc(uid: string, buyInfoId: ID) {
   try {
     await BuyInfoRepository.deleteItemRep(uid, buyInfoId);
   } catch (e) {

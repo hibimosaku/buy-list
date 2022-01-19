@@ -6,6 +6,7 @@ import { BuyInfoList, BuyInfo } from "../../model/buy-info.model";
 import { ItemUc } from "../../model/item.use-case";
 import { createBuyRequestNum } from "../../model/buy-request-num.value";
 import { Item } from "../../model/item.model";
+import { fetchID, ID } from "../../model/id.value";
 
 interface State {
   BuyInfoList: BuyInfoList;
@@ -22,7 +23,7 @@ const mutations = {
   changeItemNameStore(
     state: State,
     data: {
-      buyInfoId: string;
+      buyInfoId: ID;
       name: string;
       uid: string;
     }
@@ -55,7 +56,7 @@ const mutations = {
 
   changeBuyRequestNumStore(
     state: State,
-    data: { buyRequestNum: number; buyInfoId: string; uid: string }
+    data: { buyRequestNum: number; buyInfoId: ID; uid: string }
   ) {
     state.BuyInfoList.forEach((v) => {
       if (v.buyInfoId === data.buyInfoId) {
@@ -74,7 +75,7 @@ const mutations = {
 
   deleteItemStore(
     state: State,
-    data: { uid: string; buyInfoId: string }
+    data: { uid: string; buyInfoId: ID }
   ): void {
     ItemUc.deleteItemUc(data.uid, data.buyInfoId)
       .then(() => {
@@ -96,7 +97,7 @@ const mutations = {
   changeBuyRequestDoStore(
     state: State,
     data: {
-      buyInfoId: string;
+      buyInfoId: ID;
       request: boolean;
       uid: string;
     }
@@ -137,7 +138,7 @@ const mutations = {
   //買い物結果
   changeBuyResultStore(
     state: State,
-    data: { buyResult: boolean; buyInfoId: string; uid: string }
+    data: { buyResult: boolean; buyInfoId: ID; uid: string }
   ) {
     state.BuyInfoList.forEach((v) => {
       if (v.buyInfoId === data.buyInfoId) {
@@ -153,6 +154,7 @@ const mutations = {
   },
   //状態のnull化
   resetBuyResultStore(state: State, data: { id: string; uid: string }) {
+    BuyInfoUseCase.resetBuyResultUc(state.BuyInfoList, data.uid)
     state.BuyInfoList.forEach((v, k) => {
       if (data.id === "all") {
         if (v.buyRequest === true) {
@@ -164,10 +166,10 @@ const mutations = {
         }
       }
     });
-    BuyInfoUseCase.resetBuyResultUc(state.BuyInfoList, data.uid)
   },
 
   resetBuyRequestStore(state:State,data:{id:string,uid:string}){
+    BuyInfoUseCase.resetBuyRequestUc(state.BuyInfoList,data.uid)
     state.BuyInfoList.forEach((v, k) => {
       if (data.id === "all") {
           state.BuyInfoList[k].buyRequest = false;
@@ -176,8 +178,7 @@ const mutations = {
           state.BuyInfoList[k].buyRequest = false;
         }
       }
-    });  
-    BuyInfoUseCase.resetBuyRequestUc(state.BuyInfoList,data.uid)
+    }); 
 
   },
 
@@ -243,7 +244,7 @@ const actions = {
   changeItemPriceStore(
     context: { commit: Commit; state: State },
     data: {
-      buyInfoId: string;
+      buyInfoId: ID;
       price: number;
       uid: string;
       index: number;
@@ -280,8 +281,8 @@ const actions = {
       buyInfoList: BuyInfoList;
       categoryBuyInfoList: BuyInfoList;
       activeCategory: string;
-      targetBuyinfoId: string;
-      prevBuyInfoId: string;
+      targetBuyinfoId: ID;
+      prevBuyInfoId: ID;
       targetIndex: number;
       prevIndex: number;
       uid: string;
@@ -365,11 +366,11 @@ const actions = {
     } else {
       const targetIndex = BuyInfo.RetrieveIndex(
         arg.buyInfoList,
-        arg.targetBuyinfoId
+        fetchID(arg.targetBuyinfoId)
       );
       const nextIndex = BuyInfo.RetrieveIndex(
         arg.buyInfoList,
-        arg.nextBuyInfoId
+        fetchID(arg.nextBuyInfoId)
       );
       if (targetIndex != undefined && nextIndex != undefined) {
         await ItemUc.sortDownItemUc(

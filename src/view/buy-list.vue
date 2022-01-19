@@ -63,6 +63,7 @@ import errDbComponent from "./container/error-db.container.vue";
 import { commonMount } from "./func/common-mount";
 import { Line } from "../model/line.use.case";
 import { useFilterBuyList } from "../view/func/useFilterBuyList"
+import { ID } from "../model/id.value";
 
 export default defineComponent({
   components: {
@@ -92,7 +93,7 @@ export default defineComponent({
       return null
     })
 
-    const changeBuyRequestDoUi = (request: boolean, buyInfoId: string) => {
+    const changeBuyRequestDoUi = (request: boolean, buyInfoId: ID) => {
       store.commit("changeBuyRequestDoStore", {
         buyInfoId,
         request,
@@ -102,12 +103,12 @@ export default defineComponent({
 
     const changeBuyRequestNumUi = (
       buyRequestNum: number,
-      buyInfoId: string
+      buyInfoId: ID
     ) => {
       store.commit("changeBuyRequestNumStore", {
         buyRequestNum,
         buyInfoId,
-        uid,
+        uid:uid.value,
       });
     };
 

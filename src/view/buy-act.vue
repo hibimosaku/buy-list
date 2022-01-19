@@ -59,6 +59,7 @@ import errDbComponent from "./container/error-db.container.vue";
 
 import { commonMount } from "./func/common-mount";
 import { useBuyAct } from "./func/useFilterBuyAct";
+import { ID } from "../model/id.value";
 
 export default defineComponent({
   components: {
@@ -85,7 +86,7 @@ export default defineComponent({
       buyInfoList.value = store.getters.getBuyResultList;
     });
 
-    const changeBuyResultUi = (buyResult: boolean, buyInfoId: string) => {
+    const changeBuyResultUi = (buyResult: boolean, buyInfoId: ID) => {
       if (buyInfoList.value) {
         store.commit("changeBuyResultStore", {
           buyResult,

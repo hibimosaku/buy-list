@@ -194,6 +194,7 @@ import errDbComponent from "./container/error-db.container.vue";
 import { BuyInfo, BuyInfoList } from "../model/buy-info.model";
 
 import { commonMount } from "./func/common-mount";
+import { ID } from "../model/id.value";
 
 export default defineComponent({
   components: {
@@ -274,7 +275,7 @@ export default defineComponent({
         }
     };
 
-    const changeItemNameUi = async (buyInfoId: string, name: string) => {
+    const changeItemNameUi = async (buyInfoId: ID, name: string) => {
       if (name.length > 10) return;
       store.commit("changeItemNameStore", {
         buyInfoId,
@@ -283,7 +284,7 @@ export default defineComponent({
       });
     };
 
-    const changeItemPriceUi = (buyInfoId: string, price: number) => {
+    const changeItemPriceUi = (buyInfoId: ID, price: number) => {
       if (price > 9999) return;
       store.dispatch("changeItemPriceStore", {
         buyInfoId,
@@ -292,7 +293,7 @@ export default defineComponent({
       });
     };
 
-    const deleteItemUi = (id: string) => {
+    const deleteItemUi = (id: ID) => {
       store.commit("deleteItemStore", {
         uid: uid.value,
         buyInfoId: id,
@@ -300,9 +301,9 @@ export default defineComponent({
     };
 
     const sortUpItemUi = (
-      targetBuyinfoId: string,
+      targetBuyinfoId: ID,
       index: number,
-      prevBuyInfoId: string | undefined,
+      prevBuyInfoId: ID | undefined,
       categoryBuyInfoList: BuyInfoList
     ) => {
       if (index === 0) return;
@@ -322,9 +323,9 @@ export default defineComponent({
     };
 
     const sortDownItemUi = (
-      targetBuyinfoId: string,
+      targetBuyinfoId: ID,
       index: number,
-      nextBuyInfoId: string | undefined,
+      nextBuyInfoId: ID | undefined,
       categoryBuyInfoList: BuyInfoList
     ) => {
       if (buyInfoList.value === undefined) return;

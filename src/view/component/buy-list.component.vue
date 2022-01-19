@@ -79,13 +79,14 @@
 </template>
 
 <script lang="ts">
+import { ID } from '../../model/id.value';
 export default {
   props: {
     val: {},
   },
   emits: ["changeBuyRequestDoUi", "changeBuyRequestNumUi"],
   setup(_props: any, { emit }: any) {
-    const changeBuyRequestDoUi = (request: boolean, buyInfoId: string) => {
+    const changeBuyRequestDoUi = (request: boolean, buyInfoId: ID) => {
       emit("changeBuyRequestDoUi", request, buyInfoId);
     };
     const changeBuyRequestNumUi = (

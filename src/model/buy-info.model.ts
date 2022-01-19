@@ -8,7 +8,7 @@ import { BuyRequestNum, createBuyRequestNum } from "./buy-request-num.value";
 //itemWith
 export interface BuyInfo {
   readonly _tag: "BuyInfo";
-  buyInfoId: ID["raw"];
+  buyInfoId: ID;
   item: Item;
   categoryId: Category["id"];
   buyRequest: boolean;
@@ -102,7 +102,7 @@ function createBuyResultDay():BuyInfo['buyResultDay']{
 
 function RetrieveIndex(
   buyInfoList: BuyInfoList,
-  buyInfoId: string
+  buyInfoId: ID
 ): number | undefined {
   let result;
   result = buyInfoList.findIndex((v, k) => {

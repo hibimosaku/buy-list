@@ -58,12 +58,13 @@
 
 <script>
 import { BuyInfo } from "../../model/buy-info.model";
+import { ID } from "../../model/id.value"
 export default {
   props: {
     val: {},
     index: Number,
-    nextBuyInfoId: String || undefined,
-    prevBuyInfoId: String || undefined,
+    nextBuyInfoId: ID || undefined,
+    prevBuyInfoId: ID || undefined,
     categoryBuyInfoList: Array,
   },
   emits: [
