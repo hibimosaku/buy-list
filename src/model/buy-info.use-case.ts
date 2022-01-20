@@ -52,9 +52,13 @@ async function changeBuyResultUc(
   }
 }
 
-async function finBuyUc(data: BuyInfoList, uid: string,day:BuyInfo['buyResultDay']) {
+async function finBuyUc(
+  data: BuyInfoList,
+  uid: string,
+  day: BuyInfo["buyResultDay"]
+) {
   try {
-    await BuyInfoRepository.updateBuyfinRep(data, uid,day);
+    await BuyInfoRepository.updateBuyfinRep(data, uid, day);
   } catch (e) {
     store.commit("isErrorDbBuyAct");
     console.error(`errMethod:finBuyStatus,${e}`);
@@ -62,13 +66,12 @@ async function finBuyUc(data: BuyInfoList, uid: string,day:BuyInfo['buyResultDay
   }
 }
 
-async function resetBuyRequestUc(data:BuyInfoList,uid:string){
-  console.log('2',data)
+async function resetBuyRequestUc(data: BuyInfoList, uid: string) {
   try {
-    await BuyInfoRepository.updateResetBuyRequestRep(data,uid);
-  }catch(e){
+    await BuyInfoRepository.updateResetBuyRequestRep(data, uid);
+  } catch (e) {
     console.error(`errMethod:resetBuyRequestUc,${e}`);
-    throw new Error()
+    throw new Error();
   }
 }
 
@@ -88,5 +91,5 @@ export const BuyInfoUseCase = {
   finBuyUc,
   changeBuyResultUc,
   resetBuyResultUc,
-  resetBuyRequestUc
+  resetBuyRequestUc,
 };

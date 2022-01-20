@@ -52,18 +52,18 @@ async function signOutRep() {
   return signOut(getAuth());
 }
 
-async function userDelete(){
-  onAuthStateChanged(getAuth(),(user)=>{
-    if(user){
-      return deleteUser(user)
-    }else{
-      throw new Error('user is no')
+async function userDelete() {
+  onAuthStateChanged(getAuth(), (user) => {
+    if (user) {
+      return deleteUser(user);
+    } else {
+      throw new Error("user is no");
     }
-  })
+  });
 }
 
-async function forgetPwRp(mail:string){
-  return sendPasswordResetEmail(getAuth(), mail)
+async function forgetPwRp(mail: string) {
+  return sendPasswordResetEmail(getAuth(), mail);
 }
 
 export const AuthRepository = {
@@ -72,5 +72,5 @@ export const AuthRepository = {
   userConfirm,
   signOutRep,
   userDelete,
-  forgetPwRp
+  forgetPwRp,
 };

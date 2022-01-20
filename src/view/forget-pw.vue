@@ -2,9 +2,19 @@
   <nav class="nav bg-primary">
     <a class="nav-link text-white" aria-current="page">買物アプリ</a>
   </nav>
-  <label for="inputEmail" class="visually-hidden" style="margin-top:20px">登録したメールアドレス</label>
-  <input type="email" id="inputEmail" class="form-control form-control-sm" placeholder="メールアドレス" v-model="mail">
-  <button class="w-100 btn btn-sm btn-primary" type="submit" @click="forgetPw">pw再設定メール送信</button>
+  <label for="inputEmail" class="visually-hidden" style="margin-top: 20px"
+    >登録したメールアドレス</label
+  >
+  <input
+    type="email"
+    id="inputEmail"
+    class="form-control form-control-sm"
+    placeholder="メールアドレス"
+    v-model="mail"
+  />
+  <button class="w-100 btn btn-sm btn-primary" type="submit" @click="forgetPw">
+    pw再設定メール送信
+  </button>
   <router-link to="/login">戻る</router-link>
 </template>
 
@@ -24,12 +34,13 @@ export default defineComponent({
     const router = useRouter();
 
     const forgetPw = () => {
-      if (mail.value === undefined ) {
+      if (mail.value === undefined) {
         alert("メールアドレスが入力されていません");
-        router.push('/login')
+        router.push("/login");
         return;
       }
-      store.dispatch('forgetPwStore',mail.value)
+      store
+        .dispatch("forgetPwStore", mail.value)
         .then((val) => {
           alert("メールが送信されましたので、手続きお願いします。");
           router.push("/category");

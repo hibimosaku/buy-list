@@ -2,11 +2,27 @@
   <nav class="nav bg-primary">
     <a class="nav-link text-white" aria-current="page">買物アプリ</a>
   </nav>
-  <label for="inputEmail" class="visually-hidden" style="margin-top:20px">メールアドレス</label>
-  <input type="email" id="inputEmail" class="form-control form-control-sm" placeholder="メールアドレス" v-model="mail">
+  <label for="inputEmail" class="visually-hidden" style="margin-top: 20px"
+    >メールアドレス</label
+  >
+  <input
+    type="email"
+    id="inputEmail"
+    class="form-control form-control-sm"
+    placeholder="メールアドレス"
+    v-model="mail"
+  />
   <label for="inputPassword" class="visually-hidden">パスワード</label>
-  <input type="password" id="inputPassword" class="form-control form-control-sm" placeholder="パスワード" v-model="pw">
-  <button class="w-100 btn btn-sm btn-primary" type="submit" @click="register">新規登録</button>
+  <input
+    type="password"
+    id="inputPassword"
+    class="form-control form-control-sm"
+    placeholder="パスワード"
+    v-model="pw"
+  />
+  <button class="w-100 btn btn-sm btn-primary" type="submit" @click="register">
+    新規登録
+  </button>
   <router-link to="/login">戻る</router-link>
 </template>
 

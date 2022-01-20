@@ -10,7 +10,7 @@ import { ID } from "./id.value";
 // 		setTimeout(() => {
 // 			resolve('成功')
 // 		}, waitSeconds * 1000)
-// 	})	
+// 	})
 // }
 
 //品目
@@ -21,7 +21,7 @@ async function createItemUc(
   uid: string,
   sort: number
 ): Promise<BuyInfo | void> {
-  store.dispatch('doProcessing')
+  store.dispatch("doProcessing");
   try {
     const buyInfo = BuyInfo.createBuyInfo(name, price, category_id);
     await BuyInfoRepository.createBuyInfoRep(buyInfo, uid, sort);
@@ -31,15 +31,14 @@ async function createItemUc(
     // },5000)
     // await sleep
 
-    store.dispatch('notDoProcessing')
+    store.dispatch("notDoProcessing");
     return buyInfo;
   } catch (e) {
     store.commit("isErrorDbItem");
     console.error(`errMethod:createItemUi,${e}`);
-    store.dispatch('notDoProcessing')
+    store.dispatch("notDoProcessing");
     throw new Error();
   }
-
 }
 
 async function changeItemNameUc(buyInfo: BuyInfo, name: string, uid: string) {
@@ -66,6 +65,7 @@ async function changeItemPriceUc(buyInfo: BuyInfo, price: number, uid: string) {
 async function deleteItemUc(uid: string, buyInfoId: ID) {
   try {
     await BuyInfoRepository.deleteItemRep(uid, buyInfoId);
+    console.log("delete");
   } catch (e) {
     store.commit("isErrorDbItem");
     console.error(`errMethod:deleteItem,${e}`);
@@ -106,6 +106,7 @@ async function sortDownItemUc(
   nextBuyInfo: BuyInfo,
   uid: string
 ) {
+  console.log(targetBuyInfo);
   await BuyInfoRepository.sortDownItemRep(
     targetIndex,
     nextIndex,
@@ -113,8 +114,7 @@ async function sortDownItemUc(
     nextBuyInfo,
     uid
   )
-    .then((s) => {
-    })
+    .then((s) => {})
     .catch((e) => {
       store.commit("isErrorDbItem");
       console.error(`errMethod:sortUpItem,${e}`);

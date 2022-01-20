@@ -13,11 +13,11 @@ export async function changeCategoryUc(
   try {
     const category = createCategory(categoryId, name);
     await CategoryRepository.updateCategoryRep(category, uid);
-    return category
+    return category;
   } catch (e) {
     store.commit("isErrorDbCategory");
     console.error(`errMethod:changeCategoryUi,${e}`);
-    throw new Error
+    throw new Error();
   }
 }
 

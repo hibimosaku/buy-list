@@ -82,22 +82,22 @@ function changeBuyResultDo(
   };
 }
 
-function buyFin(buyInfo: BuyInfo,day:BuyInfo['buyResultDay']): BuyInfo {
+function buyFin(buyInfo: BuyInfo, day: BuyInfo["buyResultDay"]): BuyInfo {
   return {
     ...buyInfo,
     buyRequest: false,
-    buyResultDay:day
+    buyResultDay: day,
   };
 }
 
-function createBuyResultDay():BuyInfo['buyResultDay']{
+function createBuyResultDay(): BuyInfo["buyResultDay"] {
   const today = new Date();
   const year = today.getFullYear();
   const month = today.getMonth() + 1;
   const day = today.getDate();
   const buyResultDay = String(year) + String(month) + String(day);
 
-  return buyResultDay
+  return buyResultDay;
 }
 
 function RetrieveIndex(

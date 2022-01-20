@@ -6,7 +6,7 @@ import { BuyInfoList, BuyInfo } from "../../model/buy-info.model";
 import { ItemUc } from "../../model/item.use-case";
 import { createBuyRequestNum } from "../../model/buy-request-num.value";
 import { Item } from "../../model/item.model";
-import { fetchID, ID } from "../../model/id.value";
+import { ID } from "../../model/id.value";
 
 interface State {
   BuyInfoList: BuyInfoList;
@@ -73,10 +73,7 @@ const mutations = {
     });
   },
 
-  deleteItemStore(
-    state: State,
-    data: { uid: string; buyInfoId: ID }
-  ): void {
+  deleteItemStore(state: State, data: { uid: string; buyInfoId: ID }): void {
     ItemUc.deleteItemUc(data.uid, data.buyInfoId)
       .then(() => {
         state.BuyInfoList.forEach((v, key) => {
@@ -154,7 +151,7 @@ const mutations = {
   },
   //状態のnull化
   resetBuyResultStore(state: State, data: { id: string; uid: string }) {
-    BuyInfoUseCase.resetBuyResultUc(state.BuyInfoList, data.uid)
+    BuyInfoUseCase.resetBuyResultUc(state.BuyInfoList, data.uid);
     state.BuyInfoList.forEach((v, k) => {
       if (data.id === "all") {
         if (v.buyRequest === true) {
@@ -168,21 +165,18 @@ const mutations = {
     });
   },
 
-  resetBuyRequestStore(state:State,data:{id:string,uid:string}){
-    BuyInfoUseCase.resetBuyRequestUc(state.BuyInfoList,data.uid)
+  resetBuyRequestStore(state: State, data: { id: string; uid: string }) {
+    BuyInfoUseCase.resetBuyRequestUc(state.BuyInfoList, data.uid);
     state.BuyInfoList.forEach((v, k) => {
       if (data.id === "all") {
-          state.BuyInfoList[k].buyRequest = false;
+        state.BuyInfoList[k].buyRequest = false;
       } else {
         if (data.id === v.categoryId) {
           state.BuyInfoList[k].buyRequest = false;
         }
       }
-    }); 
-
+    });
   },
-
-
 
   // buyFinStore(state: State, data: { buyInfoList: BuyInfoList; uid: string }) {
   //   BuyInfoUseCase.finBuyStatusUc(state.BuyInfoList, data.uid)
@@ -195,15 +189,58 @@ const mutations = {
   //         console.log('finSto',state.BuyInfoList[key],BuyInfo.buyFin(v))
 
   //       }
-  //     });        
+  //     });
   //   }).catch(()=>{
   //     console.log('2')
   //     throw new Error()
   //   })
   // },
-
-
-
+  createItemStore(state: State, buyInfo: BuyInfo) {
+    state.BuyInfoList.push(buyInfo);
+  },
+  changeItemPriceStore(
+    state: State,
+    data: {
+      buyInfoId: ID;
+      price: number;
+      uid: string;
+      index: number;
+    }
+  ) {
+    state.BuyInfoList.forEach((v) => {
+      if (v.buyInfoId === data.buyInfoId) {
+        ItemUc.changeItemPriceUc(v, data.price, data.uid).then(() => {
+          v.item = Item.changeItemPrice(v.item, data.price);
+          return;
+        });
+      }
+    });
+  },
+  buyFinStore(state: State, day: string) {
+    state.BuyInfoList.forEach((v: BuyInfo, key) => {
+      if (v.buyResult === true) {
+        state.BuyInfoList[key] = BuyInfo.buyFin(v, day);
+      }
+    });
+  },
+  sortUpItemStore(
+    state: State,
+    data: [targetIndex: number, prevIndex: number, BuyInfoList: Array<BuyInfo>]
+  ) {
+    state.BuyInfoList[data[1]] = data[2][data[0]];
+    state.BuyInfoList[data[0]] = data[2][data[1]];
+  },
+  sortDownItemStore(
+    state: State,
+    data: [targetIndex: number, nextIndex: number, BuyInfoList: Array<BuyInfo>]
+  ) {
+    state.BuyInfoList[data[1]] = data[2][data[0]];
+    state.BuyInfoList[data[0]] = data[2][data[1]];
+  },
+  // context.state.BuyInfoList[arg.nextIndex] =
+  //   arg.buyInfoList[arg.targetIndex];
+  // context.state.BuyInfoList[arg.targetIndex] =
+  //   arg.buyInfoList[arg.nextIndex];
 };
 
 const actions = {
@@ -231,7 +268,7 @@ const actions = {
     )
       .then((result: BuyInfo | void) => {
         if (result) {
-          context.state.BuyInfoList.push(result);
+          context.commit("createItemStore", result);
         } else {
           return;
         }
@@ -250,31 +287,23 @@ const actions = {
       index: number;
     }
   ) {
-    context.state.BuyInfoList.forEach((v) => {
-      if (v.buyInfoId === data.buyInfoId) {
-        ItemUc.changeItemPriceUc(v, data.price, data.uid).then(() => {
-          v.item = Item.changeItemPrice(v.item, data.price);
-          return;
-        });
-      }
-    });
+    context.commit("changeItemPriceStore", data);
   },
 
-  buyFinStore(context:{state: State}, data: { buyInfoList: BuyInfoList; uid: string }) {
-    const day = BuyInfo.createBuyResultDay()
-    return BuyInfoUseCase.finBuyUc(state.BuyInfoList, data.uid,day)
-    .then(()=>{
-      context.state.BuyInfoList.forEach((v: BuyInfo, key) => {
-        if (v.buyResult === true) {
-          context.state.BuyInfoList[key] = BuyInfo.buyFin(v,day);
-        }
+  buyFinStore(
+    context: { state: State; commit: Commit },
+    data: { buyInfoList: BuyInfoList; uid: string }
+  ) {
+    const day = BuyInfo.createBuyResultDay();
+    return BuyInfoUseCase.finBuyUc(state.BuyInfoList, data.uid, day)
+      .then(() => {
+        context.commit("buyFinStore", day);
+      })
+      .catch(() => {
+        throw new Error();
       });
-      // return    
-    }).catch(()=>{
-      throw new Error()
-    })
   },
-  
+
   async sortUpItemStore(
     context: { commit: Commit; state: State },
     arg: {
@@ -299,10 +328,11 @@ const actions = {
         arg.uid
       ).then(() => {
         if (arg.activeCategory === "all" && arg.prevIndex != null) {
-          context.state.BuyInfoList[arg.prevIndex] =
-            arg.buyInfoList[arg.targetIndex];
-          context.state.BuyInfoList[arg.targetIndex] =
-            arg.buyInfoList[arg.prevIndex];
+          context.commit("sortUpItemStore", [
+            arg.targetIndex,
+            arg.prevIndex,
+            arg.buyInfoList,
+          ]);
         } else {
           return;
         }
@@ -316,6 +346,7 @@ const actions = {
         arg.buyInfoList,
         arg.prevBuyInfoId
       );
+      console.log("up", targetIndex, prevIndex, arg.buyInfoList);
       if (targetIndex != undefined && prevIndex != undefined) {
         await ItemUc.sortUpItemUc(
           targetIndex,
@@ -325,8 +356,11 @@ const actions = {
           arg.uid
         ).then(() => {
           if (targetIndex != undefined && prevIndex != undefined) {
-            context.state.BuyInfoList[prevIndex] = arg.buyInfoList[targetIndex];
-            context.state.BuyInfoList[targetIndex] = arg.buyInfoList[prevIndex];
+            context.commit("sortUpItemStore", [
+              targetIndex,
+              prevIndex,
+              arg.buyInfoList,
+            ]);
           }
         });
       }
@@ -338,8 +372,8 @@ const actions = {
     arg: {
       buyInfoList: BuyInfoList;
       activeCategory: string;
-      targetBuyinfoId: string;
-      nextBuyInfoId: string;
+      targetBuyinfoId: ID;
+      nextBuyInfoId: ID;
       targetIndex: number;
       nextIndex: number;
       uid: string;
@@ -355,10 +389,11 @@ const actions = {
         arg.uid
       ).then(() => {
         if (arg.activeCategory === "all" && arg.nextIndex != null) {
-          context.state.BuyInfoList[arg.nextIndex] =
-            arg.buyInfoList[arg.targetIndex];
-          context.state.BuyInfoList[arg.targetIndex] =
-            arg.buyInfoList[arg.nextIndex];
+          context.commit("sortDownItemStore", [
+            arg.targetIndex,
+            arg.nextIndex,
+            arg.buyInfoList,
+          ]);
         } else {
           return;
         }
@@ -366,11 +401,11 @@ const actions = {
     } else {
       const targetIndex = BuyInfo.RetrieveIndex(
         arg.buyInfoList,
-        fetchID(arg.targetBuyinfoId)
+        arg.targetBuyinfoId
       );
       const nextIndex = BuyInfo.RetrieveIndex(
         arg.buyInfoList,
-        fetchID(arg.nextBuyInfoId)
+        arg.nextBuyInfoId
       );
       if (targetIndex != undefined && nextIndex != undefined) {
         await ItemUc.sortDownItemUc(
@@ -381,8 +416,11 @@ const actions = {
           arg.uid
         ).then(() => {
           if (targetIndex != undefined && nextIndex != undefined) {
-            context.state.BuyInfoList[nextIndex] = arg.buyInfoList[targetIndex];
-            context.state.BuyInfoList[targetIndex] = arg.buyInfoList[nextIndex];
+            context.commit("sortDownItemStore", [
+              targetIndex,
+              nextIndex,
+              arg.buyInfoList,
+            ]);
           }
         });
       }

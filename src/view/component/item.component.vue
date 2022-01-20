@@ -56,15 +56,15 @@
   </button>
 </template>
 
-<script>
-import { BuyInfo } from "../../model/buy-info.model";
-import { ID } from "../../model/id.value"
+<script lang="ts">
+import { ID } from "../../model/id.value";
+import { PropType } from "@vue/runtime-core";
 export default {
   props: {
     val: {},
     index: Number,
-    nextBuyInfoId: ID || undefined,
-    prevBuyInfoId: ID || undefined,
+    nextBuyInfoId: (Object as PropType<ID>) || undefined,
+    prevBuyInfoId: (Object as PropType<ID>) || undefined,
     categoryBuyInfoList: Array,
   },
   emits: [
@@ -75,16 +75,16 @@ export default {
     "sortDownItemUi",
   ],
   setup(props, { emit }) {
-    const deleteItemUi = (id) => {
+    const deleteItemUi = (id: ID) => {
       emit("deleteItemUi", id);
     };
-    const changeItemNameUi = (id, name) => {
+    const changeItemNameUi = (id: ID, name: string) => {
       emit("changeItemNameUi", id, name);
     };
-    const changeItemPriceUi = (id, price) => {
+    const changeItemPriceUi = (id: ID, price: number) => {
       emit("changeItemPriceUi", id, price);
     };
-    const sortUpItemUi = (targetBuyinfoId, index) => {
+    const sortUpItemUi = (targetBuyinfoId: ID, index: number) => {
       emit(
         "sortUpItemUi",
         targetBuyinfoId,
@@ -93,7 +93,7 @@ export default {
         props.categoryBuyInfoList
       );
     };
-    const sortDownItemUi = (targetBuyinfoId, index) => {
+    const sortDownItemUi = (targetBuyinfoId: ID, index: number) => {
       emit(
         "sortDownItemUi",
         targetBuyinfoId,

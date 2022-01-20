@@ -2,7 +2,9 @@ import axios from "axios";
 
 function lineRequest() {
   axios
-    .post("https://asia-northeast1-buy-list-cf.cloudfunctions.net/line_buy_request")
+    .post(
+      "https://asia-northeast1-buy-list-cf.cloudfunctions.net/line_buy_request"
+    )
     .then(() => {
       alert("送信しました");
     })
@@ -13,7 +15,9 @@ function lineRequest() {
 
 function lineResult() {
   axios
-    .post("https://asia-northeast1-buy-list-cf.cloudfunctions.net/line_buy_result")
+    .post(
+      "https://asia-northeast1-buy-list-cf.cloudfunctions.net/line_buy_result"
+    )
     .then(() => {
       alert("送信しました");
     })
@@ -22,7 +26,7 @@ function lineResult() {
     });
 }
 
-export const Line={
+export const Line = {
   lineRequest,
-  lineResult
-}
+  lineResult,
+};

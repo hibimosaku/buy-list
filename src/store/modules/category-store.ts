@@ -1,5 +1,5 @@
 import { InjectionKey } from "vue";
-import { Store } from "vuex";
+import { Commit, Store } from "vuex";
 import { Category } from "../../model/category.model";
 import { getCategoryUc, changeCategoryUc } from "../../model/category.use-case";
 
@@ -20,17 +20,25 @@ const mutations = {
     state: State,
     data: { name: string; id: string; uid: string }
   ): void {
-    changeCategoryUc(data.name, data.id, data.uid).then((category:Category) => {
-      state.categorys[Number(data.id)] = category
-    });
+    changeCategoryUc(data.name, data.id, data.uid).then(
+      (category: Category) => {
+        state.categorys[Number(data.id)] = category;
+      }
+    );
+  },
+  loadCategory(state: State, categorys: Array<Category>) {
+    state.categorys = categorys;
   },
 };
 
 const actions = {
-  loadCategory(context: { state: State }, uid: string): Promise<void> {
+  loadCategory(
+    context: { state: State; commit: Commit },
+    uid: string
+  ): Promise<void> {
     return getCategoryUc(uid).then((v) => {
       if (v) {
-        context.state.categorys = v;
+        context.commit("loadCategory", v);
       }
     });
   },

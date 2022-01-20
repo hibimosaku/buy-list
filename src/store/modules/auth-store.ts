@@ -26,22 +26,28 @@ const actions = {
         return;
       })
       .catch(() => {
-            throw new Error();
+        throw new Error();
       });
   },
-  async userDeleteStore(context:{state:State}){
-    return AuthUseCase.userDeleteUc().then(()=>{
-      state.uid=""
-      return
-    }).catch(()=>{
-      throw new Error()
-    })
+  async userDeleteStore(context: { state: State }) {
+    return AuthUseCase.userDeleteUc()
+      .then(() => {
+        state.uid = "";
+        return;
+      })
+      .catch(() => {
+        throw new Error();
+      });
   },
-  async forgetPwStore(context:{state:State},mail:string){
+  async forgetPwStore(context: { state: State }, mail: string) {
     return AuthUseCase.forgetPwUc(mail)
-    .then(()=>{return})
-    .catch(()=>{throw new Error})
-  }
+      .then(() => {
+        return;
+      })
+      .catch(() => {
+        throw new Error();
+      });
+  },
 };
 
 const getters = {

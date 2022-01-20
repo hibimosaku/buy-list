@@ -79,7 +79,7 @@
 </template>
 
 <script lang="ts">
-import { ID } from '../../model/id.value';
+import { ID } from "../../model/id.value";
 export default {
   props: {
     val: {},

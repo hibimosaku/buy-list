@@ -34,7 +34,7 @@
     </div>
   </div>
   <div v-if="newItem">
-    {{resultMessage}}
+    {{ resultMessage }}
     <div
       :class="{
         'input-group input-group-sm mb-3': itemErrors.name === false,
@@ -124,15 +124,24 @@
 
   <div style="margin: 10px 0px">
     <div class="row">
-      <div class="col-6" style="text-align:center">品目名</div>
+      <div class="col-6" style="text-align: center">品目名</div>
       <div class="col-2">価格</div>
       <div class="col-2">削除</div>
-      <div class="col-2" style="font-size: 12px; text-align:left; padding:0px;">並び替え</div>
+      <div
+        class="col-2"
+        style="font-size: 12px; text-align: left; padding: 0px"
+      >
+        並び替え
+      </div>
     </div>
   </div>
 
-  <div :class="{'list list_active_newItem':newItem,
-                'list list_inActive_newItem':!newItem}">
+  <div
+    :class="{
+      'list list_active_newItem': newItem,
+      'list list_inActive_newItem': !newItem,
+    }"
+  >
     <div v-for="(val, index) in categoryBuyInfoList" :key="val" :index="index">
       <div v-if="val">
         <div class="input-group" style="margin-bottom: 10px">
@@ -229,10 +238,9 @@ export default defineComponent({
       } else {
         if (buyInfoList.value) {
           const result = buyInfoList.value.filter((v: BuyInfo) => {
-            return (
-              v.categoryId === activeCategory.value
-            );
+            return v.categoryId === activeCategory.value;
           });
+          // console.log(result)
           return result;
         } else {
           throw new Error("buyInfolist is undefined");
@@ -240,18 +248,21 @@ export default defineComponent({
       }
     });
 
-    const resultMessage=computed(()=>{
-      if(store.getters.getProcessing){
-        return '処理中です'
-      }else{
-        return
+    const resultMessage = computed(() => {
+      if (store.getters.getProcessing) {
+        return "処理中です";
+      } else {
+        return;
       }
-    })
-
+    });
 
     const createItemUi = async () => {
-      if(itemName.value!==null && itemPrice.value!==null && categoryId.value!==null){
-        if (!buyInfoList.value) return
+      if (
+        itemName.value !== null &&
+        itemPrice.value !== null &&
+        categoryId.value !== null
+      ) {
+        if (!buyInfoList.value) return;
         await store
           .dispatch("createItemStore", {
             categoryId: categoryId.value,
@@ -264,15 +275,15 @@ export default defineComponent({
             itemName.value = null; //【課題→解決】awaitがないとstore終了前に処理されている。await storeだけでよいと思っている。
             itemPrice.value = null;
             categoryId.value = null;
-            itemErrors.value.name=false
-            itemErrors.value.price = false
-            itemErrors.value.category = false
+            itemErrors.value.name = false;
+            itemErrors.value.price = false;
+            itemErrors.value.category = false;
           });
-        }else{
-          if (itemName.value === null) itemErrors.value.name = true
-          if (itemPrice.value === null) itemErrors.value.price = true;
-          if (categoryId.value === null) itemErrors.value.category = true;
-        }
+      } else {
+        if (itemName.value === null) itemErrors.value.name = true;
+        if (itemPrice.value === null) itemErrors.value.price = true;
+        if (categoryId.value === null) itemErrors.value.category = true;
+      }
     };
 
     const changeItemNameUi = async (buyInfoId: ID, name: string) => {
@@ -369,29 +380,27 @@ export default defineComponent({
 });
 </script>
 <style lang="scss">
-  .list {
-    display: block;
-  }
-  .list_active_newItem{
+.list {
+  display: block;
+}
+.list_active_newItem {
   height: 480px;
-  }
-  .list_inActive_newItem{
-    height: 670px;
-  }
+}
+.list_inActive_newItem {
+  height: 670px;
+}
 
-@media screen and(max-height:670px)and(max-width:420px){
+@media screen and(max-height:670px) and(max-width:420px) {
   .list {
     display: block;
     overflow-y: scroll;
     // height: 250px;
   }
-  .list_active_newItem{
+  .list_active_newItem {
     height: 250px;
   }
-  .list_inActive_newItem{
+  .list_inActive_newItem {
     height: 440px;
   }
-  
 }
-
 </style>

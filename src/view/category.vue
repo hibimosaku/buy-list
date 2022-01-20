@@ -1,21 +1,21 @@
 <template>
-    <p>品目を分類ごとで利用したい場合、登録お願いします。</p>
+  <p>品目を分類ごとで利用したい場合、登録お願いします。</p>
   <!-- <transition-group name="fade"> -->
-    <div
-      v-for="(category, index) in categorys"
-      :key="category.name"
-      :index="index"
-      class="mb-1"
-    >
-      <input
-        class="form-control small"
-        v-model="categorys[index].name"
-        @change="changeCategoryUi(index, categorys[index].name)"
-      />
-      <div class="form-text text-danger" v-if="category.name.length > 4">
-        分類名は4文字以内でお願いします
-      </div>
+  <div
+    v-for="(category, index) in categorys"
+    :key="category.name"
+    :index="index"
+    class="mb-1"
+  >
+    <input
+      class="form-control small"
+      v-model="categorys[index].name"
+      @change="changeCategoryUi(index, categorys[index].name)"
+    />
+    <div class="form-text text-danger" v-if="category.name.length > 4">
+      分類名は4文字以内でお願いします
     </div>
+  </div>
   <!-- </transition-group> -->
 </template>
 <script lang="ts">

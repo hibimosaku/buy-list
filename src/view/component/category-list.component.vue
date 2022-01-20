@@ -1,5 +1,5 @@
 <template>
-  <div class="fixed-bottom" style="background-color: #ffffff;">
+  <div class="fixed-bottom" style="background-color: #ffffff">
     <div class="row btn-group-sm" role="group" aria-label="Basic example">
       <button
         type="button"
@@ -23,7 +23,6 @@
       >
         {{ categorys[n - 1].name }}
       </button>
-
     </div>
     <div class="row btn-group-sm" role="group" aria-label="Basic example">
       <button
@@ -41,7 +40,6 @@
       </button>
     </div>
   </div>
-
 </template>
 
 <script lang="ts">

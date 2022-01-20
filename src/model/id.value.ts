@@ -13,14 +13,14 @@ export function createID(): ID {
     .replace(/\//g, "")
     .replace(/ /g, "");
   return {
-    _tag:'ID',
-    raw:day
-  }
+    _tag: "ID",
+    raw: day,
+  };
 }
 
-export function fetchID(id:string):ID{
-  return{
-    _tag:'ID',
-    raw:id
-  }
+export function fetchID(id: string): ID {
+  return {
+    _tag: "ID",
+    raw: id,
+  };
 }

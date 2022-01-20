@@ -14,7 +14,7 @@ import { fetchID, ID } from "./id.value";
 
 async function createBuyInfoRep(buyInfo: BuyInfo, uid: string, sort: number) {
   return setDoc(
-    doc(getFirestore(), "users", uid, "items", String(buyInfo.buyInfoId)),
+    doc(getFirestore(), "users", uid, "items", String(buyInfo.buyInfoId.raw)),
     {
       category_id: String(buyInfo.categoryId),
       name: buyInfo.item.name,
@@ -37,7 +37,10 @@ async function updateItemNameRep(buyInfo: BuyInfo, uid: string) {
   );
 }
 
-async function updateItemPriceRep(buyInfo: BuyInfo, uid: string): Promise<void> {
+async function updateItemPriceRep(
+  buyInfo: BuyInfo,
+  uid: string
+): Promise<void> {
   return updateDoc(
     //return を返さないとpromiseを返さない
     doc(getFirestore(), "users", uid, "items", buyInfo.buyInfoId.raw),
@@ -49,14 +52,17 @@ async function updateItemPriceRep(buyInfo: BuyInfo, uid: string): Promise<void> 
 
 //購入数の変更
 async function updateBuyRequestNumRep(buyInfo: BuyInfo, uid: string) {
-  return updateDoc(doc(getFirestore(), "users", uid, "items", buyInfo.buyInfoId.raw), {
-    buyRequestNum: buyInfo.buyRequestNum.num,
-  })
+  return updateDoc(
+    doc(getFirestore(), "users", uid, "items", buyInfo.buyInfoId.raw),
+    {
+      buyRequestNum: buyInfo.buyRequestNum.num,
+    }
+  );
 }
 
-function deleteItemRep(uid: string, buyInfoId: ID) {
+async function deleteItemRep(uid: string, buyInfoId: ID) {
   return deleteDoc(
-    doc(getFirestore(), "users", uid, "items", String(buyInfoId))
+    doc(getFirestore(), "users", uid, "items", String(buyInfoId.raw))
   );
 }
 
@@ -90,6 +96,7 @@ async function sortDownItemRep(
   uid: string
 ): Promise<void> {
   //【課題→解決】firestoreのリファレンスどおりだが、なぜエラー時は戻り値あるか不明？
+  console.log(targetBuyInfo); //undifになっている
   await updateDoc(
     doc(getFirestore(), "users", uid, "items", targetBuyInfo.buyInfoId.raw),
     {
@@ -124,66 +131,74 @@ function updateBuyResultRep(buyInfo: BuyInfo, uid: string) {
   );
 }
 //リクエストリセット
-function updateResetBuyRequestRep(data:BuyInfoList,uid:string){
-  return data.forEach((v:BuyInfo,k:number)=>{
-    if(v.buyRequest===false){
-      updateDoc(doc(getFirestore(),"users",uid,"items",v.buyInfoId.raw),{
-        buyRequest: false,
-      })
-    }
-  })
-}
-
-
-//買物リセット
-function updateResetBuyResultRep(data:BuyInfoList,uid:string){
-  console.log(data,uid)
-
-  return data.forEach((v:BuyInfo,k:number)=>{
-console.log(v)
-    if(v.buyResult===false || v.buyResult===true){
-      updateDoc(doc(getFirestore(),"users",uid,"items",v.buyInfoId.raw),{
-        buyResult: null,
-      })
-    }
-  })
-}
-
-//買物完了
-function updateBuyfinRep(data: BuyInfoList, uid: string,day:BuyInfo['buyResultDay']) {
+function updateResetBuyRequestRep(data: BuyInfoList, uid: string) {
   return data.forEach((v: BuyInfo, k: number) => {
-    if(v.buyResult===true){
-      setDoc(doc(getFirestore(), "users", uid, "items", String(v.buyInfoId)), {
-        category_id: String(v.categoryId),
-        name: v.item.name,
-        price: v.item.price,
-        buyRequestNum: v.buyRequestNum.num,
+    if (v.buyRequest === false) {
+      updateDoc(doc(getFirestore(), "users", uid, "items", v.buyInfoId.raw), {
         buyRequest: false,
-        buyResult: null,
-        buyResultDay: day,
-        sort: k,
-      });  
-    }else{
-      return
+      });
     }
   });
 }
 
+//買物リセット
+function updateResetBuyResultRep(data: BuyInfoList, uid: string) {
+  console.log(data, uid);
+
+  return data.forEach((v: BuyInfo, k: number) => {
+    console.log(v);
+    if (v.buyResult === false || v.buyResult === true) {
+      updateDoc(doc(getFirestore(), "users", uid, "items", v.buyInfoId.raw), {
+        buyResult: null,
+      });
+    }
+  });
+}
+
+//買物完了
+function updateBuyfinRep(
+  data: BuyInfoList,
+  uid: string,
+  day: BuyInfo["buyResultDay"]
+) {
+  return data.forEach((v: BuyInfo, k: number) => {
+    if (v.buyResult === true) {
+      setDoc(
+        doc(getFirestore(), "users", uid, "items", String(v.buyInfoId.raw)),
+        {
+          category_id: String(v.categoryId),
+          name: v.item.name,
+          price: v.item.price,
+          buyRequestNum: v.buyRequestNum.num,
+          buyRequest: false,
+          buyResult: null,
+          buyResultDay: day,
+          sort: k,
+        }
+      );
+    } else {
+      return;
+    }
+  });
+}
 
 //全データの更新
 function updateItemListRep(data: BuyInfoList, uid: string) {
   return data.forEach((v: BuyInfo, k: number) => {
-    if(v.buyResult===true){
-      setDoc(doc(getFirestore(), "users", uid, "items", String(v.buyInfoId)), {
-        category_id: String(v.categoryId),
-        name: v.item.name,
-        price: v.item.price,
-        buyRequestNum: v.buyRequestNum.num,
-        buyRequest: v.buyRequest,
-        buyResult: v.buyResult,
-        buyResultDay: v.buyResultDay,
-        sort: k,
-      });  
+    if (v.buyResult === true) {
+      setDoc(
+        doc(getFirestore(), "users", uid, "items", String(v.buyInfoId.raw)),
+        {
+          category_id: String(v.categoryId),
+          name: v.item.name,
+          price: v.item.price,
+          buyRequestNum: v.buyRequestNum.num,
+          buyRequest: v.buyRequest,
+          buyResult: v.buyResult,
+          buyResultDay: v.buyResultDay,
+          sort: k,
+        }
+      );
     }
   });
 }
@@ -229,5 +244,5 @@ export const BuyInfoRepository = {
   sortDownItemRep,
   updateBuyfinRep,
   updateResetBuyRequestRep,
-  updateResetBuyResultRep
+  updateResetBuyResultRep,
 };

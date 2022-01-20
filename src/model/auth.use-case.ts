@@ -33,24 +33,24 @@ async function signOUtUc() {
     });
 }
 
-async function userDeleteUc(){
+async function userDeleteUc() {
   await AuthRepository.userDelete()
-    .then(()=>{
-      return
+    .then(() => {
+      return;
     })
-    .catch((e)=>{
-      throw new Error("userDelete is failure")
-    })
+    .catch((e) => {
+      throw new Error("userDelete is failure");
+    });
 }
 
-async function forgetPwUc(mail:string){
+async function forgetPwUc(mail: string) {
   await AuthRepository.forgetPwRp(mail)
-    .then(()=>{
-      return
+    .then(() => {
+      return;
     })
-    .catch(()=>{
-      throw new Error("error")
-    })
+    .catch(() => {
+      throw new Error("error");
+    });
 }
 
 export const AuthUseCase = {
@@ -58,5 +58,5 @@ export const AuthUseCase = {
   signUpUc,
   signOUtUc,
   userDeleteUc,
-  forgetPwUc
+  forgetPwUc,
 };

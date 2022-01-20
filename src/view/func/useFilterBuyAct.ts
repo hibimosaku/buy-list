@@ -1,9 +1,7 @@
 import { computed, ref } from "vue";
 import { BuyInfo, BuyInfoList } from "../../model/buy-info.model";
 
-
-export const useBuyAct=()=>{
-
+export const useBuyAct = () => {
   const buyInfoList = ref<BuyInfoList>();
   const activeCategory = ref();
   const filterStatus = ref<string>("all" || "buy" || "no");
@@ -22,15 +20,9 @@ export const useBuyAct=()=>{
       return result;
     } else {
       result = buyInfoList.value.filter((v: BuyInfo) => {
-        if (
-          activeCategory.value == v.categoryId &&
-          filterStatus.value == "all"
-        )
+        if (activeCategory.value == v.categoryId && filterStatus.value == "all")
           return v != null;
-        if (
-          activeCategory.value == v.categoryId &&
-          filterStatus.value == "no"
-        )
+        if (activeCategory.value == v.categoryId && filterStatus.value == "no")
           return v.buyResult == false;
         if (
           activeCategory.value === v.categoryId &&
@@ -43,11 +35,10 @@ export const useBuyAct=()=>{
     }
   });
 
-  return{
+  return {
     buyInfoList,
     activeCategory,
     filterStatus,
-    filterbuyListRq
-  }
-
-}
+    filterbuyListRq,
+  };
+};

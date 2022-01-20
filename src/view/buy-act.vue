@@ -11,18 +11,22 @@
   </div>
 
   <div class="text-right">
-    <button class="btn btn-primary btn-sm" @click="resetBuyResultUi">リセット</button>
-    <button class="btn btn-primary btn-sm" @click="resetBuyResultUi">買物完了Line</button>
+    <button class="btn btn-primary btn-sm" @click="resetBuyResultUi">
+      リセット
+    </button>
+    <button class="btn btn-primary btn-sm" @click="resetBuyResultUi">
+      買物完了Line
+    </button>
   </div>
 
   <table class="table">
     <thead>
       <tr>
-        <th scope="col" style="width:40%">品目名</th>
-        <th scope="col" style="width:20%">価格</th>
-        <th scope="col" style="width:20%">個数</th>
-        <th scope="col" style="width:10%">買う</th>
-        <th scope="col" style="width:10%">ない</th>
+        <th scope="col" style="width: 40%">品目名</th>
+        <th scope="col" style="width: 20%">価格</th>
+        <th scope="col" style="width: 20%">個数</th>
+        <th scope="col" style="width: 10%">買う</th>
+        <th scope="col" style="width: 10%">ない</th>
       </tr>
     </thead>
     <tbody v-for="(val, index) in filterbuyListRq" :key="val" :index="index">
@@ -56,7 +60,6 @@ import buyActComponent from "./component/buy-act.component.vue";
 import filterBuyInfoListComponent from "./component/filter-buyInfoList.component.vue";
 import errDbComponent from "./container/error-db.container.vue";
 
-
 import { commonMount } from "./func/common-mount";
 import { useBuyAct } from "./func/useFilterBuyAct";
 import { ID } from "../model/id.value";
@@ -71,7 +74,8 @@ export default defineComponent({
   },
   setup() {
     const { categorys, uid } = commonMount();
-    const { buyInfoList,activeCategory,filterStatus,filterbuyListRq} = useBuyAct()
+    const { buyInfoList, activeCategory, filterStatus, filterbuyListRq } =
+      useBuyAct();
     const filterType = ref<Array<string>>();
     filterType.value = ["all", "buy", "no"];
 
@@ -101,16 +105,27 @@ export default defineComponent({
     };
 
     const buyFinUi = () => {
-      store.dispatch("buyFinStore", {
-        buyInfoList: buyInfoList.value,
-        uid: uid.value,
-      }).then(()=>{
-        buyInfoList.value = store.getters.getBuyResultList;
-        alert('更新しました')
-      })
-      .catch(()=>{
+      //【課題】ここに書いてよい？
+      //store層に書こうと思いましたが、結果エラー発生
+      if (!buyInfoList.value) return;
+      const isNoBuy = buyInfoList.value.every((v) => {
+        return v.buyResult === false;
+      });
+      if (isNoBuy) {
+        alert("購入しているものがございません");
+        return;
+      }
 
-      })
+      store
+        .dispatch("buyFinStore", {
+          buyInfoList: buyInfoList.value,
+          uid: uid.value,
+        })
+        .then(() => {
+          buyInfoList.value = store.getters.getBuyResultList;
+          alert("更新しました");
+        })
+        .catch(() => {});
     };
 
     const resetBuyResultUi = () => {
@@ -119,7 +134,6 @@ export default defineComponent({
         uid: uid.value,
       });
     };
-
 
     return {
       buyInfoList,
@@ -139,22 +153,22 @@ export default defineComponent({
 });
 </script>
 <style lang="scss" scoped>
-  // table {
-  //   display: block;
-  //   overflow-y: scroll;
-  //   height: 400px;
-  // }
-  // table thead {
-  //   position: sticky;
-  //   top: 0;
-  //   z-index: 1;
-  //   background-color: white;
-  // }
+// table {
+//   display: block;
+//   overflow-y: scroll;
+//   height: 400px;
+// }
+// table thead {
+//   position: sticky;
+//   top: 0;
+//   z-index: 1;
+//   background-color: white;
+// }
 
-table{
-  margin-bottom:5px;
+table {
+  margin-bottom: 5px;
 }
-@media screen and(max-height:670px)and(max-width:420px){
+@media screen and(max-height:670px) and(max-width:420px) {
   table {
     display: block;
     overflow-y: scroll;
@@ -168,4 +182,3 @@ table{
   }
 }
 </style>
-
