@@ -99,7 +99,7 @@ export default defineComponent({
     });
 
     const changeBuyRequestDoUi = (request: boolean, buyInfoId: ID) => {
-      store.commit("changeBuyRequestDoStore", {
+      store.dispatch("changeBuyRequestDoStore", {
         buyInfoId,
         request,
         uid: uid.value,
@@ -107,7 +107,7 @@ export default defineComponent({
     };
 
     const changeBuyRequestNumUi = (buyRequestNum: number, buyInfoId: ID) => {
-      store.commit("changeBuyRequestNumStore", {
+      store.dispatch("changeBuyRequestNumStore", {
         buyRequestNum,
         buyInfoId,
         uid: uid.value,
@@ -115,7 +115,7 @@ export default defineComponent({
     };
 
     const resetBuyRequestUi = () => {
-      store.commit("resetBuyRequestStore", {
+      store.dispatch("resetBuyRequestStore", {
         id: activeCategory.value,
         uid: uid.value,
       });

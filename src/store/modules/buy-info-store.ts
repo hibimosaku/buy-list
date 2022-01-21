@@ -20,26 +20,6 @@ const state = {
 
 const mutations = {
   //品目
-  changeItemNameStore(
-    state: State,
-    data: {
-      buyInfoId: ID;
-      name: string;
-      uid: string;
-    }
-  ): void {
-    state.BuyInfoList.forEach((v) => {
-      if (v.buyInfoId === data.buyInfoId) {
-        ItemUc.changeItemNameUc(v, data.name, data.uid)
-          .then(() => {
-            v.item = Item.changeItemName(v.item, data.name);
-          })
-          .catch((e) => {});
-      } else {
-      }
-    });
-  },
-
   setSortUpItemStore(
     state: State,
     arg: {
@@ -54,167 +34,12 @@ const mutations = {
     state.BuyInfoList[arg.targetIndex] = arg.prevBuyInfo;
   },
 
-  changeBuyRequestNumStore(
-    state: State,
-    data: { buyRequestNum: number; buyInfoId: ID; uid: string }
-  ) {
-    state.BuyInfoList.forEach((v) => {
-      if (v.buyInfoId === data.buyInfoId) {
-        const num = createBuyRequestNum(data.buyRequestNum);
-        BuyInfoUseCase.changeBuyRequestNumUc(data.buyRequestNum, v, data.uid)
-          .then(() => {
-            v.buyRequestNum = num;
-          })
-          .catch(() => {
-            return;
-          });
-      } else {
-      }
-    });
-  },
-
-  deleteItemStore(state: State, data: { uid: string; buyInfoId: ID }): void {
-    ItemUc.deleteItemUc(data.uid, data.buyInfoId)
-      .then(() => {
-        state.BuyInfoList.forEach((v, key) => {
-          if (v.buyInfoId === data.buyInfoId) {
-            delete state.BuyInfoList[key];
-          }
-        });
-      })
-      .catch(() => {
-        return;
-      });
-  },
-
   setItems(state: State, items: BuyInfoList) {
     state.BuyInfoList = items;
   },
 
-  changeBuyRequestDoStore(
-    state: State,
-    data: {
-      buyInfoId: ID;
-      request: boolean;
-      uid: string;
-    }
-  ) {
-    state.BuyInfoList.forEach((v) => {
-      if (v.buyInfoId === data.buyInfoId) {
-        BuyInfoUseCase.changeBuyRequestUc(v, data.request, data.uid)
-          .then(() => {
-            v.buyRequest = data.request;
-          })
-          .catch(() => {
-            return;
-          });
-      }
-    });
-    //【課題→解決】上と下どちらがよいか？私は上派。上のほうがループしている分無駄？下のindexは信じてよい？
-    //処理速度。正規化パターン
-    // state.BuyInfoList[data.index] = {
-    //   _tag: "BuyInfo",
-    //   item: state.BuyInfoList[data.index].item,
-    //   buyRequestNum: state.BuyInfoList[data.index].buyRequestNum,
-    //   categoryId: state.BuyInfoList[data.index].categoryId,
-    //   buyRequest: data.status,
-    //   buyResult: state.BuyInfoList[data.index].buyResult,
-    //   buyResultDay: state.BuyInfoList[data.index].buyResultDay,
-    // };
-
-    // {
-    //   values: {
-    //     'AshuUUGDJBu2': <Entity>,
-    //     'AshuUUGDJBu3': <Entity>,
-    //     'AshuUUGDJBu4': <Entity>,
-    //     'AshuUUGDJBu5': <Entity>,
-    //   },
-    //   entries: [ 'AshuUUGDJBu4', 'AshuUUGDJBu3', 'AshuUUGDJBu2', 'AshuUUGDJBu5' ],
-    // };
-  },
-  //買い物結果
-  changeBuyResultStore(
-    state: State,
-    data: { buyResult: boolean; buyInfoId: ID; uid: string }
-  ) {
-    state.BuyInfoList.forEach((v) => {
-      if (v.buyInfoId === data.buyInfoId) {
-        BuyInfoUseCase.changeBuyResultUc(data.buyResult, v, data.uid)
-          .then(() => {
-            v.buyResult = data.buyResult;
-          })
-          .catch(() => {
-            return;
-          });
-      }
-    });
-  },
-  //状態のnull化
-  resetBuyResultStore(state: State, data: { id: string; uid: string }) {
-    BuyInfoUseCase.resetBuyResultUc(state.BuyInfoList, data.uid);
-    state.BuyInfoList.forEach((v, k) => {
-      if (data.id === "all") {
-        if (v.buyRequest === true) {
-          state.BuyInfoList[k].buyResult = null;
-        }
-      } else {
-        if (data.id === v.categoryId && v.buyRequest === true) {
-          state.BuyInfoList[k].buyResult = null;
-        }
-      }
-    });
-  },
-
-  resetBuyRequestStore(state: State, data: { id: string; uid: string }) {
-    BuyInfoUseCase.resetBuyRequestUc(state.BuyInfoList, data.uid);
-    state.BuyInfoList.forEach((v, k) => {
-      if (data.id === "all") {
-        state.BuyInfoList[k].buyRequest = false;
-      } else {
-        if (data.id === v.categoryId) {
-          state.BuyInfoList[k].buyRequest = false;
-        }
-      }
-    });
-  },
-
-  // buyFinStore(state: State, data: { buyInfoList: BuyInfoList; uid: string }) {
-  //   BuyInfoUseCase.finBuyStatusUc(state.BuyInfoList, data.uid)
-  //   .then(()=>{
-  //     console.log('0')
-  //     state.BuyInfoList.forEach((v: BuyInfo, key) => {
-  //       if (v.buyResult === true) {
-
-  //         state.BuyInfoList[key] = BuyInfo.buyFin(v);
-  //         console.log('finSto',state.BuyInfoList[key],BuyInfo.buyFin(v))
-
-  //       }
-  //     });
-  //   }).catch(()=>{
-  //     console.log('2')
-  //     throw new Error()
-  //   })
-  // },
   createItemStore(state: State, buyInfo: BuyInfo) {
     state.BuyInfoList.push(buyInfo);
-  },
-  changeItemPriceStore(
-    state: State,
-    data: {
-      buyInfoId: ID;
-      price: number;
-      uid: string;
-      index: number;
-    }
-  ) {
-    state.BuyInfoList.forEach((v) => {
-      if (v.buyInfoId === data.buyInfoId) {
-        ItemUc.changeItemPriceUc(v, data.price, data.uid).then(() => {
-          v.item = Item.changeItemPrice(v.item, data.price);
-          return;
-        });
-      }
-    });
   },
   buyFinStore(state: State, day: string) {
     state.BuyInfoList.forEach((v: BuyInfo, key) => {
@@ -237,10 +62,6 @@ const mutations = {
     state.BuyInfoList[data[1]] = data[2][data[0]];
     state.BuyInfoList[data[0]] = data[2][data[1]];
   },
-  // context.state.BuyInfoList[arg.nextIndex] =
-  //   arg.buyInfoList[arg.targetIndex];
-  // context.state.BuyInfoList[arg.targetIndex] =
-  //   arg.buyInfoList[arg.nextIndex];
 };
 
 const actions = {
@@ -277,8 +98,27 @@ const actions = {
         throw new Error();
       });
   },
+  changeItemNameStore(
+    context: { commit: Commit; state: State },
+    data: {
+      buyInfoId: ID;
+      name: string;
+      uid: string;
+    }
+  ): void {
+    context.state.BuyInfoList.forEach((v) => {
+      if (v.buyInfoId === data.buyInfoId) {
+        ItemUc.changeItemNameUc(v, data.name, data.uid)
+          .then(() => {
+            v.item = Item.changeItemName(v.item, data.name);
+          })
+          .catch((e) => {});
+      } else {
+      }
+    });
+  },
 
-  changeItemPriceStore(
+  async changeItemPriceStore(
     context: { commit: Commit; state: State },
     data: {
       buyInfoId: ID;
@@ -287,7 +127,14 @@ const actions = {
       index: number;
     }
   ) {
-    context.commit("changeItemPriceStore", data);
+    context.state.BuyInfoList.forEach((v) => {
+      if (v.buyInfoId === data.buyInfoId) {
+        ItemUc.changeItemPriceUc(v, data.price, data.uid).then(() => {
+          v.item = Item.changeItemPrice(v.item, data.price);
+          return;
+        });
+      }
+    });
   },
 
   buyFinStore(
@@ -346,7 +193,6 @@ const actions = {
         arg.buyInfoList,
         arg.prevBuyInfoId
       );
-      console.log("up", targetIndex, prevIndex, arg.buyInfoList);
       if (targetIndex != undefined && prevIndex != undefined) {
         await ItemUc.sortUpItemUc(
           targetIndex,
@@ -425,6 +271,111 @@ const actions = {
         });
       }
     }
+  },
+  changeBuyRequestNumStore(
+    context: { commit: Commit; state: State },
+    data: { buyRequestNum: number; buyInfoId: ID; uid: string }
+  ) {
+    context.state.BuyInfoList.forEach((v) => {
+      if (v.buyInfoId === data.buyInfoId) {
+        const num = createBuyRequestNum(data.buyRequestNum);
+        BuyInfoUseCase.changeBuyRequestNumUc(data.buyRequestNum, v, data.uid)
+          .then(() => {
+            v.buyRequestNum = num;
+          })
+          .catch(() => {
+            return;
+          });
+      } else {
+      }
+    });
+  },
+  async deleteItemStore(
+    context: { commit: Commit; state: State },
+    data: { uid: string; buyInfoId: ID }
+  ): Promise<void> {
+    return ItemUc.deleteItemUc(data.uid, data.buyInfoId)
+      .then(() => {
+        return context.state.BuyInfoList.forEach((v, key) => {
+          if (v.buyInfoId === data.buyInfoId) {
+            delete context.state.BuyInfoList[key];
+            console.log("2", state.BuyInfoList);
+          }
+        });
+      })
+      .catch(() => {
+        return;
+      });
+  },
+  async changeBuyRequestDoStore(
+    context: { state: State; commit: Commit },
+    data: {
+      buyInfoId: ID;
+      request: boolean;
+      uid: string;
+    }
+  ) {
+    context.state.BuyInfoList.forEach((v) => {
+      if (v.buyInfoId === data.buyInfoId) {
+        BuyInfoUseCase.changeBuyRequestUc(v, data.request, data.uid)
+          .then(() => {
+            v.buyRequest = data.request;
+          })
+          .catch(() => {
+            return;
+          });
+      }
+    });
+  },
+  async changeBuyResultStore(
+    context: { state: State; commit: Commit },
+    data: { buyResult: boolean; buyInfoId: ID; uid: string }
+  ) {
+    context.state.BuyInfoList.forEach((v) => {
+      if (v.buyInfoId === data.buyInfoId) {
+        BuyInfoUseCase.changeBuyResultUc(data.buyResult, v, data.uid)
+          .then(() => {
+            v.buyResult = data.buyResult;
+          })
+          .catch(() => {
+            return;
+          });
+      }
+    });
+  },
+
+  async resetBuyResultStore(
+    context: { state: State; commit: Commit },
+    data: { id: string; uid: string }
+  ) {
+    BuyInfoUseCase.resetBuyResultUc(context.state.BuyInfoList, data.uid);
+    context.state.BuyInfoList.forEach((v, k) => {
+      if (data.id === "all") {
+        if (v.buyRequest === true) {
+          context.state.BuyInfoList[k].buyResult = null;
+        }
+      } else {
+        if (data.id === v.categoryId && v.buyRequest === true) {
+          context.state.BuyInfoList[k].buyResult = null;
+        }
+      }
+    });
+  },
+
+  async resetBuyRequestStore(
+    context: { state: State; commit: Commit },
+    data: { id: string; uid: string }
+  ) {
+    BuyInfoUseCase.resetBuyRequestUc(state.BuyInfoList, data.uid);
+    context.state.BuyInfoList.forEach((v, k) => {
+      if (data.id === "all") {
+        context.state.BuyInfoList[k].buyRequest = false;
+      } else {
+        if (data.id === v.categoryId) {
+          context.state.BuyInfoList[k].buyRequest = false;
+        }
+      }
+    });
   },
 };
 

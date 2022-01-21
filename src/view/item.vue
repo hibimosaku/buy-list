@@ -240,7 +240,6 @@ export default defineComponent({
           const result = buyInfoList.value.filter((v: BuyInfo) => {
             return v.categoryId === activeCategory.value;
           });
-          // console.log(result)
           return result;
         } else {
           throw new Error("buyInfolist is undefined");
@@ -288,7 +287,7 @@ export default defineComponent({
 
     const changeItemNameUi = async (buyInfoId: ID, name: string) => {
       if (name.length > 10) return;
-      store.commit("changeItemNameStore", {
+      store.dispatch("changeItemNameStore", {
         buyInfoId,
         name,
         uid: uid.value,
@@ -304,11 +303,13 @@ export default defineComponent({
       });
     };
 
-    const deleteItemUi = (id: ID) => {
-      store.commit("deleteItemStore", {
-        uid: uid.value,
-        buyInfoId: id,
-      });
+    const deleteItemUi = async (id: ID) => {
+      await store
+        .dispatch("deleteItemStore", {
+          uid: uid.value,
+          buyInfoId: id,
+        })
+        .then(() => {});
     };
 
     const sortUpItemUi = (

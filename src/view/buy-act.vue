@@ -92,7 +92,7 @@ export default defineComponent({
 
     const changeBuyResultUi = (buyResult: boolean, buyInfoId: ID) => {
       if (buyInfoList.value) {
-        store.commit("changeBuyResultStore", {
+        store.dispatch("changeBuyResultStore", {
           buyResult,
           buyInfoId,
           uid: uid.value,
@@ -129,7 +129,7 @@ export default defineComponent({
     };
 
     const resetBuyResultUi = () => {
-      store.commit("resetBuyResultStore", {
+      store.dispatch("resetBuyResultStore", {
         id: activeCategory.value,
         uid: uid.value,
       });

@@ -96,7 +96,6 @@ async function sortDownItemRep(
   uid: string
 ): Promise<void> {
   //【課題→解決】firestoreのリファレンスどおりだが、なぜエラー時は戻り値あるか不明？
-  console.log(targetBuyInfo); //undifになっている
   await updateDoc(
     doc(getFirestore(), "users", uid, "items", targetBuyInfo.buyInfoId.raw),
     {
