@@ -65,7 +65,6 @@ async function changeItemPriceUc(buyInfo: BuyInfo, price: number, uid: string) {
 async function deleteItemUc(uid: string, buyInfoId: ID) {
   try {
     await BuyInfoRepository.deleteItemRep(uid, buyInfoId);
-    console.log("delete");
   } catch (e) {
     store.commit("isErrorDbItem");
     console.error(`errMethod:deleteItem,${e}`);
@@ -106,7 +105,6 @@ async function sortDownItemUc(
   nextBuyInfo: BuyInfo,
   uid: string
 ) {
-  console.log(targetBuyInfo);
   await BuyInfoRepository.sortDownItemRep(
     targetIndex,
     nextIndex,

@@ -4,7 +4,10 @@ import { Commit, Store } from "vuex";
 import { BuyInfoUseCase } from "../../model/buy-info.use-case";
 import { BuyInfoList, BuyInfo } from "../../model/buy-info.model";
 import { ItemUc } from "../../model/item.use-case";
-import { createBuyRequestNum } from "../../model/buy-request-num.value";
+import {
+  BuyRequestNum,
+  createBuyRequestNum,
+} from "../../model/buy-request-num.value";
 import { Item } from "../../model/item.model";
 import { ID } from "../../model/id.value";
 
@@ -62,6 +65,51 @@ const mutations = {
     state.BuyInfoList[data[1]] = data[2][data[0]];
     state.BuyInfoList[data[0]] = data[2][data[1]];
   },
+  changeItemNameStore(
+    state: State,
+    data: { key: number; item: Item; name: string }
+  ) {
+    state.BuyInfoList[data.key].item = Item.changeItemName(
+      data.item,
+      data.name
+    );
+  },
+  changeItemPriceStore(
+    state: State,
+    data: { key: number; item: Item; price: number }
+  ) {
+    state.BuyInfoList[data.key].item = Item.changeItemPrice(
+      data.item,
+      data.price
+    );
+  },
+  changeBuyRequestNumStore(
+    state: State,
+    data: { key: number; num: BuyRequestNum }
+  ) {
+    state.BuyInfoList[data.key].buyRequestNum = data.num;
+  },
+  deleteItemStore(state: State, key: number) {
+    delete state.BuyInfoList[key];
+  },
+  changeBuyRequestDoStore(
+    state: State,
+    data: { key: number; request: boolean }
+  ) {
+    state.BuyInfoList[data.key].buyRequest = data.request;
+  },
+  changeBuyResultStore(
+    state: State,
+    data: { key: number; buyResult: boolean }
+  ) {
+    state.BuyInfoList[data.key].buyResult = data.buyResult;
+  },
+  resetBuyResultStore(state: State, key: number) {
+    state.BuyInfoList[key].buyResult = null;
+  },
+  resetBuyRequestStore(state: State, key: number) {
+    state.BuyInfoList[key].buyRequest = false;
+  },
 };
 
 const actions = {
@@ -106,11 +154,15 @@ const actions = {
       uid: string;
     }
   ): void {
-    context.state.BuyInfoList.forEach((v) => {
+    context.state.BuyInfoList.forEach((v, k) => {
       if (v.buyInfoId === data.buyInfoId) {
         ItemUc.changeItemNameUc(v, data.name, data.uid)
           .then(() => {
-            v.item = Item.changeItemName(v.item, data.name);
+            context.commit("changeItemNameStore", {
+              key: k,
+              item: v.item,
+              name: data.name,
+            });
           })
           .catch((e) => {});
       } else {
@@ -127,10 +179,14 @@ const actions = {
       index: number;
     }
   ) {
-    context.state.BuyInfoList.forEach((v) => {
+    context.state.BuyInfoList.forEach((v, k) => {
       if (v.buyInfoId === data.buyInfoId) {
         ItemUc.changeItemPriceUc(v, data.price, data.uid).then(() => {
-          v.item = Item.changeItemPrice(v.item, data.price);
+          context.commit("changeItemPriceStore", {
+            key: k,
+            item: v.item,
+            price: data.price,
+          });
           return;
         });
       }
@@ -276,12 +332,12 @@ const actions = {
     context: { commit: Commit; state: State },
     data: { buyRequestNum: number; buyInfoId: ID; uid: string }
   ) {
-    context.state.BuyInfoList.forEach((v) => {
+    context.state.BuyInfoList.forEach((v, k) => {
       if (v.buyInfoId === data.buyInfoId) {
         const num = createBuyRequestNum(data.buyRequestNum);
         BuyInfoUseCase.changeBuyRequestNumUc(data.buyRequestNum, v, data.uid)
           .then(() => {
-            v.buyRequestNum = num;
+            context.commit("changeBuyRequestNumStore", { key: k, num });
           })
           .catch(() => {
             return;
@@ -298,8 +354,7 @@ const actions = {
       .then(() => {
         return context.state.BuyInfoList.forEach((v, key) => {
           if (v.buyInfoId === data.buyInfoId) {
-            delete context.state.BuyInfoList[key];
-            console.log("2", state.BuyInfoList);
+            context.commit("deleteItemStore", key);
           }
         });
       })
@@ -315,11 +370,14 @@ const actions = {
       uid: string;
     }
   ) {
-    context.state.BuyInfoList.forEach((v) => {
+    context.state.BuyInfoList.forEach((v, k) => {
       if (v.buyInfoId === data.buyInfoId) {
         BuyInfoUseCase.changeBuyRequestUc(v, data.request, data.uid)
           .then(() => {
-            v.buyRequest = data.request;
+            context.commit("changeBuyRequestDoStore", {
+              key: k,
+              request: data.request,
+            });
           })
           .catch(() => {
             return;
@@ -331,11 +389,14 @@ const actions = {
     context: { state: State; commit: Commit },
     data: { buyResult: boolean; buyInfoId: ID; uid: string }
   ) {
-    context.state.BuyInfoList.forEach((v) => {
+    context.state.BuyInfoList.forEach((v, k) => {
       if (v.buyInfoId === data.buyInfoId) {
         BuyInfoUseCase.changeBuyResultUc(data.buyResult, v, data.uid)
           .then(() => {
-            v.buyResult = data.buyResult;
+            context.commit("changeBuyResultStore", {
+              key: k,
+              buyResult: data.buyResult,
+            });
           })
           .catch(() => {
             return;
@@ -352,11 +413,11 @@ const actions = {
     context.state.BuyInfoList.forEach((v, k) => {
       if (data.id === "all") {
         if (v.buyRequest === true) {
-          context.state.BuyInfoList[k].buyResult = null;
+          context.commit("resetBuyResultStore", k);
         }
       } else {
         if (data.id === v.categoryId && v.buyRequest === true) {
-          context.state.BuyInfoList[k].buyResult = null;
+          context.commit("resetBuyResultStore", k);
         }
       }
     });
@@ -369,10 +430,10 @@ const actions = {
     BuyInfoUseCase.resetBuyRequestUc(state.BuyInfoList, data.uid);
     context.state.BuyInfoList.forEach((v, k) => {
       if (data.id === "all") {
-        context.state.BuyInfoList[k].buyRequest = false;
+        context.commit("resetBuyRequestStore", k);
       } else {
         if (data.id === v.categoryId) {
-          context.state.BuyInfoList[k].buyRequest = false;
+          context.commit("resetBuyRequestStore", k);
         }
       }
     });

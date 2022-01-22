@@ -142,10 +142,7 @@ function updateResetBuyRequestRep(data: BuyInfoList, uid: string) {
 
 //買物リセット
 function updateResetBuyResultRep(data: BuyInfoList, uid: string) {
-  console.log(data, uid);
-
   return data.forEach((v: BuyInfo, k: number) => {
-    console.log(v);
     if (v.buyResult === false || v.buyResult === true) {
       updateDoc(doc(getFirestore(), "users", uid, "items", v.buyInfoId.raw), {
         buyResult: null,
