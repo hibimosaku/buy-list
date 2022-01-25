@@ -229,6 +229,7 @@ export default defineComponent({
     };
 
     onMounted(() => {
+      // buyInfoList.value = store.getters.getBuyInfoList;
       buyInfoList.value = store.getters.getBuyInfoList;
       errorPrice.value = store.getters.getErrorchangeItemPrice;
     });

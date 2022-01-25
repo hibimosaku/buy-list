@@ -112,7 +112,7 @@ const mutations = {
   },
 };
 
-const actions = {
+const actions = {//actionハンドラー。usecase相当。
   loadItemsStore(context: { commit: Commit }, uid: string) {
     return ItemUc.loadItemListUc(uid).then((val) => {
       context.commit("setItems", val);
