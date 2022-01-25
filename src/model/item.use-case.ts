@@ -2,7 +2,7 @@
 
 import { BuyInfoRepository } from "./buy-info.repository";
 import { BuyInfo } from "./buy-info.model";
-import { store } from "../store/store";
+import { useStore } from 'vuex'
 import { ID } from "./id.value";
 
 // const sleep = (waitSeconds:any) => {
@@ -12,6 +12,7 @@ import { ID } from "./id.value";
 // 		}, waitSeconds * 1000)
 // 	})
 // }
+const store = useStore()
 
 //品目
 async function createItemUc(

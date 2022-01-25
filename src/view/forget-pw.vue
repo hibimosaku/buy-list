@@ -22,13 +22,15 @@
 import navComponent from "./component/nav.component.vue";
 import { defineComponent, ref } from "vue";
 import { useRouter } from "vue-router";
-import { store } from "../store/store";
+import { useStore } from 'vuex'
 
 export default defineComponent({
   components: {
     navComponent,
   },
   setup() {
+    const store = useStore()
+
     const mail = ref<string>();
 
     const router = useRouter();

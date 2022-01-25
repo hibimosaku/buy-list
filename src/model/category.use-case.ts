@@ -1,4 +1,4 @@
-import { store } from "../store/store";
+import { useStore } from 'vuex'
 
 import { Category, createCategory } from "./category.model";
 import { CategoryRepository } from "./category.repository";

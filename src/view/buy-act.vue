@@ -52,7 +52,7 @@
 
 <script lang="ts">
 import { defineComponent, onMounted, ref } from "vue";
-import { store } from "../store/store";
+import { useStore } from 'vuex'
 
 import navComponent from "./component/nav.component.vue";
 import categoryComponent from "./component/category-list.component.vue";

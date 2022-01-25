@@ -22,7 +22,7 @@
 // import "./style.scss";
 import "../../assets/css/style.scss";
 import { defineComponent, onMounted } from "vue";
-import { store } from "../store/store";
+import { useStore } from 'vuex'
 
 import { commonMount } from "./func/common-mount";
 import { useRouter } from "vue-router";
@@ -31,6 +31,8 @@ import { useRouter } from "vue-router";
 
 export default defineComponent({
   setup() {
+    const store = useStore()
+
     const { categorys, uid } = commonMount();
     const router = useRouter();
 

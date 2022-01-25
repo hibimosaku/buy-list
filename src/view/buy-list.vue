@@ -57,7 +57,7 @@
 
 <script lang="ts">
 import { computed, defineComponent, onMounted, ref } from "vue";
-import { store } from "../store/store";
+import { useStore } from 'vuex'
 
 import categoryComponent from "./component/category-list.component.vue";
 import buyListComponent from "./component/buy-list.component.vue";
@@ -77,6 +77,8 @@ export default defineComponent({
     errDbComponent,
   },
   setup() {
+    const store = useStore()
+
     const filterType = ref<Array<string>>(["all", "no", "want"]);
     const { buyInfoList, filterbuyList, search, activeCategory, filterStatus } =
       useFilterBuyList();
