@@ -2,6 +2,7 @@ import { createApp } from "vue";
 import router from "./router/router";
 import { store, key } from "./store/store";
 
+
 import { initializeApp } from "firebase/app";
 // import { getAnalytics } from "firebase/analytics";
 // TODO: Add SDKs for Firebase products that you want to use
@@ -22,7 +23,6 @@ const firebaseConfig = {
 // Initialize Firebase
 initializeApp(firebaseConfig);
 // const analytics = getAnalytics(app);
-
 document.addEventListener("DOMContentLoaded", () => {
   const app = createApp({});
   app.use(router);

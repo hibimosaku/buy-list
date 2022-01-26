@@ -64,6 +64,9 @@ import buyListComponent from "./component/buy-list.component.vue";
 import filterBuyInfoListComponent from "./component/filter-buyInfoList.component.vue";
 import errDbComponent from "./container/error-db.container.vue";
 
+// import { store } from "../store/store"
+
+
 import { commonMount } from "./func/common-mount";
 import { Line } from "../model/line.use.case";
 import { useFilterBuyList } from "../view/func/useFilterBuyList";

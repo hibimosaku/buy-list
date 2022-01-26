@@ -13,7 +13,8 @@ import forgetPw from "../view/forget-pw.vue";
 
 import { onAuthStateChanged } from "@firebase/auth";
 import { load } from "../view/func/load.func";
-import { useStore } from 'vuex'
+// import { useStore } from 'vuex'
+import { store } from "../store/store"
 import { Category } from "../model/category.model";
 import { getAuth } from "firebase/auth";
 
@@ -28,7 +29,7 @@ import { getAuth } from "firebase/auth";
 //   measurementId: "G-0K9W3P389E",
 // };
 // initializeApp(firebaseConfig);
-const store = useStore()
+// const store = useStore()
 
 // const auth: any = null;
 

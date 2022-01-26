@@ -3,6 +3,8 @@ import { useStore } from 'vuex'
 import { Category, createCategory } from "./category.model";
 import { CategoryRepository } from "./category.repository";
 
+const store = useStore()
+
 //分類登録 async
 export async function changeCategoryUc(
   name: string,
