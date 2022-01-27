@@ -1,10 +1,7 @@
 <template>
-  <div
-    class="d-flex justify-content-between bg-primary align-items-center"
-    style="height: 40px"
-  >
-    <h6 class="p-2 bd-highlight text-white" style="margin: 0">買物アプリ</h6>
-  </div>
+  <nav class="nav bg-primary">
+    <a class="nav-link text-white" aria-current="page">買物アプリ</a>
+  </nav>
   <label for="inputEmail" class="visually-hidden" style="margin-top: 20px"
     >メールアドレス</label
   >
@@ -23,50 +20,48 @@
     placeholder="パスワード"
     v-model="pw"
   />
-  <button class="w-100 btn btn-sm btn-primary" type="submit" @click="login">
-    ログイン
+  <button class="w-100 btn btn-sm btn-primary" type="submit" @click="register">
+    新規登録
   </button>
-
-  <hr />
-  <div class="text-center">
-    ～<router-link to="/signUp">初めての方</router-link>～<br />
-    ～<router-link to="/forgetPw">パスワード忘れた方</router-link>～
-  </div>
+  <router-link to="/login">戻る</router-link>
 </template>
 
 <script lang="ts">
-import navComponent from "./component/nav.component.vue";
+import navComponent from "../common/nav.component.vue";
 import { defineComponent, ref } from "vue";
 import { useRouter } from "vue-router";
-import { AuthUseCase } from "../model/auth.use-case";
+import { AuthUseCase } from "../../model/auth.use-case";
 
 export default defineComponent({
   components: {
     navComponent,
   },
   setup() {
+    // const store = useStore(key);
     const mail = ref<string>();
     const pw = ref<string>();
 
+    // const auth = getAuth();
     const router = useRouter();
 
-    const login = () => {
+    const register = () => {
       if (mail.value === undefined || pw.value === undefined) {
         alert("メールアドレスorパスワードが入力されていません");
         return;
       }
-      AuthUseCase.loginUc(mail.value as string, pw.value as string)
-        .then(() => {
+      AuthUseCase.signUpUc(mail.value, pw.value)
+        .then((val) => {
+          alert("登録完了");
           router.push("/category");
         })
-        .catch(() => {
-          alert("メールアドレス、パスワードが間違っています。");
+        .catch((error) => {
+          alert("メールアドレスorパスワードが間違っています。");
           return;
         });
     };
 
     return {
-      login,
+      register,
       mail,
       pw,
     };

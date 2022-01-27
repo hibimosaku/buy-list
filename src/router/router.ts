@@ -1,18 +1,17 @@
 import { createRouter, RouteRecordRaw, createWebHashHistory } from "vue-router";
-import login from "../view/login.vue";
-import category from "../view/category.vue";
-import item from "../view/item.vue";
-import buyList from "../view/buy-list.vue";
-import buyAct from "../view/buy-act.vue";
-import signUp from "../view/signUp.vue";
-import test from "../view/test.vue";
-import common from "../view/common.vue";
-import forgetPw from "../view/forget-pw.vue";
+import login from "../view/login/login.vue";
+import category from "../view/category/category.vue";
+import item from "../view/item/item.vue";
+import buyList from "../view/buy-list/buy-list.vue";
+import buyAct from "../view/buy-act/buy-act.vue";
+import signUp from "../view/signUp/signUp.vue";
+import common from "../view/common/common.vue";
+import forgetPw from "../view/forget-pw/forget-pw.vue";
 
 // import { getAuth } from "firebase/auth";
 
 import { onAuthStateChanged } from "@firebase/auth";
-import { load } from "../view/func/load.func";
+import { load } from "../view/common/load.func";
 // import { useStore } from 'vuex'
 import { store } from "../store/store"
 import { Category } from "../model/category.model";
@@ -82,17 +81,12 @@ const routes: Array<RouteRecordRaw> = [
         component: buyAct,
         meta: { requiresAuth: true },
       },
-      {
-        path: "/test",
-        name: "test",
-        component: test,
-      },
     ],
   },
   {
     path: "/:catchAll(.*)",
     name: "NotFound",
-    component: () => import("../view/notfound.vue"),
+    component: () => import("../view/notfound/notfound.vue"),
     meta: {
       titele: "NotFoundページ",
       description: "NotFoundページの説明",
@@ -105,10 +99,6 @@ const routes: Array<RouteRecordRaw> = [
   //   component: item,
   //   meta: { requiresAuth: true },
   // },
-  {
-    path: "/test",
-    component: test,
-  },
 ];
 
 const router = createRouter({

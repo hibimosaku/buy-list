@@ -57,20 +57,19 @@
 
 <script lang="ts">
 import { computed, defineComponent, onMounted, ref } from "vue";
-import { useStore } from 'vuex'
+// import { useStore } from 'vuex'
 
-import categoryComponent from "./component/category-list.component.vue";
-import buyListComponent from "./component/buy-list.component.vue";
-import filterBuyInfoListComponent from "./component/filter-buyInfoList.component.vue";
-import errDbComponent from "./container/error-db.container.vue";
+import categoryComponent from "../category/category-list.component.vue";
+import buyListComponent from "./buy-list.component.vue";
+import filterBuyInfoListComponent from "./filter-buyInfoList.component.vue";
+import errDbComponent from "../common/error-db.container.vue";
 
-// import { store } from "../store/store"
+import { store } from "../../store/store"
 
-
-import { commonMount } from "./func/common-mount";
-import { Line } from "../model/line.use.case";
-import { useFilterBuyList } from "../view/func/useFilterBuyList";
-import { ID } from "../model/id.value";
+import { commonMount } from "../common/common-mount";
+import { Line } from "../../model/line.use.case";
+import { useFilterBuyList } from "./useFilterBuyList";
+import { ID } from "../../model/id.value";
 
 export default defineComponent({
   components: {
@@ -80,7 +79,7 @@ export default defineComponent({
     errDbComponent,
   },
   setup() {
-    const store = useStore()
+    // const store = useStore()
 
     const filterType = ref<Array<string>>(["all", "no", "want"]);
     const { buyInfoList, filterbuyList, search, activeCategory, filterStatus } =

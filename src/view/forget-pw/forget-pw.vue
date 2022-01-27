@@ -19,7 +19,7 @@
 </template>
 
 <script lang="ts">
-import navComponent from "./component/nav.component.vue";
+import navComponent from "../common/nav.component.vue";
 import { defineComponent, ref } from "vue";
 import { useRouter } from "vue-router";
 import { useStore } from 'vuex'

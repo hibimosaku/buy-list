@@ -23,7 +23,7 @@ import { defineComponent, onMounted } from "vue";
 import { store } from "../../store/store"
 // import { useStore } from 'vuex'
 
-import { commonMount } from "../func/common-mount";
+import { commonMount } from "../common/common-mount";
 
 export default defineComponent({
   setup() {

@@ -6,9 +6,9 @@
 </template>
 <script lang="ts">
 import { defineComponent } from "vue";
-import navComponent from "./component/nav.component.vue";
-import tabComponent from "./component/tab.component.vue";
-import errDbComponent from "./container/error-db.container.vue";
+import navComponent from "../common/nav.component.vue";
+import tabComponent from "../common/tab.component.vue";
+import errDbComponent from "./error-db.container.vue";
 // import Item from "./item.vue";
 // import Category from "./category.vue";
 

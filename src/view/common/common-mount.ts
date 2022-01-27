@@ -1,4 +1,4 @@
-import { onMounted, ref } from "@vue/runtime-dom";
+import { onMounted, ref } from "vue";
 import { store } from "../../store/store";
 
 export const commonMount = () => {

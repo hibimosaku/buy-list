@@ -52,17 +52,18 @@
 
 <script lang="ts">
 import { defineComponent, onMounted, ref } from "vue";
-import { useStore } from 'vuex'
+// import { useStore } from 'vuex'
+import { store } from "../../store/store"
 
-import navComponent from "./component/nav.component.vue";
-import categoryComponent from "./component/category-list.component.vue";
-import buyActComponent from "./component/buy-act.component.vue";
-import filterBuyInfoListComponent from "./component/filter-buyInfoList.component.vue";
-import errDbComponent from "./container/error-db.container.vue";
+import navComponent from "../common/nav.component.vue";
+import categoryComponent from "../category/category-list.component.vue";
+import buyActComponent from "./buy-act.container.vue";
+import filterBuyInfoListComponent from "../buy-list/filter-buyInfoList.component.vue";
+import errDbComponent from "../common/error-db.container.vue";
 
-import { commonMount } from "./func/common-mount";
-import { useBuyAct } from "./func/useFilterBuyAct";
-import { ID } from "../model/id.value";
+import { commonMount } from "../common/common-mount";
+import { useBuyAct } from "./useFilterBuyAct";
+import { ID } from "../../model/id.value";
 
 export default defineComponent({
   components: {

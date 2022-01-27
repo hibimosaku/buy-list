@@ -194,18 +194,18 @@
 <script lang="ts">
 import { computed, defineComponent, onMounted, ref } from "vue";
 // import { useStore } from 'vuex'
-import { store } from "../store/store"
+import { store } from "../../store/store"
 
 
-import navComponent from "./component/nav.component.vue";
-import categoryComponent from "./component/category-list.component.vue";
-import itemComponent from "./component/item.component.vue";
-import errDbComponent from "./container/error-db.container.vue";
+import navComponent from "../common/nav.component.vue";
+import categoryComponent from "../category/category-list.component.vue";
+import itemComponent from "./item.component.vue";
+import errDbComponent from "../common/error-db.container.vue";
 
-import { BuyInfo, BuyInfoList } from "../model/buy-info.model";
+import { BuyInfo, BuyInfoList } from "../../model/buy-info.model";
 
-import { commonMount } from "./func/common-mount";
-import { ID } from "../model/id.value";
+import { commonMount } from "../common/common-mount";
+import { ID } from "../../model/id.value";
 
 export default defineComponent({
   components: {
