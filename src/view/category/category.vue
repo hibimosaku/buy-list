@@ -20,7 +20,7 @@
 </template>
 <script lang="ts">
 import { defineComponent, onMounted } from "vue";
-import { store } from "../../store/store"
+import { store } from "../../store/store";
 // import { useStore } from 'vuex'
 
 import { commonMount } from "../common/common-mount";
@@ -31,13 +31,12 @@ export default defineComponent({
 
     const { categorys, uid } = commonMount();
 
-    onMounted(() => {
-    });
+    onMounted(() => {});
     const changeCategoryUi = (index: number, name: string) => {
       if (name.length > 4) {
         return;
       } else {
-        store.commit("changeCategoryStore", {
+        store.dispatch("changeCategoryStore", {
           name,
           id: index,
           uid: uid.value,

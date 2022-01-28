@@ -1,10 +1,10 @@
 //買い物リストのユースケース
 
-import { useStore } from 'vuex'
+import { useStore } from "vuex";
 import { BuyInfo, BuyInfoList } from "./buy-info.model";
 import { BuyInfoRepository } from "./buy-info.repository";
 
-const store = useStore()
+const store = useStore();
 
 //buyRequestの切り替え
 async function changeBuyRequestUc(

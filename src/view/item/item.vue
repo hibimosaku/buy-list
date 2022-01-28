@@ -194,8 +194,7 @@
 <script lang="ts">
 import { computed, defineComponent, onMounted, ref } from "vue";
 // import { useStore } from 'vuex'
-import { store } from "../../store/store"
-
+import { store } from "../../store/store";
 
 import navComponent from "../common/nav.component.vue";
 import categoryComponent from "../category/category-list.component.vue";
@@ -218,7 +217,7 @@ export default defineComponent({
   setup() {
     // const store = useStore()
     // console.log(store,useStore())
-    
+
     const itemName = ref<string | null>(null);
     const itemPrice = ref<number | null>(null);
     const categoryId = ref<string | null>(null);

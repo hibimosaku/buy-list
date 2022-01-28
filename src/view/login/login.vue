@@ -32,7 +32,9 @@
     ～<router-link to="/signUp">初めての方</router-link>～<br />
     ～<router-link to="/forgetPw">パスワード忘れた方</router-link>～
   </div>
-  <p class="text-center">お試し用：メールアドレス「test@gmail.com」、パスワード「123456」</p>
+  <p class="text-center">
+    お試し用：メールアドレス「test@gmail.com」、パスワード「123456」
+  </p>
 </template>
 
 <script lang="ts">

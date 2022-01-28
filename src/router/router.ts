@@ -13,7 +13,7 @@ import forgetPw from "../view/forget-pw/forget-pw.vue";
 import { onAuthStateChanged } from "@firebase/auth";
 import { load } from "../view/common/load.func";
 // import { useStore } from 'vuex'
-import { store } from "../store/store"
+import { store } from "../store/store";
 import { Category } from "../model/category.model";
 import { getAuth } from "firebase/auth";
 

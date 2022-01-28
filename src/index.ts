@@ -2,7 +2,6 @@ import { createApp } from "vue";
 import router from "./router/router";
 import { store, key } from "./store/store";
 
-
 import { initializeApp } from "firebase/app";
 // import { getAnalytics } from "firebase/analytics";
 // TODO: Add SDKs for Firebase products that you want to use

@@ -18,20 +18,30 @@ const mutations = {
   //もともとUIからもらったデータをもとに変更していたが。。。modelでのcreate使っていない。
   changeCategoryStore(
     state: State,
-    data: { name: string; id: string; uid: string }
+    data: { category: Category; id: string }
   ): void {
-    changeCategoryUc(data.name, data.id, data.uid).then(
-      (category: Category) => {
-        state.categorys[Number(data.id)] = category;
-      }
-    );
+    state.categorys[Number(data.id)] = data.category;
   },
+
   loadCategory(state: State, categorys: Array<Category>) {
     state.categorys = categorys;
   },
 };
 
 const actions = {
+  changeCategoryStore(
+    context: { state: State; commit: Commit },
+    data: { name: string; id: string; uid: string }
+  ) {
+    changeCategoryUc(data.name, data.id, data.uid).then(
+      (category: Category) => {
+        context.commit("changeCategoryStore", {
+          category: category,
+          id: data.id,
+        });
+      }
+    );
+  },
   loadCategory(
     context: { state: State; commit: Commit },
     uid: string
