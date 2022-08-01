@@ -4,6 +4,11 @@ import category from "./modules/category-store";
 import auth from "./modules/auth-store";
 import error from "./modules/error-store";
 import buyInfoList from "./modules/buy-info-store";
+import { useStore  as _useStore } from "vuex";
+
+export function useStore(){
+  return _useStore(key)
+}
 
 export interface State {
   // nowPage:string

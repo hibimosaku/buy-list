@@ -10,12 +10,11 @@ import forgetPw from "../view/forget-pw/forget-pw.vue";
 
 // import { getAuth } from "firebase/auth";
 
-import { onAuthStateChanged } from "@firebase/auth";
 import { load } from "../view/common/load.func";
 // import { useStore } from 'vuex'
 import { store } from "../store/store";
 import { Category } from "../model/category.model";
-import { getAuth } from "firebase/auth";
+import { AuthApi } from "../model/auth.api-service";
 
 //↓【課題→解決】本当はおきたくない。webのsorceで丸見え
 // const firebaseConfig = {
@@ -116,8 +115,7 @@ router.beforeEach((to, from, next) => {
   const categorys: Array<Category> = store.getters.getCategorys;
   //auth→getauthに変える
   if (requiresAuth) {
-    onAuthStateChanged(getAuth(), async (user) => {
-      //【課題】リポジトリにもっていく？
+    AuthApi.initFirebaseAuth().then(async(user:any)=>{
       if (user && BuyInfoList && categorys.length === 9) {
         next();
       } else if (user) {
@@ -131,6 +129,22 @@ router.beforeEach((to, from, next) => {
   } else {
     next();
   }
+
+  //   onAuthStateChanged(getAuth(), async (user) => {
+  //     //【課題】リポジトリにもっていく？
+  //     if (user && BuyInfoList && categorys.length === 9) {
+  //       next();
+  //     } else if (user) {
+  //       await load(user.uid);
+  //       await store.commit("registerAuth", user.uid);
+  //       next();
+  //     } else {
+  //       router.push("./login");
+  //     }
+  //   });
+  // } else {
+  //   next();
+  // }
 });
 
 export default router;

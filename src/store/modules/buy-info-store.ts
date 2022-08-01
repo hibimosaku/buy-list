@@ -119,6 +119,7 @@ const actions = {
       context.commit("setItems", val);
     });
   },
+  //dispachを引数に
   createItemStore(
     context: { commit: Commit; state: State },
     data: {
@@ -137,14 +138,15 @@ const actions = {
       data.sort
     )
       .then((result: BuyInfo | void) => {
+
         if (result) {
           context.commit("createItemStore", result);
         } else {
           return;
         }
       })
-      .catch(() => {
-        throw new Error();
+      .catch((err) => {
+        throw new Error(err);
       });
   },
   changeItemNameStore(

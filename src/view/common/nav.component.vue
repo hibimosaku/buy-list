@@ -6,9 +6,11 @@
     <h6 class="p-2 bd-highlight text-white" style="margin: 0">買物アプリ</h6>
     <div class="d-flex justify-content-end">
       <a class="p-2 bd-highlight text-white small" @click="signOut"
+        style="cursor:pointer;"
         >ログアウト</a
       >
       <a class="p-2 bd-highlight text-white small" @click="userDeleteUi"
+        style="cursor:pointer;"
         >退会</a
       >
     </div>

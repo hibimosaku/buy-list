@@ -1,6 +1,6 @@
 import { createApp } from "vue";
 import router from "./router/router";
-import { store, key } from "./store/store";
+import { store,key } from "./store/store";
 
 import { initializeApp } from "firebase/app";
 // import { getAnalytics } from "firebase/analytics";
@@ -25,6 +25,6 @@ initializeApp(firebaseConfig);
 document.addEventListener("DOMContentLoaded", () => {
   const app = createApp({});
   app.use(router);
-  app.use(store, key);
+  app.use(store,key);
   app.mount("#app");
 });

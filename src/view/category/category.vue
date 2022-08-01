@@ -20,15 +20,13 @@
 </template>
 <script lang="ts">
 import { defineComponent, onMounted } from "vue";
-import { store } from "../../store/store";
-// import { useStore } from 'vuex'
+import { useStore } from "../../store/store"
 
 import { commonMount } from "../common/common-mount";
 
 export default defineComponent({
   setup() {
-    // const store = useStore()
-
+    const store = useStore()
     const { categorys, uid } = commonMount();
 
     onMounted(() => {});
@@ -40,7 +38,7 @@ export default defineComponent({
           name,
           id: index,
           uid: uid.value,
-        });
+        })
       }
     };
     return {

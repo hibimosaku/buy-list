@@ -2,8 +2,9 @@
 
 import { BuyInfoRepository } from "./buy-info.repository";
 import { BuyInfo } from "./buy-info.model";
-import { useStore } from "vuex";
+import { useStore } from "../store/store";
 import { ID } from "./id.value";
+import { store } from "../store/store";
 
 // const sleep = (waitSeconds:any) => {
 // 	return new Promise(resolve => {
@@ -12,7 +13,9 @@ import { ID } from "./id.value";
 // 		}, waitSeconds * 1000)
 // 	})
 // }
-const store = useStore();
+// console.log(useStore())//compositon api vue関数の中じゃない等コア内。かつvue経由
+
+// const store = useStore();
 
 //品目
 async function createItemUc(
@@ -20,9 +23,12 @@ async function createItemUc(
   name: string,
   price: number,
   uid: string,
-  sort: number
+  sort: number,
+  
 ): Promise<BuyInfo | void> {
-  store.dispatch("doProcessing");
+  const store = useStore();
+  // store.dispatch("doProcessing");
+
   try {
     const buyInfo = BuyInfo.createBuyInfo(name, price, category_id);
     await BuyInfoRepository.createBuyInfoRep(buyInfo, uid, sort);
@@ -31,13 +37,12 @@ async function createItemUc(
     //   console.log('成功')
     // },5000)
     // await sleep
-
-    store.dispatch("notDoProcessing");
+    // store.dispatch("notDoProcessing");
     return buyInfo;
   } catch (e) {
     store.commit("isErrorDbItem");
     console.error(`errMethod:createItemUi,${e}`);
-    store.dispatch("notDoProcessing");
+    // store.dispatch("notDoProcessing");
     throw new Error();
   }
 }

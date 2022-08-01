@@ -29,7 +29,7 @@ async function createBuyInfoRep(buyInfo: BuyInfo, uid: string, sort: number) {
 }
 
 async function updateItemNameRep(buyInfo: BuyInfo, uid: string) {
-  return updateDoc(
+  updateDoc(
     doc(getFirestore(), "users", uid, "items", buyInfo.buyInfoId.raw),
     {
       name: buyInfo.item.name,
@@ -226,6 +226,10 @@ async function fetchItemListRep(uid: string) {
   return itemRepository;
 }
 
+async function deleteAllRep(uid:string){
+  return deleteDoc(doc(getFirestore(),"users",uid))
+}
+
 export const BuyInfoRepository = {
   createBuyInfoRep,
   updateItemListRep,
@@ -241,4 +245,5 @@ export const BuyInfoRepository = {
   updateBuyfinRep,
   updateResetBuyRequestRep,
   updateResetBuyResultRep,
+  deleteAllRep
 };

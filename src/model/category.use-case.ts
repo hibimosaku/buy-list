@@ -1,15 +1,16 @@
-import { useStore } from "vuex";
-
+// import { Store } from "vuex";
+import { store } from "../store/store"
 import { Category, createCategory } from "./category.model";
 import { CategoryRepository } from "./category.repository";
 
-const store = useStore();
+// const store = useStore();
 
 //分類登録 async
 export async function changeCategoryUc(
   name: string,
   categoryId: string,
-  uid: string
+  uid: string,
+  // store:Store
   // state:State,
 ): Promise<Category> {
   try {
@@ -19,7 +20,7 @@ export async function changeCategoryUc(
   } catch (e) {
     store.commit("isErrorDbCategory");
     console.error(`errMethod:changeCategoryUi,${e}`);
-    throw new Error();
+    throw new Error(`errMethod:changeCategoryUi,${e}`);
   }
 }
 

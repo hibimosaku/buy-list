@@ -1,9 +1,12 @@
 //use-case
 
-import { AuthRepository } from "./auth.api-service";
+import { AuthApi } from "./auth.api-service";
+import { BuyInfoRepository } from "./buy-info.repository";
+
+
 
 async function signUpUc(mail: string, pw: string) {
-  return AuthRepository.signUp(mail, pw)
+  return AuthApi.signUp(mail, pw)
     .then(() => {
       console.log("成功");
       return;
@@ -14,9 +17,11 @@ async function signUpUc(mail: string, pw: string) {
 }
 
 async function loginUc(mail: string, pw: string) {
-  await AuthRepository.signIn(mail, pw)
-    .then((val) => {
-      return;
+  await AuthApi.signIn(mail, pw)
+    .then(async(val) => {
+      const user = await AuthApi.initFirebaseAuth()
+      // store.dispatch('registerAuth',user)
+      return user;
     })
     .catch((error) => {
       throw new Error();
@@ -24,7 +29,7 @@ async function loginUc(mail: string, pw: string) {
 }
 
 async function signOUtUc() {
-  await AuthRepository.signOutRep()
+  await AuthApi.signOutRep()
     .then(() => {
       return;
     })
@@ -34,17 +39,26 @@ async function signOUtUc() {
 }
 
 async function userDeleteUc() {
-  await AuthRepository.userDelete()
-    .then(() => {
-      return;
-    })
-    .catch((e) => {
-      throw new Error("userDelete is failure");
-    });
+  try{
+    let uid = await AuthApi.userDelete()
+    console.log(uid)
+    await BuyInfoRepository.deleteAllRep(uid)
+    console.log('success')
+    return
+  }catch(error){
+    throw new Error("userDelete is failure");
+  }
+  // await AuthApi.userDelete()
+  //   .then(() => {
+  //     return;
+  //   })
+  //   .catch((e) => {
+  //     throw new Error("userDelete is failure");
+  //   });
 }
 
 async function forgetPwUc(mail: string) {
-  await AuthRepository.forgetPwRp(mail)
+  await AuthApi.forgetPwRp(mail)
     .then(() => {
       return;
     })

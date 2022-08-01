@@ -20,7 +20,7 @@
     placeholder="パスワード"
     v-model="pw"
   />
-  <button class="w-100 btn btn-sm btn-primary" type="submit" @click="register">
+  <button class="w-100 btn btn-sm btn-primary" @click="register">
     新規登録
   </button>
   <router-link to="/login">戻る</router-link>

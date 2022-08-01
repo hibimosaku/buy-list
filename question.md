@@ -1,3 +1,16 @@
+2/20
+・auth部分で悩んでいます。
+　毎回、router.beforeEachで毎回firebaseAuth確認は非効率
+
+- login,ユーザ登録時、firebaseAuthの初期化 & storeにuser登録
+- router.beforeEachでは、storeのuserありなしで遷移
+  storeのuserあり→普通に遷移
+  storeのuserなし→loginに移動
+  ？firebase currentuserでログイン状態の確認必要？
+  →きれることもある
+
+  結論、initFirebaseAuthを毎回呼ぶ
+
 12/26
 ・検索中の表示
 　処理の始まりにfalse終わりにtrueで対応？
@@ -112,6 +125,7 @@ firestoreでチェックしてくれるし、一意のIDを生成したつもり
   - try catchとの関係
     - await使えば、try catch利用できる？
     asyncだけなら、promiseを返す必要がありreturn or throwが必要
+    →違う。returnなくても、promise返す。returnは引数を渡したい場合。
     async+awaitならawaitがPromiseを返すので不要
 
     async function をただ呼び出すときは try catch は意味をなさない

@@ -57,7 +57,6 @@
 
 <script lang="ts">
 import { computed, defineComponent, onMounted, ref } from "vue";
-// import { useStore } from 'vuex'
 
 import categoryComponent from "../category/category-list.component.vue";
 import buyListComponent from "./buy-list.component.vue";

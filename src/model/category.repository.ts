@@ -8,6 +8,7 @@ import {
 import { Category } from "./category.model";
 
 function updateCategoryRep(category: Category, uid: string) {
+  console.log(category,uid)
   return setDoc(
     doc(getFirestore(), "users/", uid, "categorys", String(category.id)),
     {

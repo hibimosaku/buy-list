@@ -42,6 +42,8 @@ import navComponent from "../common/nav.component.vue";
 import { defineComponent, ref } from "vue";
 import { useRouter } from "vue-router";
 import { AuthUseCase } from "../../model/auth.use-case";
+import { useStore } from "../../store/store";
+
 
 export default defineComponent({
   components: {
@@ -50,7 +52,7 @@ export default defineComponent({
   setup() {
     const mail = ref<string>();
     const pw = ref<string>();
-
+    const store = useStore()
     const router = useRouter();
 
     const login = () => {
@@ -58,8 +60,9 @@ export default defineComponent({
         alert("メールアドレスorパスワードが入力されていません");
         return;
       }
-      AuthUseCase.loginUc(mail.value as string, pw.value as string)
-        .then(() => {
+      AuthUseCase.loginUc(mail.value, pw.value)
+        .then((user) => {
+          store.dispatch('registerAuth',user)
           router.push("/category");
         })
         .catch(() => {

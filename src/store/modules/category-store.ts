@@ -29,18 +29,28 @@ const mutations = {
 };
 
 const actions = {
-  changeCategoryStore(
-    context: { state: State; commit: Commit },
+  // async changeCategoryStore(
+  //   context: { state: State; commit: Commit },
+  //   data: { name: string; id: string; uid: string }
+  // ) {
+
+  async changeCategoryStore(
+    context: { commit: Commit },
     data: { name: string; id: string; uid: string }
   ) {
-    changeCategoryUc(data.name, data.id, data.uid).then(
+    return changeCategoryUc(data.name, data.id, data.uid)
+    .then(
       (category: Category) => {
         context.commit("changeCategoryStore", {
           category: category,
           id: data.id,
         });
       }
-    );
+    )
+    // .catch(()=>{
+    //   console.log('store')
+    //   throw new Error()
+    // })
   },
   loadCategory(
     context: { state: State; commit: Commit },
